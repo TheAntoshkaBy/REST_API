@@ -1,6 +1,4 @@
-package com.epam.second;
-
-import com.epam.second.Utils;
+package com.epam.util;
 
 public class Api {
     public static void main(String[] args) {

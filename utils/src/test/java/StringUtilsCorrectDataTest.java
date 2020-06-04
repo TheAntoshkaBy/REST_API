@@ -9,12 +9,12 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class StringUtilsTest extends TestCase {
+public class StringUtilsCorrectDataTest extends TestCase {
 
     private String input;
     private boolean output;
 
-    public StringUtilsTest(String input, boolean output) {
+    public StringUtilsCorrectDataTest(String input, boolean output) {
         this.input = input;
         this.output = output;
     }
@@ -22,12 +22,17 @@ public class StringUtilsTest extends TestCase {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"43",true},{"-432",false},{"dsa", true},{"0", true}
+                {"43",true},{"-432",false},{"0", true},{"0", true}
         } );
     }
 
     @Test
-    public void test(){
+    public void StringUtils_CorrectDataList_EqualsResults(){
         Assert.assertEquals(StringUtils.isPositiveNumber(input), output);
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void StringUtils_IncorrectDataList_EqualsResults(){
+        StringUtils.isPositiveNumber("d");
     }
 }

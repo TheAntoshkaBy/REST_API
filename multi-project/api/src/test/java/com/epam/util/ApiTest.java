@@ -1,8 +1,6 @@
-package com.epam.second;
+package com.epam.util;
 
-import com.epam.second.Utils;
 import org.junit.Test;
-import junit.framework.TestCase;
 import org.junit.Assert;
 
 public class ApiTest {
@@ -17,8 +15,8 @@ public class ApiTest {
         Assert.assertFalse( Utils.isAllPositiveNumbers("32","-43","432432","432") );
     }
 
-    @Test()// TODO: 4.06.20  
-    public void isAllPositiveNumbers_InvalidData_(){
+    @Test(expected = NumberFormatException.class)
+    public void isAllPositiveNumbers_InvalidData_Exception(){
         Utils.isAllPositiveNumbers("fds","ff","fdsiu");
     }
 }
