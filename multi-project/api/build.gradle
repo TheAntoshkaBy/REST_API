@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'java' //todo
 }
 
 group 'com.epam.second'

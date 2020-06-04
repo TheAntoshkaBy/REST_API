@@ -1,3 +1,5 @@
+package com.epam.util;
+
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class StringUtils {
