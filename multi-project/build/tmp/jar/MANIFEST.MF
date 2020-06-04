@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: api-1.0-SNAPSHOT.jar core-1.0-SNAPSHOT.jar utils-1.3.5.jar c
- ommons-lang3-3.10.jar
-Main-Class: Mainer
-
