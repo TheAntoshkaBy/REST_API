@@ -11,8 +11,8 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class StringUtilsCorrectDataTest extends TestCase {
 
-    private String input;
-    private boolean output;
+    private final String input;
+    private final boolean output;
 
     public StringUtilsCorrectDataTest(String input, boolean output) {
         this.input = input;
@@ -22,17 +22,12 @@ public class StringUtilsCorrectDataTest extends TestCase {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"43",true},{"-432",false},{"0", true},{"0", true}
-        } );
+                {"43", true}, {"-432", false}, {"432.34", true}, {"-42.43", false}, {"0", true}
+        });
     }
 
     @Test
-    public void StringUtils_CorrectDataList_EqualsResults(){
+    public void isPositiveNumber_CorrectDataList_EqualsResults() {
         Assert.assertEquals(StringUtils.isPositiveNumber(input), output);
-    }
-
-    @Test(expected = NumberFormatException.class)
-    public void StringUtils_IncorrectDataList_EqualsResults(){
-        StringUtils.isPositiveNumber("d");
     }
 }
