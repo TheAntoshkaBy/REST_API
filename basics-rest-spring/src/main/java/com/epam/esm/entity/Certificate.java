@@ -1,5 +1,8 @@
 package com.epam.esm.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.persistence.Column;
 import java.util.Date;
 import java.util.Objects;
 
@@ -9,7 +12,11 @@ public class Certificate {
     private String name;
     private String description;
     private Double price;
+    @Column(name = "date_of_creation")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date creationDate;
+    @Column(name = "date_of_creation")
+    @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date modification;
     private Integer durationDays;
 
