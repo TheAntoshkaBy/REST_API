@@ -83,19 +83,6 @@ public class Certificate {
     }
 
     @Override
-    public String toString() { //fixme use Jackson
-        return "Certificate(" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", prices=" + price +
-                ", creationDate=" + creationDate +
-                ", modification=" + modification +
-                ", durationDays=" + durationDays +
-                ')';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -112,5 +99,18 @@ public class Certificate {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, description, price, creationDate, modification, durationDays);
+    }
+
+    @Override
+    public String toString() {
+        return "Certificate{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", creationDate=" + creationDate +
+                ", modification=" + modification +
+                ", durationDays=" + durationDays +
+                '}';
     }
 }

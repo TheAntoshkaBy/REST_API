@@ -1,0 +1,14 @@
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/controller/CertificateController.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/service/Impl/CertificateServiceImpl.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/entity/Tag.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/dao/Impl/CertificateDAOJDBCTemplate.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/service/CertificateService.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/dao/Impl/TagDAOJDBCTemplate.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/config/SpringConfig.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/dao/TagDAO.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/config/DispatcherServlet.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/service/Impl/TagServiceImpl.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/entity/Certificate.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/controller/TagController.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/dao/CertificateDAO.java
+/home/antoshka/Study/Java/Projects/basics-rest-spring/src/main/java/com/epam/esm/service/TagService.java

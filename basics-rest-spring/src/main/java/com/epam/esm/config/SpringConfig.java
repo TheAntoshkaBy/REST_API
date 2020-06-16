@@ -1,6 +1,5 @@
 package com.epam.esm.config;
 
-import com.epam.esm.dao.Impl.CertificateDAOPostgres;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -38,11 +36,6 @@ public class SpringConfig {
     @Bean
     public NamedParameterJdbcTemplate jdbcTemplate() {
         return new NamedParameterJdbcTemplate(getDataSource());
-    }
-
-    @Bean
-    public CertificateDAOPostgres certificateDAOPostgres() {
-        return new CertificateDAOPostgres(jdbcTemplate());
     }
 
 }
