@@ -31,15 +31,15 @@ public class TagDAOJDBCTemplate implements TagDAO {
     public Tag getTagById(int id) {
         String sql = "select * from rest_api_basics.tag where id_tag = :id";
         Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("id_tag", id);
+        namedParameters.put("id", id);
         return jdbcTemplate.queryForObject(sql, namedParameters, new TagMapper());
     }
 
     @Override
     public void addTag(Tag tag) {
-        String SQL = "INSERT INTO rest_api_basics.tag (tag_name) VALUES (:tag_name)";
+        String SQL = "INSERT INTO rest_api_basics.tag (tag_name, id_tag) VALUES (:tag_name, DEFAULT )";
         Map<String, Object> namedParameters = new HashMap<>();
-        //namedParameters.put("tag_name", tag.getName());
+        namedParameters.put("tag_name", tag.getName());
         jdbcTemplate.update(SQL,namedParameters);
     }
 

@@ -20,7 +20,7 @@ public class TagController {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Tag> findCertificate(@PathVariable Integer id) {
+    public ResponseEntity<Tag> findTag(@PathVariable Integer id) {
         return new ResponseEntity<>(service.find(id), HttpStatus.OK);
     }
 
