@@ -1,13 +1,15 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.CertificateDAO;
+import com.epam.esm.dao.constant.SQLRequests;
+import com.epam.esm.dao.mapper.CertificateRowMapper;
+import com.epam.esm.dao.mapper.TagRowMapper;
 import com.epam.esm.entity.Certificate;
-import org.springframework.jdbc.core.RowMapper;
+import com.epam.esm.entity.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,59 +18,108 @@ import java.util.Map;
 public class CertificateDAOJDBCTemplate implements CertificateDAO {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private TagDAOJDBCTemplate tagDAO;
 
     public CertificateDAOJDBCTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Certificate getCertificateById(int id) {
-        String sql = "select * from rest_api_basics.certificate where id_certificate = :id";
+    public Certificate getCertificateById(int id) { //fixme get == find
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
-        return jdbcTemplate.queryForObject(sql, namedParameters, new CertificateMapper());
+        Certificate certificate = jdbcTemplate.queryForObject(
+                SQLRequests.GET_CERTIFICATE_BY_ID, namedParameters, new CertificateRowMapper()
+        );
+        certificate.setTags(getAllTagsWhichBelowConcreteCertificate(certificate));
+        return certificate;
     }
 
     @Override
     public List<Certificate> getAll() {
-        String sql = "select * from rest_api_basics.certificate";
-        return jdbcTemplate.query(sql, new CertificateMapper());
+        List<Certificate> certificates = jdbcTemplate.query(
+                SQLRequests.GET_ALL_CERTIFICATES, new CertificateRowMapper()
+        );
+        certificates.forEach(certificate -> certificate.
+                setTags(getAllTagsWhichBelowConcreteCertificate(certificate)));
+        return certificates;
     }
 
     @Override
     public void addCertificate(Certificate certificate) {
-
-        String SQL = "INSERT INTO rest_api_basics.certificate (name, " +
-                "description, " +
-                "date_of_creation, " +
-                "date_of_modification, " +
-                "duration_days, " +
-                "price, " +
-                "id_certificate) " +
-                "VALUES (:name,:description,:date_of_creation,:date_of_modification,:duration_days,:price, DEFAULT )";
-        jdbcTemplate.update(SQL, namedParamsCreate(certificate));
+        jdbcTemplate.update(SQLRequests.ADD_CERTIFICATE, namedParamsCreate(certificate));
     }
 
     @Override
     public void updateCertificate(int id, Certificate certificate) {
-        String SQL = "UPDATE rest_api_basics.certificate SET " +
-                "name = :name, " +
-                "description = :description, " +
-                "date_of_creation = :date_of_creation, " +
-                "date_of_modification = :date_of_modification, " +
-                "duration_days = :duration_days, " +
-                "price = :price " +
-                "WHERE id_certificate = :id";
         Map<String, Object> namedParameters = namedParamsCreate(certificate);
         namedParameters.put("id", id);
-        jdbcTemplate.update(SQL, namedParameters);
+        jdbcTemplate.update(SQLRequests.UPDATE_CERTIFICATE, namedParameters);
     }
 
     @Override
     public void deleteCertificateById(int id) {
-        String SQL = "DELETE FROM rest_api_basics.certificate WHERE id_certificate = :id";
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
-        jdbcTemplate.update(SQL, namedParameters);
+        jdbcTemplate.update(SQLRequests.DELETE_CERTIFICATE, namedParameters);
+    }
+
+    @Override
+    public void addTag(int id, Tag tag) {
+        int tagId = tagDAO.addTag(tag);
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("id_certificate", id);
+        namedParameters.put("id_tag", tagId);
+        jdbcTemplate.update(SQLRequests.ADD_TAG_TO_CERTIFICATE, namedParameters);
+    }
+
+    @Override
+    public void addTag(int idCertificate, int idTag) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("id_certificate", idCertificate);
+        namedParameters.put("id_tag", idTag);
+        jdbcTemplate.update(SQLRequests.ADD_TAG_TO_CERTIFICATE, namedParameters);
+    }
+
+    @Override
+    public void deleteTag(int idCertificate, int idTag) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("id_certificate", idCertificate);
+        namedParameters.put("id_tag", idTag);
+        jdbcTemplate.update(SQLRequests.DELETE_TAG_FROM_CERTIFICATE, namedParameters);
+    }
+
+    @Override
+    public List<Certificate> findCertificateWhereIdMoreThanParameter(int id) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("id", id);
+        List<Certificate> certificates = jdbcTemplate.query(
+                SQLRequests.GET_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER,
+                namedParameters,
+                new CertificateRowMapper()
+        );
+        certificates.forEach(certificate -> certificate.
+                setTags(getAllTagsWhichBelowConcreteCertificate(certificate)));
+        return certificates;
+    }
+
+    @Override
+    public List<Certificate> findCertificateWhereTagNameIs(Tag tag) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("name", tag.getName());
+        List<Certificate> certificates = jdbcTemplate.query(
+                SQLRequests.FIND_CERTIFICATE_BY_TAG,
+                namedParameters,
+                new CertificateRowMapper()
+        );
+        certificates.forEach(certificate -> certificate.
+                setTags(getAllTagsWhichBelowConcreteCertificate(certificate)));
+        return certificates;
+    }
+
+    private List<Tag> getAllTagsWhichBelowConcreteCertificate(Certificate certificate) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("id", certificate.getId());
+        return jdbcTemplate.query(SQLRequests.GET_TAGS_BELOW_CONCRETE_CERTIFICATE, namedParameters, new TagRowMapper());
     }
 
     private Map<String, Object> namedParamsCreate(Certificate certificate) {
@@ -82,19 +133,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         return namedParameters;
     }
 
-    private static final class CertificateMapper implements RowMapper<Certificate> {
-        @Override
-        public Certificate mapRow(ResultSet rs, int i) throws SQLException {
-            return new Certificate(
-                    rs.getInt("id_certificate"),
-                    rs.getString("name"),
-                    rs.getString("description"),
-                    rs.getDouble("price"),
-                    rs.getDate("date_of_creation"),
-                    rs.getDate("date_of_modification"),
-                    rs.getInt("duration_days")
-            );
-        }
+    @Autowired
+    public void setTagDAO(TagDAOJDBCTemplate tagDAO) {
+        this.tagDAO = tagDAO;
     }
-
+    //fixme хрнаимые процедуры + проверять тест cover (Clover).
 }

@@ -9,7 +9,7 @@ public interface TagDAO {
 
     Tag getTagById(int id);
 
-    void addTag(Tag tag);
+    int addTag(Tag tag);
 
     void deleteTagById(int id);
 }

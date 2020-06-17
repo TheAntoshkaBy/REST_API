@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.Column;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class Certificate {
@@ -19,6 +20,7 @@ public class Certificate {
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date modification;
     private Integer durationDays;
+    private List<Tag> tags;
 
     public Certificate(Integer id, String name, String description, Double price, Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
@@ -87,6 +89,14 @@ public class Certificate {
 
     public void setDurationDays(Integer durationDays) {
         this.durationDays = durationDays;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override

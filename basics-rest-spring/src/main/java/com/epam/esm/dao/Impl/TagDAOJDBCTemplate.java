@@ -1,13 +1,16 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.TagDAO;
+import com.epam.esm.dao.constant.SQLRequests;
+import com.epam.esm.dao.mapper.TagRowMapper;
 import com.epam.esm.entity.Tag;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,42 +26,31 @@ public class TagDAOJDBCTemplate implements TagDAO {
 
     @Override
     public List<Tag> getAll() {
-        String sql = "select * from rest_api_basics.tag";
-        return jdbcTemplate.query(sql, new TagMapper());
+        return jdbcTemplate.query(SQLRequests.GET_ALL_TAGS, new TagRowMapper());
     }
 
     @Override
     public Tag getTagById(int id) {
-        String sql = "select * from rest_api_basics.tag where id_tag = :id";
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
-        return jdbcTemplate.queryForObject(sql, namedParameters, new TagMapper());
+        return jdbcTemplate.queryForObject(SQLRequests.GET_TAG_BY_ID, namedParameters, new TagRowMapper());
     }
 
     @Override
-    public void addTag(Tag tag) {
-        String SQL = "INSERT INTO rest_api_basics.tag (tag_name, id_tag) VALUES (:tag_name, DEFAULT )";
-        Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("tag_name", tag.getName());
-        jdbcTemplate.update(SQL,namedParameters);
+    public int addTag(Tag tag) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue("tag_name", tag.getName());
+        jdbcTemplate.update(SQLRequests.ADD_TAG, sqlParameterSource, keyHolder);
+        return (int) keyHolder.getKeys().get("id_tag");
     }
 
 
     @Override
     public void deleteTagById(int id) {
-        String SQL = "DELETE FROM rest_api_basics.tag where id_tag = :id";
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
-        jdbcTemplate.update(SQL,namedParameters);
+        jdbcTemplate.update(SQLRequests.DELETE_TAG_BY_ID, namedParameters);
     }
 
-    private static final class TagMapper implements RowMapper<Tag> {
-        @Override
-        public Tag mapRow(ResultSet rs, int i) throws SQLException {
-            return new Tag(
-                    rs.getInt("id_tag"),
-                    rs.getString("tag_name")
-            );
-        }
-    }
 }
