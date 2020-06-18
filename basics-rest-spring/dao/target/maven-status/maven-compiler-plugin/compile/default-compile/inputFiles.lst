@@ -1,0 +1,7 @@
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/CertificateDAO.java
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/mapper/TagRowMapper.java
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/TagDAO.java
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/mapper/CertificateRowMapper.java
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/constant/SQLRequests.java
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/Impl/TagDAOJDBCTemplate.java
+/home/antoshka/Study/Git/Repositories/epam-lib/basics-rest-spring/dao/src/main/java/com/epam/esm/dao/Impl/CertificateDAOJDBCTemplate.java
