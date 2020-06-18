@@ -24,7 +24,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Certificate getCertificateById(int id) { //fixme get == find
+    public Certificate findCertificateById(int id) { //fixme get == find
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
         Certificate certificate = jdbcTemplate.queryForObject(
@@ -35,7 +35,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     }
 
     @Override
-    public List<Certificate> getAll() {
+    public List<Certificate> findAll() {
         List<Certificate> certificates = jdbcTemplate.query(
                 SQLRequests.GET_ALL_CERTIFICATES, new CertificateRowMapper()
         );
@@ -108,6 +108,20 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("name", tag.getName());
         List<Certificate> certificates = jdbcTemplate.query(
                 SQLRequests.FIND_CERTIFICATE_BY_TAG,
+                namedParameters,
+                new CertificateRowMapper()
+        );
+        certificates.forEach(certificate -> certificate.
+                setTags(getAllTagsWhichBelowConcreteCertificate(certificate)));
+        return certificates;
+    }
+
+    @Override
+    public List<Certificate> findCertificateByNamePart(String text) {
+        Map<String, Object> namedParameters = new HashMap<>();
+        namedParameters.put("text", text);
+        List<Certificate> certificates = jdbcTemplate.query(
+                SQLRequests.FIND_BY_PART_OF_NAME,
                 namedParameters,
                 new CertificateRowMapper()
         );

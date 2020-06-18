@@ -56,5 +56,6 @@ public class SQLRequests {
     public static final String ADD_TAG =
             "INSERT INTO rest_api_basics.tag (tag_name, id_tag) VALUES (:tag_name, DEFAULT )";
     public static final String DELETE_TAG_BY_ID = "DELETE FROM rest_api_basics.tag where id_tag = :id";
+    public static final String FIND_BY_PART_OF_NAME = "SELECT * FROM return_t_certificate(:text)";
 
 }

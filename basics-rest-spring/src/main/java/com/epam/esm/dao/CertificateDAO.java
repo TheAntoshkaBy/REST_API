@@ -6,9 +6,9 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 
 public interface CertificateDAO {
-    List<Certificate> getAll();
+    List<Certificate> findAll();
 
-    Certificate getCertificateById(int id);
+    Certificate findCertificateById(int id);
 
     List<Certificate> findCertificateWhereIdMoreThanParameter(int id);
 
@@ -26,4 +26,5 @@ public interface CertificateDAO {
 
     List<Certificate> findCertificateWhereTagNameIs(Tag tag);
 
+    List<Certificate> findCertificateByNamePart(String text);
 }

@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.CertificateService;
+import com.sun.org.glassfish.gmbal.ParameterNames;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -75,5 +76,10 @@ public class CertificateController {
     @GetMapping(path = "/findByTag", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> findByTag(@RequestBody Tag tag) {
         return new ResponseEntity<>(service.findAllWhereContainTag(tag), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/findByName")
+    public ResponseEntity<List<Certificate>> findByNamePart(@RequestParam String part) {
+        return new ResponseEntity<>(service.findByNamePart(part), HttpStatus.OK);
     }
 }

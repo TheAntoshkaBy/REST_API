@@ -14,6 +14,8 @@ public interface CertificateService {
 
     List<Certificate> findAllWhereContainTag(Tag tag);
 
+    List<Certificate> findByNamePart(String text);
+
     Certificate find(int id);
 
     void delete(int id);

@@ -21,12 +21,12 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<Certificate> findAll() {
-        return certificateDAO.getAll();
+        return certificateDAO.findAll();
     }
 
     @Override
     public Certificate find(int id) {
-        return certificateDAO.getCertificateById(id);
+        return certificateDAO.findCertificateById(id);
     }
 
     @Override
@@ -59,10 +59,15 @@ public class CertificateServiceImpl implements CertificateService {
         certificateDAO.deleteTag(idCertificate, idTag);
     }
 
+    @Override
+    public List<Certificate> findByNamePart(String text) {
+        text+='%';
+        return certificateDAO.findCertificateByNamePart(text);
+    }
 
     @Override
     public List<Certificate> findAllWithSortByDate() {
-        List<Certificate> certificates = certificateDAO.getAll();
+        List<Certificate> certificates = certificateDAO.findAll();
         certificates.sort(Comparator.comparing(Certificate::getCreationDate));
         return certificates;
     }
