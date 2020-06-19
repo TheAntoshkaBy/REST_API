@@ -20,3 +20,4 @@ public class CertificateRowMapper implements RowMapper<Certificate> {
         );
     }
 }
+//fixme прочитать про индексы

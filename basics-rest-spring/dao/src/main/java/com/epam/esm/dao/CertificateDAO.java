@@ -24,6 +24,8 @@ public interface CertificateDAO {
 
     void deleteTag(int idCertificate, int idTag);
 
+    void deleteAll();
+
     List<Certificate> findCertificateWhereTagNameIs(Tag tag);
 
     List<Certificate> findCertificateByNamePart(String text);

@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.Impl.CertificateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +32,12 @@ public class CertificateController {
 
     @GetMapping(path = "/byDate", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> sortedCertificatesByDate() {
-        return new ResponseEntity<>(service.findAllWithSortByDate(), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllCertificatesSortedByDate(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/more/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> certificatesWhereIdMoreThanParameterId(@PathVariable Integer id) {
-        return new ResponseEntity<>(service.findAllWhereIdMoreThanParameter(id), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllCertificateWhereIdCountMoreThenParameterCount(id), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -74,12 +74,12 @@ public class CertificateController {
 
     @GetMapping(path = "/findByTag", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> findByTag(@RequestBody Tag tag) {
-        return new ResponseEntity<>(service.findAllWhereContainTag(tag), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAllCertificatesWhichContainsParameterTag(tag), HttpStatus.OK);
     }
 
     @GetMapping(path = "/findByName")
     public ResponseEntity<List<Certificate>> findByNamePart(@RequestParam String part) {
-        return new ResponseEntity<>(service.findByNamePart(part), HttpStatus.OK);
+        return new ResponseEntity<>(service.findByAllCertificatesByNamePart(part), HttpStatus.OK);
     }
     //fixme множественное число, почитать правила именования урлов.
 }

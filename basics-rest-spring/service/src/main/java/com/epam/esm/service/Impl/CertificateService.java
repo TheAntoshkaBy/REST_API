@@ -1,4 +1,4 @@
-package com.epam.esm.service;
+package com.epam.esm.service.Impl;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
@@ -8,13 +8,13 @@ import java.util.List;
 public interface CertificateService {
     List<Certificate> findAll();
 
-    List<Certificate> findAllWithSortByDate();
+    List<Certificate> findAllCertificatesSortedByDate();
 
-    List<Certificate> findAllWhereIdMoreThanParameter(int id);
+    List<Certificate> findAllCertificateWhereIdCountMoreThenParameterCount(int id);
 
-    List<Certificate> findAllWhereContainTag(Tag tag);
+    List<Certificate> findAllCertificatesWhichContainsParameterTag(Tag tag);
 
-    List<Certificate> findByNamePart(String text);
+    List<Certificate> findByAllCertificatesByNamePart(String text);
 
     Certificate find(int id);
 

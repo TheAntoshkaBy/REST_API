@@ -22,7 +22,8 @@ public class Certificate {
     private Integer durationDays;
     private List<Tag> tags;
 
-    public Certificate(Integer id, String name, String description, Double price, Date creationDate, Date modification, Integer durationDays) {
+    public Certificate(Integer id, String name, String description, Double price,
+                       Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -30,6 +31,17 @@ public class Certificate {
         this.creationDate = creationDate;
         this.modification = modification;
         this.durationDays = durationDays;
+    }
+    public Certificate(Integer id, String name, String description, Double price,
+                       Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.modification = modification;
+        this.durationDays = durationDays;
+        this.tags = tags;
     }
 
     public Certificate() {

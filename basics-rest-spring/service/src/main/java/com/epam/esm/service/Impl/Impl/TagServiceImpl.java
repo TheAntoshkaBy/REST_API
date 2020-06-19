@@ -1,8 +1,8 @@
-package com.epam.esm.service.Impl;
+package com.epam.esm.service.Impl.Impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.TagService;
+import com.epam.esm.service.Impl.TagService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,6 +35,5 @@ public class TagServiceImpl implements TagService {
     public void create(Tag tag) {
         TagDAO.addTag(tag);
     }
-
-
 }
+//fixme почитать про принципы юнит-тесты. Интеграционные тесты для дао.

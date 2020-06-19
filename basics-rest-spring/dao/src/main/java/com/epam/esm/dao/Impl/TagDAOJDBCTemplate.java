@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 public class TagDAOJDBCTemplate implements TagDAO {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     public TagDAOJDBCTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -54,4 +54,10 @@ public class TagDAOJDBCTemplate implements TagDAO {
     }
     //fixme find!
 
+
+    @Override
+    public void deleteAll() {
+        Map<String, Object> namedParameters = new HashMap<>();
+        jdbcTemplate.update(SQLRequests.DELETE_ALL_TAGS, namedParameters);
+    }
 }

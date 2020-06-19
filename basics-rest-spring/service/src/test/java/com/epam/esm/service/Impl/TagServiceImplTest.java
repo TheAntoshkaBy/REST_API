@@ -1,0 +1,79 @@
+package com.epam.esm.service.Impl;
+
+import com.epam.esm.dao.Impl.TagDAOJDBCTemplate;
+import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.service.Impl.Impl.CertificateServiceImpl;
+import com.epam.esm.service.Impl.Impl.TagServiceImpl;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
+public class TagServiceImplTest {
+
+    private TagDAOJDBCTemplate tagDAOJDBCTemplate;
+    private List<Tag> tags;
+    private Tag tag;
+    private TagService tagService;
+
+    @Before
+    public void init() {
+        tags = new ArrayList<>();
+        tags.add(new Tag(1,"AllGreat"));
+        tags.add(new Tag(2,"LiveIsWonderful"));
+        tags.add(new Tag(3,"PlayTheMan"));
+        tag = new Tag(4,"BeStrong");
+        tagDAOJDBCTemplate = mock(TagDAOJDBCTemplate.class);
+    }
+
+    @Test
+    public void findAll() {
+        when(tagDAOJDBCTemplate.getAll()).thenReturn(tags);
+        tagService = new TagServiceImpl(tagDAOJDBCTemplate);
+        List<Tag> tagsActual = tagService.findAll();
+        Assert.assertEquals(tagsActual, tags);
+    }
+
+    @Test
+    public void find() {
+        when(tagDAOJDBCTemplate.getTagById(anyInt())).thenReturn(tags.get(0));
+        tagService = new TagServiceImpl(tagDAOJDBCTemplate);
+        Tag tagActual = tagService.find(1);
+        Assert.assertEquals(tagActual, tags.get(0));
+    }
+
+    @Test
+    public void delete() {
+        doAnswer(invocation -> {
+            Object id = invocation.getArgument(0);
+            assertEquals(2, id);
+            tags.remove(2);
+            return null;
+        }).when(tagDAOJDBCTemplate).deleteTagById(anyInt());
+        List<Tag> expectedTags = tags;
+        tagService = new TagServiceImpl(tagDAOJDBCTemplate);
+        tagService.delete(2);
+        assertEquals(expectedTags, tags);
+    }
+
+    @Test
+    public void create() {
+        doAnswer(invocation -> {
+            Object id = invocation.getArgument(0);
+            assertEquals(2, tag);
+            tags.add(tag);
+            return null;
+        }).when(tagDAOJDBCTemplate).addTag(any(Tag.class));
+        List<Tag> expectedTags = tags;
+        tagService = new TagServiceImpl(tagDAOJDBCTemplate);
+        tagService.delete(2);
+        assertEquals(expectedTags, tags);
+    }
+}

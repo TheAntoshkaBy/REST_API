@@ -1,12 +1,11 @@
-package com.epam.esm.service.Impl;
+package com.epam.esm.service.Impl.Impl;
 
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.Impl.CertificateService;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -60,25 +59,25 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> findByNamePart(String text) {
+    public List<Certificate> findByAllCertificatesByNamePart(String text) {
         text+='%';
         return certificateDAO.findCertificateByNamePart(text);
     }
 
     @Override
-    public List<Certificate> findAllWithSortByDate() { //fixme findAllByDate примеры сервисных запросов
+    public List<Certificate> findAllCertificatesSortedByDate() { //fixme findAllByDate примеры сервисных запросов
         List<Certificate> certificates = certificateDAO.findAll();
         certificates.sort(Comparator.comparing(Certificate::getCreationDate));//fixme сортировка в бд
         return certificates;
     }
 
     @Override
-    public List<Certificate> findAllWhereIdMoreThanParameter(int id) { //fixme семантика
+    public List<Certificate> findAllCertificateWhereIdCountMoreThenParameterCount(int id) { //fixme семантика
         return certificateDAO.findCertificateWhereIdMoreThanParameter(id);
     }
 
     @Override
-    public List<Certificate> findAllWhereContainTag(Tag tag) { //fixme findAllByTag
+    public List<Certificate> findAllCertificatesWhichContainsParameterTag(Tag tag) { //fixme findAllByTag
         return certificateDAO.findCertificateWhereTagNameIs(tag);
     }
     //fixme избавиться от лишних постых строк

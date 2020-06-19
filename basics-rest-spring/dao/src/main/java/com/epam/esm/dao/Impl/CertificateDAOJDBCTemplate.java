@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     public CertificateDAOJDBCTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
 
     public Certificate findCertificateById(int id) {
         Map<String, Object> namedParameters = new HashMap<>();
@@ -130,6 +132,12 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         return certificates;
     }
 
+    @Override
+    public void deleteAll() {
+        Map<String, Object> namedParameters = new HashMap<>();
+        jdbcTemplate.update(SQLRequests.DELETE_ALL_CERTIFICATES,namedParameters);
+    }
+
     private List<Tag> getAllTagsWhichBelowConcreteCertificate(Certificate certificate) {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", certificate.getId());
@@ -147,6 +155,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         return namedParameters;
     }
 
+    @Autowired
     public CertificateDAOJDBCTemplate(NamedParameterJdbcTemplate jdbcTemplate, TagDAOJDBCTemplate tagDAO) {
         this.jdbcTemplate = jdbcTemplate;
         this.tagDAO = tagDAO;
@@ -155,13 +164,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     public CertificateDAOJDBCTemplate() {
     }
 
-    public void setJdbcTemplate(NamedParameterJdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public TagDAOJDBCTemplate getTagDAO() {
+        return tagDAO;
     }
 
-    @Autowired
-    public void setTagDAO(TagDAOJDBCTemplate tagDAO) {
-        this.tagDAO = tagDAO;
-    }
     //fixme проверять тест cover (Clover).
 }

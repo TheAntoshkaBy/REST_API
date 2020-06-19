@@ -12,4 +12,6 @@ public interface TagDAO {
     int addTag(Tag tag);
 
     void deleteTagById(int id);
+
+    void deleteAll();
 }
