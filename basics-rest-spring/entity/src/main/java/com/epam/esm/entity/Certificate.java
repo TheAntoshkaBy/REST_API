@@ -116,18 +116,15 @@ public class Certificate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Certificate that = (Certificate) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name) &&
+        return  Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(price, that.price) &&
-                Objects.equals(creationDate, that.creationDate) &&
-                Objects.equals(modification, that.modification) &&
                 Objects.equals(durationDays, that.durationDays);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, creationDate, modification, durationDays);
+        return Objects.hash(name, description, price, durationDays);
     }
 
     @Override

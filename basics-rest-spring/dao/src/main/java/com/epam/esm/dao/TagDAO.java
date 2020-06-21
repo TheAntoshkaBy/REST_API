@@ -5,9 +5,9 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 
 public interface TagDAO {
-    List<Tag> getAll();
+    List<Tag> findAll();
 
-    Tag getTagById(int id);
+    Tag findTagById(int id);
 
     int addTag(Tag tag);
 

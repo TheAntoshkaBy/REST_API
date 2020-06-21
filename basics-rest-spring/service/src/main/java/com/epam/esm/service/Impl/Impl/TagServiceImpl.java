@@ -18,12 +18,12 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findAll() {
-        return TagDAO.getAll();
+        return TagDAO.findAll();
     }
 
     @Override
     public Tag find(int id) {
-        return TagDAO.getTagById(id);
+        return TagDAO.findTagById(id);
     }
 
     @Override

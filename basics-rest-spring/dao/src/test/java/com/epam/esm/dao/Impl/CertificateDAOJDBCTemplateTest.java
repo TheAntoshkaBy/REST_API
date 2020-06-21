@@ -1,19 +1,20 @@
 package com.epam.esm.dao.Impl;
 
+import com.epam.esm.dao.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @ContextConfiguration(locations = "classpath:test-context.xml")
@@ -21,129 +22,153 @@ import java.util.List;
 public class CertificateDAOJDBCTemplateTest {
 
     @Autowired
-    CertificateDAOJDBCTemplate certificateDAOJDBCTemplate;
+    private CertificateDAOJDBCTemplate certificateDAOJDBCTemplate;
+
+    private List<Certificate> certificatesListExpected;
+    private List<Certificate> certificatesListActual;
+    private Certificate certificateExpected;
+    private Certificate certificateActual;
+    private Tag tagExpected;
 
     @Before
-    public void init(){
+    public void init() {
+        certificatesListExpected = new ArrayList<>();
 
-        Certificate certificate = new Certificate(10, "Football", "for You",
+        Certificate footballCertificateTest = new Certificate(10, "Football", "for You",
                 34.54, new Date(4312), new Date(423), 10);
-        certificateDAOJDBCTemplate.addCertificate(certificate);
+        certificateDAOJDBCTemplate.addCertificate(footballCertificateTest);
+        certificatesListExpected.add(footballCertificateTest);
 
-        Certificate certificate2 = new Certificate(10, "Box", "for You",
+        Certificate boxingCertificateTest = new Certificate(10, "Box", "for You",
                 34.54, new Date(432), new Date(53), 10);
-        certificateDAOJDBCTemplate.addCertificate(certificate2);
+        certificateDAOJDBCTemplate.addCertificate(boxingCertificateTest);
+        certificatesListExpected.add(boxingCertificateTest);
 
-        Certificate certificate3 = new Certificate(10, "Basketball", "for You",
+        Certificate basketballCertificateTest = new Certificate(10, "Basketball", "for You",
                 34.54, new Date(), new Date(), 10);
-        certificateDAOJDBCTemplate.addCertificate(certificate3);
+        certificateDAOJDBCTemplate.addCertificate(basketballCertificateTest);
+        certificatesListExpected.add(basketballCertificateTest);
 
-        certificateDAOJDBCTemplate.addTag(1, new Tag(1,"AllGreat"));
-        certificateDAOJDBCTemplate.addTag(2, new Tag(2,"LiveIsWonderful"));
-        certificateDAOJDBCTemplate.addTag(3, new Tag(3,"PlayTheMan"));
-    }
+        certificatesListExpected = certificateDAOJDBCTemplate.findAll();
 
-    @After
-    public void destroy(){
-        certificateDAOJDBCTemplate.deleteAll();
-        certificateDAOJDBCTemplate.getTagDAO().deleteAll();
+        certificateDAOJDBCTemplate.addTag(certificatesListExpected.get(0).getId(), new Tag(1, "AllGreat"));
+        certificateDAOJDBCTemplate.addTag(certificatesListExpected.get(0).getId(), new Tag(2, "LiveIsWonderful"));
+        certificateDAOJDBCTemplate.addTag(certificatesListExpected.get(1).getId(), new Tag(3, "PlayTheMan"));
+
+        certificateExpected = new Certificate(10, "MovieClub", "for You",
+                34.54, new Date(4312), new Date(423), 10);
+
+        tagExpected = new Tag(2,"PlayTheMan");
     }
 
     @Test
     public void findCertificateById_idCertificate_CertificateWhichContainThisId() {
-       List<Certificate> certificates = certificateDAOJDBCTemplate.findAll();
-        System.out.println(certificates);
+        certificatesListActual = certificateDAOJDBCTemplate.findAll();
+        certificateExpected = certificatesListActual.get(0);
+        certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
+        Assert.assertEquals(certificateExpected.getId(), certificateActual.getId());
     }
 
     @Test
-    public void findAll() {
+    public void findAll_FoundAll_ActualDataMustBeEqualWithExpectedData() {
+        certificatesListActual = certificateDAOJDBCTemplate.findAll();
+        Assert.assertEquals(certificatesListExpected,certificatesListActual);
     }
 
     @Test
-    public void addCertificate() {
+    public void addCertificate_AddNewCertificate_CertificatesListActualIsContainsAddedCertificate() {
+        certificatesListExpected.add(certificateExpected);
+        certificateDAOJDBCTemplate.addCertificate(certificateExpected);
+        certificatesListActual = certificateDAOJDBCTemplate.findAll();
+        Assert.assertTrue(certificatesListActual.contains(certificateExpected));
     }
 
     @Test
-    public void updateCertificate() {
+    public void updateCertificate_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate() {
+       Certificate bufferCertificate = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+       certificateExpected.setId(bufferCertificate.getId());
+       certificateDAOJDBCTemplate.updateCertificate(certificateExpected.getId(), certificateExpected);
+       certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
+       Assert.assertEquals(certificateExpected, certificateActual);
     }
 
     @Test
-    public void deleteCertificateById() {
+    public void findCertificateById_IdFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate() {
+        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
+        Assert.assertEquals(certificateExpected, certificateActual);
     }
 
     @Test
-    public void addTag() {
+    public void deleteCertificateById_IdFromExpectedCertificate_ActualCertificatesListDoesNotContainExpectedCertificate() {
+        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        certificateDAOJDBCTemplate.deleteCertificateById(certificateExpected.getId());
+        certificatesListActual = certificateDAOJDBCTemplate.findAll();
+        Assert.assertFalse(certificatesListActual.contains(certificateExpected));
     }
 
     @Test
-    public void testAddTag() {
+    public void findCertificateWhereIdMoreThanParameter_ParameterId_AllCertificatesIdLessThatParameter() {
+        certificatesListExpected = certificateDAOJDBCTemplate.findCertificateWhereIdMoreThanParameter(300);
+        Assert.assertFalse(certificatesListExpected.stream().anyMatch(certificate -> certificate.getId() <= 300));
     }
 
     @Test
-    public void deleteTag() {
+    public void findCertificateByNamePart_NamePart_CertificateActualNotNull() {
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        Assert.assertNotNull(certificateActual);
     }
 
     @Test
-    public void findCertificateWhereIdMoreThanParameter() {
+    public void setTagDAO_TagDAONotNull() {
+        Assert.assertNotNull(certificateDAOJDBCTemplate.getTagDAO());
     }
 
     @Test
-    public void findCertificateWhereTagNameIs() {
+    public void findCertificateWhereTagNameIs_Tag_CertificateWithNameEqualsExpectedTagName() {
+        certificateActual = certificateDAOJDBCTemplate
+                .findCertificateWhereTagNameIs(tagExpected).get(0);
+        Assert.assertTrue(certificateActual.getTags()
+                .stream()
+                .anyMatch(tag -> tag.getName().equals(tagExpected.getName())));
+
     }
 
     @Test
-    public void findCertificateByNamePart() {
+    public void testAddTag_AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList() {
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        tagExpected.setName("Easy");
+        certificateDAOJDBCTemplate.addTag(certificateActual.getId(),tagExpected);
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        Assert.assertTrue(certificateActual.getTags().stream().anyMatch(tag -> tag.getName().equals("Easy")));
     }
 
     @Test
-    public void setTagDAO() {
+    public void testAddTag_AddTagByCertificateIdAndTagId_TagMustBeAddedToDatabaseAndActualCertificatesList() {
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Box").get(0);
+        certificateDAOJDBCTemplate.addTag(certificateActual.getId(),certificateExpected.getTags().get(0).getId());
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        Assert.assertTrue(certificateActual.getTags().stream().anyMatch(tag -> tag.getName().equals("PlayTheMan")));
     }
 
     @Test
-    public void findCertificateById() {
+    public void deleteTag_DeleteTagByTagId_TgMustBeDeletedFromDatabaseAndActualCertificate() {
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        tagExpected = certificateActual.getTags().get(0);
+        certificateDAOJDBCTemplate.deleteTag(certificateActual.getId(),tagExpected.getId());
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        Assert.assertFalse(certificateActual.getTags()
+                .stream()
+                .anyMatch(tag -> tag.getName().equals(tagExpected.getName())));
     }
 
-    @Test
-    public void testFindAll() {
+    @After
+    public void destroy() {
+        certificateDAOJDBCTemplate.deleteAll();
+        certificateDAOJDBCTemplate.getTagDAO().deleteAll();
+        certificateDAOJDBCTemplate.getJdbcTemplate()
+                .update(SQLRequests.DELETE_ALL_RELATIONSHIPS, new HashMap<>());
     }
 
-    @Test
-    public void testAddCertificate() {
-    }
-
-    @Test
-    public void testUpdateCertificate() {
-    }
-
-    @Test
-    public void testDeleteCertificateById() {
-    }
-
-    @Test
-    public void testAddTag1() {
-    }
-
-    @Test
-    public void testAddTag2() {
-    }
-
-    @Test
-    public void testDeleteTag() {
-    }
-
-    @Test
-    public void testFindCertificateWhereIdMoreThanParameter() {
-    }
-
-    @Test
-    public void testFindCertificateWhereTagNameIs() {
-    }
-
-    @Test
-    public void testFindCertificateByNamePart() {
-    }
-
-    @Test
-    public void testSetTagDAO() {
-    }
 }

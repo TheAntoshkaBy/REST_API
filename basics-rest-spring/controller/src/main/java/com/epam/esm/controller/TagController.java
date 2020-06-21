@@ -30,12 +30,14 @@ public class TagController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addTag(@RequestBody Tag tag) {
+    public ResponseEntity<List<Tag>> addTag(@RequestBody Tag tag) {
         service.create(tag);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteTag(@PathVariable Integer id) {
+    public ResponseEntity<List<Tag>> deleteTag(@PathVariable Integer id) {
         service.delete(id);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 }

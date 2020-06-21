@@ -59,4 +59,5 @@ public class SQLRequests {
     public static final String FIND_BY_PART_OF_NAME = "SELECT * FROM return_t_certificate(:text)";
     public static final String DELETE_ALL_CERTIFICATES = "DELETE FROM rest_api_basics.certificate";
     public static final String DELETE_ALL_TAGS = "DELETE FROM rest_api_basics.tag";
+    public static final String DELETE_ALL_RELATIONSHIPS = "DELETE FROM rest_api_basics.many_certificates_to_many_tags;";
 }

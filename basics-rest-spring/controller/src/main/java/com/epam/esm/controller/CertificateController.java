@@ -48,28 +48,33 @@ public class CertificateController {
 
     @PutMapping(path = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateCertificate(@RequestBody Certificate certificate, @PathVariable int id) {
+    public ResponseEntity<List<Certificate>> updateCertificate(@RequestBody Certificate certificate, @PathVariable int id) {
         service.update(id, certificate);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public void deleteCertificate(@PathVariable Integer id) {
+    public ResponseEntity<List<Certificate>> deleteCertificate(@PathVariable Integer id) {
         service.delete(id);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
+    public ResponseEntity<List<Certificate>> addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
         service.addTag(id, tag);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @PostMapping(path = "{id}/tags/{idTag}")
-    public void addTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
+    public ResponseEntity<List<Certificate>> addTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
         service.addTag(id, idTag);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{id}/tags/{idTag}")
-    public void deleteTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
+    public ResponseEntity<List<Certificate>> deleteTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
         service.deleteTag(id, idTag);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/findByTag", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -81,5 +86,5 @@ public class CertificateController {
     public ResponseEntity<List<Certificate>> findByNamePart(@RequestParam String part) {
         return new ResponseEntity<>(service.findByAllCertificatesByNamePart(part), HttpStatus.OK);
     }
-    //fixme множественное число, почитать правила именования урлов.
+    //AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList()AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList()fixme множественное число, почитать правила именования урлов.
 }

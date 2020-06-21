@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"     xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"     xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <context:component-scan base-package="com.epam.esm" />
+    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:database.properties</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="dataSourceClassName" value="org.postgresql.ds.PGSimpleDataSource"/>
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="user">postgres</prop>
+                <prop key="password">anton2011</prop>
+                <prop key="databaseName">test_db</prop>
+                <prop key="portNumber">5432</prop>
+                <prop key="serverName">localhost</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="hikari" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg type="com.zaxxer.hikari.HikariConfig" ref="hikariConfig" />
+    </bean>
+    <bean id="jdbcTemplateTest" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg type="javax.sql.DataSource" ref="hikari"/>
+    </bean>
+    <bean id="tagDAOJDBCTemplateTest" class="com.epam.esm.dao.Impl.CertificateDAOJDBCTemplate">
+        <constructor-arg type="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" ref="jdbcTemplateTest"/>
+    </bean>
+    <bean id="certificateDAOJDBCTemplateTest" class="com.epam.esm.dao.Impl.CertificateDAOJDBCTemplate">
+        <constructor-arg type="com.epam.esm.dao.Impl.TagDAOJDBCTemplate" ref="tagDAOJDBCTemplate"/>
+        <constructor-arg type="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" ref="jdbcTemplateTest"/>
+    </bean>
+    <tx:annotation-driven />
+
+</beans>

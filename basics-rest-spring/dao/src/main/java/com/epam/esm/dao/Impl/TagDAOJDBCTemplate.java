@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class TagDAOJDBCTemplate implements TagDAO {
@@ -25,12 +26,12 @@ public class TagDAOJDBCTemplate implements TagDAO {
     }
 
     @Override
-    public List<Tag> getAll() {
+    public List<Tag> findAll() {
         return jdbcTemplate.query(SQLRequests.GET_ALL_TAGS, new TagRowMapper());
     }
 
     @Override
-    public Tag getTagById(int id) {
+    public Tag findTagById(int id) {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
         return jdbcTemplate.queryForObject(SQLRequests.GET_TAG_BY_ID, namedParameters, new TagRowMapper());
@@ -42,7 +43,7 @@ public class TagDAOJDBCTemplate implements TagDAO {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("tag_name", tag.getName());
         jdbcTemplate.update(SQLRequests.ADD_TAG, sqlParameterSource, keyHolder);
-        return (int) keyHolder.getKeys().get("id_tag");
+        return (int) Objects.requireNonNull(keyHolder.getKeys()).get("id_tag");
     }
 
 
@@ -52,8 +53,6 @@ public class TagDAOJDBCTemplate implements TagDAO {
         namedParameters.put("id", id);
         jdbcTemplate.update(SQLRequests.DELETE_TAG_BY_ID, namedParameters);
     }
-    //fixme find!
-
 
     @Override
     public void deleteAll() {

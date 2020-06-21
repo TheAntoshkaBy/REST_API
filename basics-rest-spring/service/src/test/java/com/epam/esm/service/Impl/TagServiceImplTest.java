@@ -1,9 +1,7 @@
 package com.epam.esm.service.Impl;
 
 import com.epam.esm.dao.Impl.TagDAOJDBCTemplate;
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.Impl.Impl.CertificateServiceImpl;
 import com.epam.esm.service.Impl.Impl.TagServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -35,7 +33,7 @@ public class TagServiceImplTest {
 
     @Test
     public void findAll() {
-        when(tagDAOJDBCTemplate.getAll()).thenReturn(tags);
+        when(tagDAOJDBCTemplate.findAll()).thenReturn(tags);
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
         List<Tag> tagsActual = tagService.findAll();
         Assert.assertEquals(tagsActual, tags);
@@ -43,7 +41,7 @@ public class TagServiceImplTest {
 
     @Test
     public void find() {
-        when(tagDAOJDBCTemplate.getTagById(anyInt())).thenReturn(tags.get(0));
+        when(tagDAOJDBCTemplate.findTagById(anyInt())).thenReturn(tags.get(0));
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
         Tag tagActual = tagService.find(1);
         Assert.assertEquals(tagActual, tags.get(0));
