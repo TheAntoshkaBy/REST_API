@@ -1,23 +1,23 @@
-##Type Body
-CREATE TYPE t_certificate AS (
-                                 name varchar(30),
-                                 description varchar(999),
-                                 date_of_creation date,
-                                 date_of_modification date,
-                                 duration_days integer,
-                                 id_certificate integer,
-                                 price double precision
-                             );
+##Type Body<br>
+CREATE TYPE t_certificate AS (<br>
+                                 name varchar(30),<br>
+                                 description varchar(999),<br>
+                                 date_of_creation date,<br>
+                                 date_of_modification date,<br>
+                                 duration_days integer,<br>
+                                 id_certificate integer,<br>
+                                 price double precision<br>
+                             );<br>
 
-##Function Body
-CREATE OR REPLACE FUNCTION return_t_certificate( text varchar) RETURNS SETOF t_certificate AS
-$$
-DECLARE _result t_certificate;
-BEGIN
-    FOR _result IN SELECT * FROM rest_api_basics.certificate WHERE rest_api_basics.certificate.name LIKE text
-        LOOP
-            RETURN NEXT _result;
-        END LOOP;
-    RETURN;
-END
-$$ LANGUAGE plpgsql;
+##Function Body<br>
+CREATE OR REPLACE FUNCTION return_t_certificate( text varchar) RETURNS SETOF t_certificate AS<br>
+$$ <br>
+DECLARE _result t_certificate;<br>
+BEGIN<br>
+    FOR _result IN SELECT * FROM rest_api_basics.certificate WHERE rest_api_basics.certificate.name LIKE text<br>
+        LOOP<br>
+            RETURN NEXT _result;<br>
+        END LOOP;<br>
+    RETURN;<br>
+END<br>
+$$ LANGUAGE plpgsql;<br>
