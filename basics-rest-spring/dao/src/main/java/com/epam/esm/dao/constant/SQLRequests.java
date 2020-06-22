@@ -12,7 +12,7 @@ public class SQLRequests {
     public static final String FIND_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER =
             "SELECT * FROM rest_api_basics.certificate WHERE id_certificate > :id";
 
-    public static final String FIND_CERTIFICATE_BY_TAG =
+    public static final String FIND_CERTIFICATE_BY_TAG_NAME =
             "SELECT name, description, date_of_creation, " +
                     "date_of_modification,duration_days,certificate.id_certificate,price " +
                     "FROM rest_api_basics.many_certificates_to_many_tags\n" +
@@ -76,5 +76,4 @@ public class SQLRequests {
 
     public static final String DELETE_ALL_RELATIONSHIPS =
             "DELETE FROM rest_api_basics.many_certificates_to_many_tags;";
-
 }

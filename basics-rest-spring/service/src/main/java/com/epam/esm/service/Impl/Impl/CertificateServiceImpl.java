@@ -3,12 +3,12 @@ package com.epam.esm.service.Impl.Impl;
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.service.Impl.CertificateService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -21,46 +21,46 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> findAll(HttpServletRequest params) {
-        if(params.getParameter("filter") == null){
+    public List<Certificate> findAll(HttpServletRequest params) throws CertificateNotFoundException {
+        if (params.getParameter("filter") == null) {
             return findAll();
         }
 
-        switch (params.getParameter("filter")){
+        switch (params.getParameter("filter")) {
             case "date": {
-               return findAllCertificatesByDate();
+                return findAllCertificatesByDate();
             }
             case "By name part": {
                 return findByAllCertificatesByNamePart(params.getParameterValues("name")[0]);
             }
-            case "more id":{
+            case "more id": {
                 return findAllCertificatesWhereIdMoreThenTransmittedId(
                         Integer.parseInt(params.getParameterValues("id")[0])
                 );
             }
             default: {
-               return findAll();
+                return findAll();
             }
         }
     }
 
     @Override
-    public List<Certificate> findAll() {
+    public List<Certificate> findAll() throws CertificateNotFoundException {
         return certificateDAO.findAll();
     }
 
     @Override
-    public Certificate find(int id) {
+    public Certificate find(int id) throws CertificateNotFoundException {
         return certificateDAO.findCertificateById(id);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws CertificateNotFoundException {
         certificateDAO.deleteCertificateById(id);
     }
 
     @Override
-    public void update(int id, Certificate certificate) {
+    public void update(int id, Certificate certificate) throws CertificateNotFoundException {
         certificateDAO.updateCertificate(id, certificate);
     }
 
@@ -80,18 +80,18 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public void deleteTag(int idCertificate, int idTag) {
+    public void deleteTag(int idCertificate, int idTag) throws CertificateNotFoundException {
         certificateDAO.deleteTag(idCertificate, idTag);
     }
 
     @Override
-    public List<Certificate> findByAllCertificatesByNamePart(String text) {
-        text+='%';
+    public List<Certificate> findByAllCertificatesByNamePart(String text) throws CertificateNotFoundException {
+        text += '%';
         return certificateDAO.findCertificateByNamePart(text);
     }
 
     @Override
-    public List<Certificate> findAllCertificatesByDate() {
+    public List<Certificate> findAllCertificatesByDate() throws CertificateNotFoundException {
         return certificateDAO.findAllByDate();
     }
 
@@ -101,8 +101,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> findAllCertificatesByTag(Tag tag) {
+    public List<Certificate> findAllCertificatesByTag(Tag tag) throws CertificateNotFoundException {
         return certificateDAO.findCertificateWhereTagNameIs(tag);
     }
-
 }

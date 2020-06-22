@@ -6,6 +6,7 @@ import com.epam.esm.dao.mapper.CertificateDAORowMapper;
 import com.epam.esm.dao.mapper.TagDAORowMapper;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.CertificateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -34,13 +35,17 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     }
 
     @Override
-    public Certificate findCertificateById(int id) {
+    public Certificate findCertificateById(int id) throws CertificateNotFoundException {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
-
-        Certificate certificate = jdbcTemplate.queryForObject(
-                SQLRequests.FIND_CERTIFICATE_BY_ID, namedParameters, new CertificateDAORowMapper()
-        );
+        Certificate certificate;
+        try {
+            certificate = jdbcTemplate.queryForObject(
+                    SQLRequests.FIND_CERTIFICATE_BY_ID, namedParameters, new CertificateDAORowMapper()
+            );
+        } catch (RuntimeException e) {
+            throw new CertificateNotFoundException();
+        }
 
         certificate.setTags(findAllTagsWhichBelowConcreteCertificate(certificate));
 
@@ -48,10 +53,16 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     }
 
     @Override
-    public List<Certificate> findAll() {
-        List<Certificate> certificates = jdbcTemplate.query(
-                SQLRequests.FIND_ALL_CERTIFICATES, new CertificateDAORowMapper()
-        );
+    public List<Certificate> findAll() throws CertificateNotFoundException {
+        List<Certificate> certificates;
+
+        try {
+           certificates  = jdbcTemplate.query(
+                    SQLRequests.FIND_ALL_CERTIFICATES, new CertificateDAORowMapper()
+            );
+        }catch (RuntimeException e){
+            throw new CertificateNotFoundException();
+        }
 
         certificates.forEach(certificate -> certificate.
                 setTags(findAllTagsWhichBelowConcreteCertificate(certificate)));
@@ -60,10 +71,16 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     }
 
     @Override
-    public List<Certificate> findAllByDate() {
-        List<Certificate> certificates = jdbcTemplate.query(
-                SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE, new CertificateDAORowMapper()
-        );
+    public List<Certificate> findAllByDate() throws CertificateNotFoundException {
+        List<Certificate> certificates;
+
+        try {
+            certificates = jdbcTemplate.query(
+                    SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE, new CertificateDAORowMapper()
+            );
+        }catch (RuntimeException e){
+            throw new CertificateNotFoundException();
+        }
 
         certificates.forEach(certificate -> certificate.
                 setTags(findAllTagsWhichBelowConcreteCertificate(certificate)));
@@ -94,7 +111,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("name", tag.getName());
 
         List<Certificate> certificates = jdbcTemplate.query(
-                SQLRequests.FIND_CERTIFICATE_BY_TAG,
+                SQLRequests.FIND_CERTIFICATE_BY_TAG_NAME,
                 namedParameters,
                 new CertificateDAORowMapper()
         );
@@ -148,28 +165,34 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     }
 
     @Override
-    public void updateCertificate(int id, Certificate certificate) {
+    public void updateCertificate(int id, Certificate certificate) throws CertificateNotFoundException {
         Map<String, Object> namedParameters = namedParamsCreate(certificate);
         namedParameters.put("id", id);
 
-        jdbcTemplate.update(SQLRequests.UPDATE_CERTIFICATE, namedParameters);
+        if(jdbcTemplate.update(SQLRequests.UPDATE_CERTIFICATE, namedParameters) == 0){
+            throw new CertificateNotFoundException();
+        }
     }
 
     @Override
-    public void deleteCertificateById(int id) {
+    public void deleteCertificateById(int id) throws CertificateNotFoundException {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
 
-        jdbcTemplate.update(SQLRequests.DELETE_CERTIFICATE, namedParameters);
+        if(jdbcTemplate.update(SQLRequests.DELETE_CERTIFICATE, namedParameters) == 0){
+            throw new CertificateNotFoundException();
+        }
     }
 
     @Override
-    public void deleteTag(int idCertificate, int idTag) {
+    public void deleteTag(int idCertificate, int idTag) throws CertificateNotFoundException {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id_certificate", idCertificate);
         namedParameters.put("id_tag", idTag);
 
-        jdbcTemplate.update(SQLRequests.DELETE_TAG_FROM_CERTIFICATE, namedParameters);
+        if(jdbcTemplate.update(SQLRequests.DELETE_TAG_FROM_CERTIFICATE, namedParameters) == 0){
+            throw new CertificateNotFoundException();
+        }
     }
 
     @Override
@@ -183,7 +206,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", certificate.getId());
 
-        return jdbcTemplate.query(SQLRequests.FIND_TAGS_BELOW_CONCRETE_CERTIFICATE, namedParameters, new TagDAORowMapper());
+        return jdbcTemplate.query(
+                SQLRequests.FIND_TAGS_BELOW_CONCRETE_CERTIFICATE, namedParameters, new TagDAORowMapper()
+        );
     }
 
     private Map<String, Object> namedParamsCreate(Certificate certificate) {
@@ -206,5 +231,4 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     public NamedParameterJdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;
     }
-
 }

@@ -119,7 +119,7 @@ public class Certificate {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Certificate that = (Certificate) o;
-        return  Objects.equals(name, that.name) &&
+        return Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(price, that.price) &&
                 Objects.equals(durationDays, that.durationDays);
@@ -142,5 +142,4 @@ public class Certificate {
                 ", durationDays=" + durationDays +
                 '}';
     }
-
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.service.Impl.TagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,8 +21,12 @@ public class TagController {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Tag> findTag(@PathVariable Integer id) {
-        return new ResponseEntity<>(service.find(id), HttpStatus.OK);
+    public ResponseEntity<?> findTag(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity<>(service.find(id), HttpStatus.OK);
+        } catch (TagNotFoundException e) {
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,9 +41,12 @@ public class TagController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<List<Tag>> deleteTag(@PathVariable Integer id) {
-        service.delete(id);
+    public ResponseEntity<?> deleteTag(@PathVariable Integer id) {
+        try {
+            service.delete(id);
+        } catch (TagNotFoundException e) {
+            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
-
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.service.Impl.TagService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void findTag_TagId_TagWhichContainTransmittedId() {
+    public void findTag_TagId_TagWhichContainTransmittedId() throws TagNotFoundException {
         when(service.find(anyInt())).thenReturn(expectedTag);
 
         actualResponseEntity = tagController.findTag(13);
@@ -80,7 +81,7 @@ public class TagControllerTest {
     }
 
     @Test
-    public void deleteTag_TagId_TagWhichNotContainTransmittedId() {
+    public void deleteTag_TagId_TagWhichNotContainTransmittedId() throws TagNotFoundException {
         doAnswer(invocation -> {
             Object tagId = invocation.getArgument(0);
             assertEquals(0, tagId);
@@ -95,5 +96,4 @@ public class TagControllerTest {
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
-
 }

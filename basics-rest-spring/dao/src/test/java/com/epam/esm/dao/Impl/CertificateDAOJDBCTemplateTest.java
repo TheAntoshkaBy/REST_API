@@ -3,6 +3,8 @@ package com.epam.esm.dao.Impl;
 import com.epam.esm.dao.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.TagNotFoundException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +33,7 @@ public class CertificateDAOJDBCTemplateTest {
     private Tag tagExpected;
 
     @Before
-    public void initCertificatesTestData() {
+    public void initCertificatesTestData() throws CertificateNotFoundException {
         certificatesListExpected = new ArrayList<>();
 
         Certificate footballCertificateTest = new Certificate(10, "Football", "for You",
@@ -56,7 +58,7 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Before
-    public void initTagData() {
+    public void initTagData() throws TagNotFoundException {
         certificateDAOJDBCTemplate
                 .addTag(certificatesListExpected.get(0).getId(), new Tag(1, "AllGreat"));
         certificateDAOJDBCTemplate
@@ -68,7 +70,8 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void findCertificateById_idCertificate_CertificateWhichContainTransmittedId() {
+    public void findCertificateById_idCertificate_CertificateWhichContainTransmittedId()
+            throws CertificateNotFoundException {
         certificatesListActual = certificateDAOJDBCTemplate.findAll();
         certificateExpected = certificatesListActual.get(0);
         certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
@@ -77,14 +80,15 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void findAll_ActualDataMustBeEqualWithExpectedData() {
+    public void findAll_ActualDataMustBeEqualWithExpectedData() throws CertificateNotFoundException {
         certificatesListActual = certificateDAOJDBCTemplate.findAll();
 
         Assert.assertEquals(certificatesListExpected, certificatesListActual);
     }
 
     @Test
-    public void addCertificate_AddNewCertificate_CertificatesListActualIsContainsAddedCertificate() {
+    public void addCertificate_AddNewCertificate_CertificatesListActualIsContainsAddedCertificate()
+            throws CertificateNotFoundException {
         certificatesListExpected.add(certificateExpected);
         certificateDAOJDBCTemplate.addCertificate(certificateExpected);
         certificatesListActual = certificateDAOJDBCTemplate.findAll();
@@ -93,7 +97,8 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void updateCertificate_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate() {
+    public void updateCertificate_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate()
+            throws CertificateNotFoundException {
         Certificate bufferCertificate = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
 
         certificateExpected.setId(bufferCertificate.getId());
@@ -104,7 +109,8 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void findCertificateById_IdFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate() {
+    public void findCertificateById_IdFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate()
+            throws CertificateNotFoundException {
         certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
         certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
 
@@ -112,7 +118,8 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void deleteCertificateById_IdFromExpectedCertificate_ActualCertificatesListDoesNotContainExpectedCertificate() {
+    public void deleteCertificateById_IdFromExpectedCertificate_ActualCertificatesListDoesNotContainExpectedCertificate()
+            throws CertificateNotFoundException {
         certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
         certificateDAOJDBCTemplate.deleteCertificateById(certificateExpected.getId());
         certificatesListActual = certificateDAOJDBCTemplate.findAll();
@@ -128,7 +135,7 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void findCertificateByNamePart_NamePart_CertificateActualNotNull() {
+    public void findCertificateByNamePart_NamePart_CertificateActualNotNull() throws CertificateNotFoundException {
         certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
 
         Assert.assertNotNull(certificateActual);
@@ -172,7 +179,8 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void deleteTag_DeleteTagByTagId_TagMustBeDeletedFromDatabaseAndActualCertificate() {
+    public void deleteTag_DeleteTagByTagId_TagMustBeDeletedFromDatabaseAndActualCertificate()
+            throws CertificateNotFoundException {
         certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
 
         tagExpected = certificateActual.getTags().get(0);
@@ -185,11 +193,10 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @After
-    public void destroy() {
+    public void destroy() throws TagNotFoundException {
         certificateDAOJDBCTemplate.deleteAll();
         certificateDAOJDBCTemplate.getTagDAO().deleteAll();
         certificateDAOJDBCTemplate.getJdbcTemplate()
                 .update(SQLRequests.DELETE_ALL_RELATIONSHIPS, new HashMap<>());
     }
-
 }

@@ -2,6 +2,7 @@ package com.epam.esm.service.Impl.Impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.service.Impl.TagService;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +23,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag find(int id) {
+    public Tag find(int id) throws TagNotFoundException {
         return TagDAO.findTagById(id);
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws TagNotFoundException {
         TagDAO.deleteTagById(id);
     }
 
@@ -35,5 +36,4 @@ public class TagServiceImpl implements TagService {
     public void create(Tag tag) {
         TagDAO.addTag(tag);
     }
-
 }

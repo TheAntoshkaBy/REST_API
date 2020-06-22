@@ -1,6 +1,7 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagNotFoundException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,7 +55,8 @@ public class TagDAOJDBCTemplateTest {
     }
 
     @Test
-    public void findTagById_FindTagByIdInMethodParameter_ActualTagIdAreEqualWithExpectedTagId() {
+    public void findTagById_FindTagByIdInMethodParameter_ActualTagIdAreEqualWithExpectedTagId()
+            throws TagNotFoundException {
         tagExpected = tagsListActual.get(0);
         tagActual = tagDAOJDBCTemplate.findTagById(tagExpected.getId());
         Assert.assertEquals(tagExpected.getId(), tagActual.getId());
@@ -69,7 +71,8 @@ public class TagDAOJDBCTemplateTest {
     }
 
     @Test
-    public void deleteTagById_FindAnDeleteTagById_TagMustBeRemovedFromDatabaseAndActualTagsList() {
+    public void deleteTagById_FindAnDeleteTagById_TagMustBeRemovedFromDatabaseAndActualTagsList()
+            throws TagNotFoundException {
         tagExpected = tagsListActual.get(0);
         tagDAOJDBCTemplate.deleteTagById(tagExpected.getId());
         tagsListActual = tagDAOJDBCTemplate.findAll();
@@ -78,7 +81,7 @@ public class TagDAOJDBCTemplateTest {
     }
 
     @After
-    public void destroy() {
+    public void destroy() throws TagNotFoundException {
         tagDAOJDBCTemplate.deleteAll();
     }
 }

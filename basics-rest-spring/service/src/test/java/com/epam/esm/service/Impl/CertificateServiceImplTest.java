@@ -3,13 +3,13 @@ package com.epam.esm.service.Impl;
 import com.epam.esm.dao.Impl.CertificateDAOJDBCTemplate;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.service.Impl.Impl.CertificateServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,20 +33,20 @@ public class CertificateServiceImplTest {
     }
 
     @Before
-    public void initTagTestData(){
+    public void initTagTestData() {
         int tagId = 1;
 
         tags = new ArrayList<>();
 
-        tags.add(new Tag(tagId,"AllGreat"));
-        tags.add(new Tag(++tagId,"LiveIsWonderful"));
-        tags.add(new Tag(++tagId,"PlayTheMan"));
+        tags.add(new Tag(tagId, "AllGreat"));
+        tags.add(new Tag(++tagId, "LiveIsWonderful"));
+        tags.add(new Tag(++tagId, "PlayTheMan"));
 
-        tag = new Tag(++tagId,"BeStrong");
+        tag = new Tag(++tagId, "BeStrong");
     }
 
     @Before
-    public void initCertificateTestData(){
+    public void initCertificateTestData() {
         final double price = 34.54;
         int idCertificate = 10;
         int duration = 10;
@@ -54,7 +54,7 @@ public class CertificateServiceImplTest {
         certificates = new ArrayList<>();
 
         certificates.add(new Certificate(idCertificate, "Football", "for You",
-                price, new Date(), new Date(), duration,tags));
+                price, new Date(), new Date(), duration, tags));
         certificates.add(new Certificate(++idCertificate, "Bolls", "for You",
                 price, new Date(), new Date(), duration, tags));
         certificates.add(new Certificate(++idCertificate, "Success", "for You",
@@ -64,7 +64,7 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void findAll_findAll_ActualDataMustBeEqualWithExpectedData() {
+    public void findAll_findAll_ActualDataMustBeEqualWithExpectedData() throws CertificateNotFoundException {
         when(certificateDAOJDBCTemplate.findAll()).thenReturn(certificates);
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
 
@@ -74,7 +74,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void findCertificateById_idCertificate_CertificateWhichContainTransmittedId() {
+    public void findCertificateById_idCertificate_CertificateWhichContainTransmittedId()
+            throws CertificateNotFoundException {
         int idCertificate = 1;
         int foundedId = 10;
 
@@ -88,7 +89,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void delete_IdFromExpectedCertificate_ActualCertificatesListDoesNotContainExpectedCertificate() {
+    public void delete_IdFromExpectedCertificate_ActualCertificatesListDoesNotContainExpectedCertificate()
+            throws CertificateNotFoundException {
         int idCertificate = 1;
         int foundedId = 11;
 
@@ -109,7 +111,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void update_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate() {
+    public void update_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate()
+            throws CertificateNotFoundException {
         int idCertificate = 0;
         int foundedId = 1;
         int expectedId = 12;
@@ -122,7 +125,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedCertificate, updateCertificate);
             certificates.set(actualId, expectedCertificate);
             return null;
-        }).when(certificateDAOJDBCTemplate).updateCertificate(anyInt(),any(Certificate.class));
+        }).when(certificateDAOJDBCTemplate).updateCertificate(anyInt(), any(Certificate.class));
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.set(2, expectedCertificate);
@@ -134,7 +137,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void create_AddNewCertificate_CertificatesListActualIsContainsAddedCertificate() {
+    public void create_AddNewCertificate_CertificatesListActualIsContainsAddedCertificate()
+            throws CertificateNotFoundException {
         int idCertificate = 0;
 
         doAnswer(invocation -> {
@@ -155,7 +159,7 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void addTagWithCreateNewTag_AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList() {
+    public void addTag_AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList() {
         int idCertificate = 0;
         int founded = 1;
 
@@ -166,7 +170,7 @@ public class CertificateServiceImplTest {
             assertEquals(tag, newTag);
             certificates.get(0).getTags().add(tag);
             return null;
-        }).when(certificateDAOJDBCTemplate).addTag(anyInt(),any(Tag.class));
+        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), any(Tag.class));
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(idCertificate).getTags().add(tag);
@@ -192,7 +196,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedId, tagId);
             certificates.get(0).getTags().add(tags.get(3));
             return null;
-        }).when(certificateDAOJDBCTemplate).addTag(anyInt(),any(Tag.class));
+        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), any(Tag.class));
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(0).getTags().add(tags.get(3));
@@ -219,7 +223,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedId, tagId);
             certificates.get(0).getTags().remove(tags.get(3));
             return null;
-        }).when(certificateDAOJDBCTemplate).addTag(anyInt(),any(Tag.class));
+        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), any(Tag.class));
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(0).getTags().remove(tags.get(actual));
@@ -231,7 +235,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void findByAllCertificatesByNamePart_NamePart_CertificatesActualNotNull() {
+    public void findByAllCertificatesByNamePart_NamePart_CertificatesActualNotNull()
+            throws CertificateNotFoundException {
         when(certificateDAOJDBCTemplate.findCertificateByNamePart(anyString()))
                 .thenReturn(certificates.stream()
                         .filter(certificate -> certificate.getName().contains("ll"))
@@ -246,18 +251,18 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void findAllWithSortByDate() {
+    public void findAllWithSortByDate() throws CertificateNotFoundException {
         when(certificateDAOJDBCTemplate.findAllByDate()).thenReturn(certificates);
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
 
         List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate();
 
-        Assert.assertEquals(certificates,certificatesActual);
+        Assert.assertEquals(certificates, certificatesActual);
     }
 
     @Test
-    public void findAllCertificatesWhereIdMoreThanTransmittedParameter_ParameterId_AllCertificatesIdLessTransmittedParameter() {
+    public void findAllCertificatesByParameter_ParameterId_AllCertificatesWithoutTransmittedParameter() {
         int idCertificate = 11;
 
         when(certificateDAOJDBCTemplate.findCertificateWhereIdMoreThanParameter(anyInt()))
@@ -276,7 +281,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void findAllWhereContainTag_Tag_CertificateWithNameEqualsExpectedTagName() {
+    public void findAllWhereContainTag_Tag_CertificateWithNameEqualsExpectedTagName()
+            throws CertificateNotFoundException {
         when(certificateDAOJDBCTemplate.findCertificateWhereTagNameIs(any(Tag.class)))
                 .thenReturn(certificates.stream()
                         .filter(certificate -> certificate.getTags()
@@ -295,5 +301,4 @@ public class CertificateServiceImplTest {
                         .anyMatch(tag1 -> tag1.getName().equals("Is")))
                 .collect(Collectors.toList()));
     }
-
 }

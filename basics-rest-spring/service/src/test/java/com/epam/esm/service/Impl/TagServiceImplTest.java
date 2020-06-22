@@ -2,6 +2,7 @@ package com.epam.esm.service.Impl;
 
 import com.epam.esm.dao.Impl.TagDAOJDBCTemplate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.service.Impl.Impl.TagServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class TagServiceImplTest {
     }
 
     @Test
-    public void find() {
+    public void find() throws TagNotFoundException {
         when(tagDAOJDBCTemplate.findTagById(anyInt())).thenReturn(tags.get(0));
 
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
@@ -50,7 +51,7 @@ public class TagServiceImplTest {
     }
 
     @Test
-    public void delete() {
+    public void delete() throws TagNotFoundException {
         doAnswer(invocation -> {
             Object id = invocation.getArgument(0);
             assertEquals(2, id);
@@ -67,10 +68,10 @@ public class TagServiceImplTest {
     }
 
     @Test
-    public void create() {
+    public void create() throws TagNotFoundException {
         doAnswer(invocation -> {
             Object id = invocation.getArgument(0);
-            assertEquals(2, tag);
+            assertEquals(2,id);
             tags.add(tag);
             return null;
         }).when(tagDAOJDBCTemplate).addTag(any(Tag.class));
@@ -82,5 +83,4 @@ public class TagServiceImplTest {
 
         assertEquals(expectedTags, tags);
     }
-
 }

@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.service.Impl.CertificateService;
 import com.epam.esm.service.Impl.Impl.CertificateServiceImpl;
 import org.junit.Assert;
@@ -64,7 +65,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void findCertificate_CertificateId_ResponseEntityWithCertificateWhichContainTransmittedId() {
+    public void findCertificate_CertificateId_ResponseEntityWithCertificateWhichContainTransmittedId()
+            throws CertificateNotFoundException {
         when(service.find(anyInt())).thenReturn(expectedCertificate);
 
         actualResponseEntity = certificateController.findCertificateById(13);
@@ -74,7 +76,7 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void findByTag_Tag_CertificatesWhichContainsTransmittedTag() {
+    public void findByTag_Tag_CertificatesWhichContainsTransmittedTag() throws CertificateNotFoundException {
         when(service.findAllCertificatesByTag(any(Tag.class))).thenReturn(expectedCertificates);
 
         actualResponseEntity = certificateController.findByTag(testTag);
@@ -84,7 +86,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void addCertificate_NewCertificate_ListCertificatesWhichContainTransmittedCertificate() {
+    public void addCertificate_NewCertificate_ListCertificatesWhichContainTransmittedCertificate()
+            throws CertificateNotFoundException {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
             assertEquals(expectedCertificate, certificateId);
@@ -102,7 +105,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void updateCertificate_NewCertificateData_ListCertificatesWhichContainCertificateWithTransmittedData() {
+    public void updateCertificate_NewCertificateData_ListCertificatesWhichContainCertificateWithTransmittedData()
+            throws CertificateNotFoundException {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
             Object certificate = invocation.getArgument(1);
@@ -121,7 +125,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void deleteCertificate_DeletedCertificate_ListCertificatesWithoutDeletedCertificate() {
+    public void deleteCertificate_DeletedCertificate_ListCertificatesWithoutDeletedCertificate()
+            throws CertificateNotFoundException {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
             assertEquals(anyInt(), certificateId);
@@ -138,7 +143,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void addTagToCertificate_NewTag_CertificateTagsWithContainsTransmittedTag() {
+    public void addTagToCertificate_NewTag_CertificateTagsWithContainsTransmittedTag()
+            throws CertificateNotFoundException {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
             Object tag = invocation.getArgument(1);
@@ -157,7 +163,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void addTagToCertificate_idTag_CertificateTagsWithTagWhichContainsTransmittedIdTag() {
+    public void addTagToCertificate_idTag_CertificateTagsWithTagWhichContainsTransmittedIdTag()
+            throws CertificateNotFoundException {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
             Object tagId = invocation.getArgument(1);
@@ -176,7 +183,8 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void deleteTagToCertificate_idTag_CertificateTagsWithoutTagWhichContainsTransmittedIdTag() {
+    public void deleteTagToCertificate_idTag_CertificateTagsWithoutTagWhichContainsTransmittedIdTag()
+            throws CertificateNotFoundException {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
             Object tagId = invocation.getArgument(1);
@@ -193,5 +201,4 @@ public class CertificateControllerTest {
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
-
 }
