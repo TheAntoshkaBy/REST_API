@@ -1,7 +1,0 @@
-com/epam/esm/dao/constant/SQLRequests.class
-com/epam/esm/dao/mapper/CertificateRowMapper.class
-com/epam/esm/dao/CertificateDAO.class
-com/epam/esm/dao/TagDAO.class
-com/epam/esm/dao/Impl/CertificateDAOJDBCTemplate.class
-com/epam/esm/dao/mapper/TagRowMapper.class
-com/epam/esm/dao/Impl/TagDAOJDBCTemplate.class
