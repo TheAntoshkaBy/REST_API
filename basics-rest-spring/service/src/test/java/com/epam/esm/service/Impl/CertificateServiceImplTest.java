@@ -82,7 +82,7 @@ public class CertificateServiceImplTest {
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
 
-        Certificate certificate = certificateService.find(foundedId);//fixme локальные переменные вместо magic nmb
+        Certificate certificate = certificateService.find(foundedId);
 
         Assert.assertEquals(certificate, certificates.get(idCertificate));
     }
@@ -110,12 +110,17 @@ public class CertificateServiceImplTest {
 
     @Test
     public void update_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate() {
+        int idCertificate = 0;
+        int foundedId = 1;
+        int expectedId = 12;
+        int actualId = 2;
+
         doAnswer(invocation -> {
-            Object id = invocation.getArgument(0);
-            Object updateCertificate = invocation.getArgument(1);
-            assertEquals(12, id);
+            Object id = invocation.getArgument(idCertificate);
+            Object updateCertificate = invocation.getArgument(foundedId);
+            assertEquals(expectedId, id);
             assertEquals(expectedCertificate, updateCertificate);
-            certificates.set(2, expectedCertificate);
+            certificates.set(actualId, expectedCertificate);
             return null;
         }).when(certificateDAOJDBCTemplate).updateCertificate(anyInt(),any(Certificate.class));
 
@@ -130,8 +135,10 @@ public class CertificateServiceImplTest {
 
     @Test
     public void create_AddNewCertificate_CertificatesListActualIsContainsAddedCertificate() {
+        int idCertificate = 0;
+
         doAnswer(invocation -> {
-            Object newCertificate = invocation.getArgument(0);
+            Object newCertificate = invocation.getArgument(idCertificate);
             assertEquals(expectedCertificate, newCertificate);
             assertEquals(expectedCertificate, newCertificate);
             certificates.add(expectedCertificate);
@@ -149,9 +156,12 @@ public class CertificateServiceImplTest {
 
     @Test
     public void addTagWithCreateNewTag_AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList() {
+        int idCertificate = 0;
+        int founded = 1;
+
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object newTag = invocation.getArgument(1);
+            Object certificateId = invocation.getArgument(idCertificate);
+            Object newTag = invocation.getArgument(founded);
             assertEquals(0, certificateId);
             assertEquals(tag, newTag);
             certificates.get(0).getTags().add(tag);
@@ -159,23 +169,27 @@ public class CertificateServiceImplTest {
         }).when(certificateDAOJDBCTemplate).addTag(anyInt(),any(Tag.class));
 
         List<Certificate> expectedCertificates = certificates;
-        expectedCertificates.get(0).getTags().add(tag);
+        expectedCertificates.get(idCertificate).getTags().add(tag);
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
-        certificateService.addTag(0, tag);
+        certificateService.addTag(idCertificate, tag);
 
         assertEquals(expectedCertificates, certificates);
     }
 
     @Test
     public void addExistingTag_AddTagByCertificateIdAndTagId_TagMustBeAddedToDatabaseAndActualCertificatesList() {
+        int id = 0;
+        int founded = 1;
+        int expectedId = 4;
+
         tags.add(tag);
 
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object tagId = invocation.getArgument(1);
-            assertEquals(0, certificateId);
-            assertEquals(4, tagId);
+            Object certificateId = invocation.getArgument(id);
+            Object tagId = invocation.getArgument(founded);
+            assertEquals(id, certificateId);
+            assertEquals(expectedId, tagId);
             certificates.get(0).getTags().add(tags.get(3));
             return null;
         }).when(certificateDAOJDBCTemplate).addTag(anyInt(),any(Tag.class));
@@ -184,29 +198,34 @@ public class CertificateServiceImplTest {
         expectedCertificates.get(0).getTags().add(tags.get(3));
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
-        certificateService.addTag(0, 4);
+        certificateService.addTag(id, expectedId);
 
         assertEquals(expectedCertificates, certificates);
     }
 
     @Test
     public void deleteTag_DeleteTagByTagId_TgMustBeDeletedFromDatabaseAndActualCertificate() {
+        int id = 0;
+        int founded = 1;
+        int expectedId = 4;
+        int actual = 3;
+
         tags.add(tag);
 
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object tagId = invocation.getArgument(1);
-            assertEquals(0, certificateId);
-            assertEquals(4, tagId);
+            Object certificateId = invocation.getArgument(id);
+            Object tagId = invocation.getArgument(founded);
+            assertEquals(id, certificateId);
+            assertEquals(expectedId, tagId);
             certificates.get(0).getTags().remove(tags.get(3));
             return null;
         }).when(certificateDAOJDBCTemplate).addTag(anyInt(),any(Tag.class));
 
         List<Certificate> expectedCertificates = certificates;
-        expectedCertificates.get(0).getTags().remove(tags.get(3));
+        expectedCertificates.get(0).getTags().remove(tags.get(actual));
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
-        certificateService.addTag(0, 4);
+        certificateService.addTag(id, expectedId);
 
         assertEquals(expectedCertificates, certificates);
     }
@@ -228,10 +247,9 @@ public class CertificateServiceImplTest {
 
     @Test
     public void findAllWithSortByDate() {
-        when(certificateDAOJDBCTemplate.findAll()).thenReturn(certificates);
+        when(certificateDAOJDBCTemplate.findAllByDate()).thenReturn(certificates);
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
-        certificates.sort(Comparator.comparing(Certificate::getCreationDate));
 
         List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate();
 
@@ -240,18 +258,20 @@ public class CertificateServiceImplTest {
 
     @Test
     public void findAllCertificatesWhereIdMoreThanTransmittedParameter_ParameterId_AllCertificatesIdLessTransmittedParameter() {
+        int idCertificate = 11;
+
         when(certificateDAOJDBCTemplate.findCertificateWhereIdMoreThanParameter(anyInt()))
                 .thenReturn(certificates.stream()
-                        .filter(certificate -> certificate.getId() > 11)
+                        .filter(certificate -> certificate.getId() > idCertificate)
                         .collect(Collectors.toList()));
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
 
         List<Certificate> expectedCertificates = certificateService
-                .findAllCertificatesWhereIdMoreThenTransmittedId(11);
+                .findAllCertificatesWhereIdMoreThenTransmittedId(idCertificate);
 
         Assert.assertEquals(expectedCertificates, certificates.stream()
-                .filter(certificate -> certificate.getId() > 11)
+                .filter(certificate -> certificate.getId() > idCertificate)
                 .collect(Collectors.toList()));
     }
 

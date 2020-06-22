@@ -27,7 +27,7 @@ public class TagDAOJDBCTemplate implements TagDAO {
 
     @Override
     public List<Tag> findAll() {
-        return jdbcTemplate.query(SQLRequests.GET_ALL_TAGS, new TagDAORowMapper());
+        return jdbcTemplate.query(SQLRequests.FIND_ALL_TAGS, new TagDAORowMapper());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class TagDAOJDBCTemplate implements TagDAO {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
 
-        return jdbcTemplate.queryForObject(SQLRequests.GET_TAG_BY_ID, namedParameters, new TagDAORowMapper());
+        return jdbcTemplate.queryForObject(SQLRequests.FIND_TAG_BY_ID, namedParameters, new TagDAORowMapper());
     }
 
     @Override

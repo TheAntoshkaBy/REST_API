@@ -39,7 +39,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("id", id);
 
         Certificate certificate = jdbcTemplate.queryForObject(
-                SQLRequests.GET_CERTIFICATE_BY_ID, namedParameters, new CertificateDAORowMapper()
+                SQLRequests.FIND_CERTIFICATE_BY_ID, namedParameters, new CertificateDAORowMapper()
         );
 
         certificate.setTags(findAllTagsWhichBelowConcreteCertificate(certificate));
@@ -50,7 +50,19 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     @Override
     public List<Certificate> findAll() {
         List<Certificate> certificates = jdbcTemplate.query(
-                SQLRequests.GET_ALL_CERTIFICATES, new CertificateDAORowMapper()
+                SQLRequests.FIND_ALL_CERTIFICATES, new CertificateDAORowMapper()
+        );
+
+        certificates.forEach(certificate -> certificate.
+                setTags(findAllTagsWhichBelowConcreteCertificate(certificate)));
+
+        return certificates;
+    }
+
+    @Override
+    public List<Certificate> findAllByDate() {
+        List<Certificate> certificates = jdbcTemplate.query(
+                SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE, new CertificateDAORowMapper()
         );
 
         certificates.forEach(certificate -> certificate.
@@ -65,7 +77,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("id", id);
 
         List<Certificate> certificates = jdbcTemplate.query(
-                SQLRequests.GET_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER,
+                SQLRequests.FIND_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER,
                 namedParameters,
                 new CertificateDAORowMapper()
         );
@@ -171,7 +183,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", certificate.getId());
 
-        return jdbcTemplate.query(SQLRequests.GET_TAGS_BELOW_CONCRETE_CERTIFICATE, namedParameters, new TagDAORowMapper());
+        return jdbcTemplate.query(SQLRequests.FIND_TAGS_BELOW_CONCRETE_CERTIFICATE, namedParameters, new TagDAORowMapper());
     }
 
     private Map<String, Object> namedParamsCreate(Certificate certificate) {

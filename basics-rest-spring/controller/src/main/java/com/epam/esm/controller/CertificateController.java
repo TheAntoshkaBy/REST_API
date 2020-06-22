@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -26,32 +27,13 @@ public class CertificateController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> findAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<Certificate>> findAll(HttpServletRequest params) {
+        return new ResponseEntity<>(service.findAll(params), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/byDate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> findAllCertificatesSortedByDate(@RequestParam String filter) {
-        if(filter.equals("date")){
-            return new ResponseEntity<>(service.findAllCertificatesByDate(), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping(path = "/more/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> findAllCertificatesWhereIdMoreTransmittedId(@PathVariable Integer id) {
-        return new ResponseEntity<>(service.findAllCertificatesWhereIdMoreThenTransmittedId(id), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/byTag", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> findByTag(@RequestBody Tag tag) {
         return new ResponseEntity<>(service.findAllCertificatesByTag(tag), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/byName")
-    public ResponseEntity<List<Certificate>> findByNamePart(@RequestParam String part) {
-        return new ResponseEntity<>(service.findByAllCertificatesByNamePart(part), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

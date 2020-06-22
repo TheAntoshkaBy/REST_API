@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -83,46 +84,6 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void findByNamePart_String_CertificatesWhichContainsInNameTransmittedString() {
-        when(service.findByAllCertificatesByNamePart(anyString())).thenReturn(expectedCertificates);
-
-        actualResponseEntity = certificateController.findByNamePart(anyString());
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
-
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
-    }
-
-    @Test
-    public void findAll_AllCertificatesList() {
-        when(service.findAll()).thenReturn(expectedCertificates);
-
-        actualResponseEntity = certificateController.findAll();
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
-
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
-    }
-
-    @Test
-    public void findCertificatesWhereIdMoreTransmittedId_Id_AllCertificatesWhereIdMoreThatTransmittedId() {
-        when(service.findAllCertificatesWhereIdMoreThenTransmittedId(anyInt())).thenReturn(expectedCertificates);
-
-        actualResponseEntity = certificateController.findAllCertificatesWhereIdMoreTransmittedId(anyInt());
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
-
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
-    }
-
-    @Test
-    public void findAllCertificatesSortedByDate_FindAndSort_AllCertificatesListSortedByDate() {
-        when(service.findAllCertificatesByDate()).thenReturn(expectedCertificates);
-
-        actualResponseEntity = certificateController.findAllCertificatesSortedByDate("date");
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
-
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
-    }
-
-    @Test
     public void addCertificate_NewCertificate_ListCertificatesWhichContainTransmittedCertificate() {
         doAnswer(invocation -> {
             Object certificateId = invocation.getArgument(0);
@@ -133,7 +94,7 @@ public class CertificateControllerTest {
 
         when(service.findAll()).thenReturn(expectedCertificates);
 
-        actualResponseEntity = certificateController.findAll();
+        actualResponseEntity = certificateController.findAll(any(HttpServletRequest.class));
         actualResponseEntity = certificateController.addCertificate(expectedCertificate);
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
 

@@ -23,4 +23,3 @@ public class CertificateDAORowMapper implements RowMapper<Certificate> {
     }
 
 }
-//fixme прочитать про индексы

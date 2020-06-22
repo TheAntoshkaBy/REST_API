@@ -9,6 +9,8 @@ public interface CertificateDAO {
 
     List<Certificate> findAll();
 
+    List<Certificate> findAllByDate();
+
     Certificate findCertificateById(int id);
 
     List<Certificate> findCertificateWhereIdMoreThanParameter(int id);

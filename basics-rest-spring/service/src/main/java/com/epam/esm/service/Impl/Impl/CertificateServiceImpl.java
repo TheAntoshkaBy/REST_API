@@ -4,8 +4,10 @@ import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.service.Impl.CertificateService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Comparator;
 import java.util.List;
 
@@ -14,8 +16,32 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDAO certificateDAO;
 
-    public CertificateServiceImpl(CertificateDAO certificateDAO) {
+    public CertificateServiceImpl(@Qualifier("certificateDAOJDBCTemplate") CertificateDAO certificateDAO) {
         this.certificateDAO = certificateDAO;
+    }
+
+    @Override
+    public List<Certificate> findAll(HttpServletRequest params) {
+        if(params.getParameter("filter") == null){
+            return findAll();
+        }
+
+        switch (params.getParameter("filter")){
+            case "date": {
+               return findAllCertificatesByDate();
+            }
+            case "By name part": {
+                return findByAllCertificatesByNamePart(params.getParameterValues("name")[0]);
+            }
+            case "more id":{
+                return findAllCertificatesWhereIdMoreThenTransmittedId(
+                        Integer.parseInt(params.getParameterValues("id")[0])
+                );
+            }
+            default: {
+               return findAll();
+            }
+        }
     }
 
     @Override
@@ -66,9 +92,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public List<Certificate> findAllCertificatesByDate() {
-        List<Certificate> certificates = certificateDAO.findAll();
-        certificates.sort(Comparator.comparing(Certificate::getCreationDate));//fixme сортировка в бд
-        return certificates;
+        return certificateDAO.findAllByDate();
     }
 
     @Override

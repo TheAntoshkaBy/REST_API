@@ -3,9 +3,12 @@ package com.epam.esm.service.Impl;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface CertificateService {
+
+    List<Certificate> findAll(HttpServletRequest params);
 
     List<Certificate> findAll();
 
