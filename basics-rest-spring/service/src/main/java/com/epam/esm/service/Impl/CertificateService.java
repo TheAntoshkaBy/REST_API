@@ -6,13 +6,14 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 
 public interface CertificateService {
+
     List<Certificate> findAll();
 
-    List<Certificate> findAllCertificatesSortedByDate();
+    List<Certificate> findAllCertificatesByDate();
 
-    List<Certificate> findAllCertificateWhereIdCountMoreThenParameterCount(int id);
+    List<Certificate> findAllCertificatesWhereIdMoreThenTransmittedId(int id);
 
-    List<Certificate> findAllCertificatesWhichContainsParameterTag(Tag tag);
+    List<Certificate> findAllCertificatesByTag(Tag tag);
 
     List<Certificate> findByAllCertificatesByNamePart(String text);
 
@@ -29,4 +30,5 @@ public interface CertificateService {
     void addTag(int idCertificate, int idTag);
 
     void deleteTag(int idCertificate, int idTag);
+
 }

@@ -3,6 +3,7 @@ package com.epam.esm.entity;
 import java.util.Objects;
 
 public class Tag {
+
     private int id;
     private String name;
 
@@ -50,4 +51,5 @@ public class Tag {
     public int hashCode() {
         return Objects.hash(name);
     }
+
 }

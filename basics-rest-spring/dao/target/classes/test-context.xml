@@ -9,13 +9,6 @@ http://www.springframework.org/schema/tx http://www.springframework.org/schema/t
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
     <context:component-scan base-package="com.epam.esm" />
-    <bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="locations">
-            <list>
-                <value>classpath:database.properties</value>
-            </list>
-        </property>
-    </bean>
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
         <property name="dataSourceClassName" value="org.postgresql.ds.PGSimpleDataSource"/>
         <property name="dataSourceProperties">

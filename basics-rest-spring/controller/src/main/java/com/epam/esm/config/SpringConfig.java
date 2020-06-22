@@ -13,7 +13,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-//fixme CodeStyle!!! + README где будет хранимая процедура
 @Configuration
 @ComponentScan("com.epam.esm")
 @EnableWebMvc

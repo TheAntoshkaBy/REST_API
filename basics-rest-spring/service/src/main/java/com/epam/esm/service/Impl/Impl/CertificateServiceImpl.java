@@ -65,20 +65,20 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> findAllCertificatesSortedByDate() { //fixme findAllByDate примеры сервисных запросов
+    public List<Certificate> findAllCertificatesByDate() {
         List<Certificate> certificates = certificateDAO.findAll();
         certificates.sort(Comparator.comparing(Certificate::getCreationDate));//fixme сортировка в бд
         return certificates;
     }
 
     @Override
-    public List<Certificate> findAllCertificateWhereIdCountMoreThenParameterCount(int id) { //fixme семантика
+    public List<Certificate> findAllCertificatesWhereIdMoreThenTransmittedId(int id) {
         return certificateDAO.findCertificateWhereIdMoreThanParameter(id);
     }
 
     @Override
-    public List<Certificate> findAllCertificatesWhichContainsParameterTag(Tag tag) { //fixme findAllByTag
+    public List<Certificate> findAllCertificatesByTag(Tag tag) {
         return certificateDAO.findCertificateWhereTagNameIs(tag);
     }
-    //fixme избавиться от лишних постых строк
+
 }

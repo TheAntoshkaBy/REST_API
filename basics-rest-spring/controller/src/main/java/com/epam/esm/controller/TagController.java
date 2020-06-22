@@ -40,4 +40,5 @@ public class TagController {
         service.delete(id);
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
+
 }

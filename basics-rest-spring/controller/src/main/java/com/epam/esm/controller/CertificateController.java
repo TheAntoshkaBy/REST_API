@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/certificate")
+@RequestMapping("/certificates")
 public class CertificateController {
 
     private final CertificateService service;
@@ -21,7 +21,7 @@ public class CertificateController {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Certificate> findCertificate(@PathVariable Integer id) {
+    public ResponseEntity<Certificate> findCertificateById(@PathVariable Integer id) {
         return new ResponseEntity<>(service.find(id), HttpStatus.OK);
     }
 
@@ -31,18 +31,44 @@ public class CertificateController {
     }
 
     @GetMapping(path = "/byDate", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> sortedCertificatesByDate() {
-        return new ResponseEntity<>(service.findAllCertificatesSortedByDate(), HttpStatus.OK);
+    public ResponseEntity<List<Certificate>> findAllCertificatesSortedByDate(@RequestParam String filter) {
+        if(filter.equals("date")){
+            return new ResponseEntity<>(service.findAllCertificatesByDate(), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(path = "/more/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> certificatesWhereIdMoreThanParameterId(@PathVariable Integer id) {
-        return new ResponseEntity<>(service.findAllCertificateWhereIdCountMoreThenParameterCount(id), HttpStatus.OK);
+    public ResponseEntity<List<Certificate>> findAllCertificatesWhereIdMoreTransmittedId(@PathVariable Integer id) {
+        return new ResponseEntity<>(service.findAllCertificatesWhereIdMoreThenTransmittedId(id), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/byTag", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Certificate>> findByTag(@RequestBody Tag tag) {
+        return new ResponseEntity<>(service.findAllCertificatesByTag(tag), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/byName")
+    public ResponseEntity<List<Certificate>> findByNamePart(@RequestParam String part) {
+        return new ResponseEntity<>(service.findByAllCertificatesByNamePart(part), HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Certificate>> addCertificate(@RequestBody Certificate certificate) {
         service.create(certificate);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Certificate>> addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
+        service.addTag(id, tag);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "{id}/tags/{idTag}")
+    public ResponseEntity<List<Certificate>> addTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
+        service.addTag(id, idTag);
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
@@ -59,32 +85,10 @@ public class CertificateController {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
-        service.addTag(id, tag);
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "{id}/tags/{idTag}")
-    public ResponseEntity<List<Certificate>> addTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
-        service.addTag(id, idTag);
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
-
     @DeleteMapping(path = "{id}/tags/{idTag}")
     public ResponseEntity<List<Certificate>> deleteTagToCertificate(@PathVariable Integer id, @PathVariable Integer idTag) {
         service.deleteTag(id, idTag);
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/findByTag", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Certificate>> findByTag(@RequestBody Tag tag) {
-        return new ResponseEntity<>(service.findAllCertificatesWhichContainsParameterTag(tag), HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/findByName")
-    public ResponseEntity<List<Certificate>> findByNamePart(@RequestParam String part) {
-        return new ResponseEntity<>(service.findByAllCertificatesByNamePart(part), HttpStatus.OK);
-    }
-    //AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList()AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList()fixme множественное число, почитать правила именования урлов.
 }

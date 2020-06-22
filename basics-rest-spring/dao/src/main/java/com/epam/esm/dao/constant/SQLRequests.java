@@ -1,6 +1,7 @@
 package com.epam.esm.dao.constant;
 
 public class SQLRequests {
+
     public static final String GET_CERTIFICATE =
             "select * from rest_api_basics.certificate where id_certificate = :id";
     public static final String ADD_TAG_TO_CERTIFICATE = "INSERT INTO rest_api_basics.many_certificates_to_many_tags\n" +
@@ -59,5 +60,7 @@ public class SQLRequests {
     public static final String FIND_BY_PART_OF_NAME = "SELECT * FROM return_t_certificate(:text)";
     public static final String DELETE_ALL_CERTIFICATES = "DELETE FROM rest_api_basics.certificate";
     public static final String DELETE_ALL_TAGS = "DELETE FROM rest_api_basics.tag";
-    public static final String DELETE_ALL_RELATIONSHIPS = "DELETE FROM rest_api_basics.many_certificates_to_many_tags;";
+    public static final String DELETE_ALL_RELATIONSHIPS =
+            "DELETE FROM rest_api_basics.many_certificates_to_many_tags;";
+
 }

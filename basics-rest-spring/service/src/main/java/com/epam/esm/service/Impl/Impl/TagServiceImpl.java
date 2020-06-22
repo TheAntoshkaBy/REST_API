@@ -35,5 +35,5 @@ public class TagServiceImpl implements TagService {
     public void create(Tag tag) {
         TagDAO.addTag(tag);
     }
+
 }
-//fixme почитать про принципы юнит-тесты. Интеграционные тесты для дао.

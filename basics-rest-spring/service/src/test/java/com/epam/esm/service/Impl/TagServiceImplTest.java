@@ -42,8 +42,10 @@ public class TagServiceImplTest {
     @Test
     public void find() {
         when(tagDAOJDBCTemplate.findTagById(anyInt())).thenReturn(tags.get(0));
+
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
         Tag tagActual = tagService.find(1);
+
         Assert.assertEquals(tagActual, tags.get(0));
     }
 
@@ -55,9 +57,12 @@ public class TagServiceImplTest {
             tags.remove(2);
             return null;
         }).when(tagDAOJDBCTemplate).deleteTagById(anyInt());
+
         List<Tag> expectedTags = tags;
+
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
         tagService.delete(2);
+
         assertEquals(expectedTags, tags);
     }
 
@@ -69,9 +74,13 @@ public class TagServiceImplTest {
             tags.add(tag);
             return null;
         }).when(tagDAOJDBCTemplate).addTag(any(Tag.class));
+
         List<Tag> expectedTags = tags;
+
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
         tagService.delete(2);
+
         assertEquals(expectedTags, tags);
     }
+
 }

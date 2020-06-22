@@ -13,14 +13,16 @@ public class Certificate {
     private String name;
     private String description;
     private Double price;
+    private Integer durationDays;
+    private List<Tag> tags;
+
     @Column(name = "date_of_creation")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date creationDate;
+
     @Column(name = "date_of_creation")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date modification;
-    private Integer durationDays;
-    private List<Tag> tags;
 
     public Certificate(Integer id, String name, String description, Double price,
                        Date creationDate, Date modification, Integer durationDays) {
@@ -32,6 +34,7 @@ public class Certificate {
         this.modification = modification;
         this.durationDays = durationDays;
     }
+
     public Certificate(Integer id, String name, String description, Double price,
                        Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
         this.id = id;
@@ -139,4 +142,5 @@ public class Certificate {
                 ", durationDays=" + durationDays +
                 '}';
     }
+
 }

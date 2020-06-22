@@ -6,7 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class TagRowMapper implements RowMapper<Tag> { //fixme более информативное название класса TagDAOMapper + интерфейс
+public class TagDAORowMapper implements RowMapper<Tag> {
+
     @Override
     public Tag mapRow(ResultSet rs, int index) throws SQLException {
         return new Tag(
@@ -14,4 +15,5 @@ public class TagRowMapper implements RowMapper<Tag> { //fixme более инф�
                 rs.getString("tag_name")
         );
     }
+
 }

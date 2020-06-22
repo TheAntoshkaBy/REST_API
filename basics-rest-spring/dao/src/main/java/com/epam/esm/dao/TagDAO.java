@@ -5,6 +5,7 @@ import com.epam.esm.entity.Tag;
 import java.util.List;
 
 public interface TagDAO {
+
     List<Tag> findAll();
 
     Tag findTagById(int id);
@@ -14,4 +15,5 @@ public interface TagDAO {
     void deleteTagById(int id);
 
     void deleteAll();
+
 }

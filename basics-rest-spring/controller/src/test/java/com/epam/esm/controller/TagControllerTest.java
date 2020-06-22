@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.Impl.CertificateService;
-import com.epam.esm.service.Impl.Impl.CertificateServiceImpl;
 import com.epam.esm.service.Impl.TagService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,26 +29,36 @@ public class TagControllerTest {
     public void init() {
         service = mock(TagService.class);
         tagController = new TagController(service);
+    }
+
+    @Before
+    public void initTagTest(){
         tags = new ArrayList<>();
+
         tags.add(new Tag(1,"AllGreat"));
         tags.add(new Tag(2,"LiveIsWonderful"));
         tags.add(new Tag(3,"PlayTheMan"));
+
         expectedTag = new Tag(4,"BeStrong");
     }
 
     @Test
     public void findTag_TagId_TagWhichContainTransmittedId() {
         when(service.find(anyInt())).thenReturn(expectedTag);
+
         actualResponseEntity = tagController.findTag(13);
         expectedResponseEntity = new ResponseEntity<>(expectedTag, HttpStatus.OK);
+
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
 
     @Test
     public void findAll_findAllCreatedTags_AllTags() {
         when(service.findAll()).thenReturn(tags);
+
         actualResponseEntity = tagController.findAll();
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
+
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
 
@@ -62,9 +70,12 @@ public class TagControllerTest {
             tags.add(expectedTag);
             return null;
         }).when(service).create(expectedTag);
+
         when(service.findAll()).thenReturn(tags);
+
         actualResponseEntity = tagController.addTag(any(Tag.class));
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
+
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
 
@@ -76,9 +87,13 @@ public class TagControllerTest {
             tags.remove(0);
             return null;
         }).when(service).delete(0);
+
         when(service.findAll()).thenReturn(tags);
+
         actualResponseEntity = tagController.deleteTag(0);
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
+
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
+
 }
