@@ -72,15 +72,6 @@ public interface CertificateDAO {
     void deleteCertificateById(int id) throws CertificateNotFoundException;
 
     /**
-     * This method add new tag by transmitted data to certificate with transmitted id
-     *
-     * @param id  certificate id which will be edit
-     * @param tag edit data
-     **/
-    void addTag(int id, Tag tag);
-
-
-    /**
      * This method add tag by transmitted tag id to certificate with transmitted certificate id
      *
      * @param id  certificate id which will be edit

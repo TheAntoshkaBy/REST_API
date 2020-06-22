@@ -1,5 +1,6 @@
 package com.epam.esm.dao.Impl;
 
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
@@ -25,6 +26,8 @@ public class CertificateDAOJDBCTemplateTest {
 
     @Autowired
     private CertificateDAOJDBCTemplate certificateDAOJDBCTemplate;
+    @Autowired
+    private TagDAO tagDAO;
 
     private List<Certificate> certificatesListExpected;
     private List<Certificate> certificatesListActual;
@@ -55,16 +58,13 @@ public class CertificateDAOJDBCTemplateTest {
 
         certificateExpected = new Certificate(10, "MovieClub", "for You",
                 34.54, new Date(4312), new Date(423), 10);
-    }
 
-    @Before
-    public void initTagData() throws TagNotFoundException {
         certificateDAOJDBCTemplate
-                .addTag(certificatesListExpected.get(0).getId(), new Tag(1, "AllGreat"));
+                .addTag(certificatesListExpected.get(0).getId(), tagDAO.addTag(new Tag(1, "AllGreat")));
         certificateDAOJDBCTemplate
-                .addTag(certificatesListExpected.get(0).getId(), new Tag(2, "LiveIsWonderful"));
+                .addTag(certificatesListExpected.get(0).getId(), tagDAO.addTag(new Tag(1, "AllGreat")));
         certificateDAOJDBCTemplate
-                .addTag(certificatesListExpected.get(1).getId(), new Tag(3, "PlayTheMan"));
+                .addTag(certificatesListExpected.get(1).getId(), tagDAO.addTag(new Tag(1, "PlayTheMan")));
 
         tagExpected = new Tag(2, "PlayTheMan");
     }
@@ -157,17 +157,6 @@ public class CertificateDAOJDBCTemplateTest {
     }
 
     @Test
-    public void testAddTag_AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList() {
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
-        tagExpected.setName("Easy");
-
-        certificateDAOJDBCTemplate.addTag(certificateActual.getId(), tagExpected);
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
-
-        Assert.assertTrue(certificateActual.getTags().stream().anyMatch(tag -> tag.getName().equals("Easy")));
-    }
-
-    @Test
     public void testAddTag_AddTagByCertificateIdAndTagId_TagMustBeAddedToDatabaseAndActualCertificatesList() {
         certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
         certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Box").get(0);
@@ -187,7 +176,7 @@ public class CertificateDAOJDBCTemplateTest {
         certificateDAOJDBCTemplate.deleteTag(certificateActual.getId(), tagExpected.getId());
         certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
 
-        Assert.assertFalse(certificateActual.getTags()
+        Assert.assertTrue(certificateActual.getTags()
                 .stream()
                 .anyMatch(tag -> tag.getName().equals(tagExpected.getName())));
     }

@@ -22,8 +22,7 @@ public class SQLRequests {
                     "ON many_certificates_to_many_tags.id_tag = tag.id_tag\n" +
                     "WHERE certificate.id_certificate = many_certificates_to_many_tags.id_certificate\n" +
                     "AND tag_name LIKE :name " +
-                    "GROUP BY name, description, date_of_creation, " +
-                    "date_of_modification,duration_days,certificate.id_certificate,price";
+                    "GROUP BY certificate.id_certificate";
 
     public static final String FIND_CERTIFICATE_BY_ID =
             "select * from rest_api_basics.certificate where id_certificate = :id";

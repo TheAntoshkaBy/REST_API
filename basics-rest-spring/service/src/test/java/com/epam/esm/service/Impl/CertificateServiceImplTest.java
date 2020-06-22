@@ -159,29 +159,6 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void addTag_AddTagByCertificateIdAndTestTagData_TagMustBeAddedToDatabaseAndActualCertificatesList() {
-        int idCertificate = 0;
-        int founded = 1;
-
-        doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(idCertificate);
-            Object newTag = invocation.getArgument(founded);
-            assertEquals(0, certificateId);
-            assertEquals(tag, newTag);
-            certificates.get(0).getTags().add(tag);
-            return null;
-        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), any(Tag.class));
-
-        List<Certificate> expectedCertificates = certificates;
-        expectedCertificates.get(idCertificate).getTags().add(tag);
-
-        certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
-        certificateService.addTag(idCertificate, tag);
-
-        assertEquals(expectedCertificates, certificates);
-    }
-
-    @Test
     public void addExistingTag_AddTagByCertificateIdAndTagId_TagMustBeAddedToDatabaseAndActualCertificatesList() {
         int id = 0;
         int founded = 1;
@@ -196,7 +173,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedId, tagId);
             certificates.get(0).getTags().add(tags.get(3));
             return null;
-        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), any(Tag.class));
+        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), anyInt());
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(0).getTags().add(tags.get(3));
@@ -208,7 +185,8 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void deleteTag_DeleteTagByTagId_TgMustBeDeletedFromDatabaseAndActualCertificate() {
+    public void deleteTag_DeleteTagByTagId_TgMustBeDeletedFromDatabaseAndActualCertificate()
+            throws CertificateNotFoundException {
         int id = 0;
         int founded = 1;
         int expectedId = 4;
@@ -223,7 +201,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedId, tagId);
             certificates.get(0).getTags().remove(tags.get(3));
             return null;
-        }).when(certificateDAOJDBCTemplate).addTag(anyInt(), any(Tag.class));
+        }).when(certificateDAOJDBCTemplate).deleteTag(anyInt(),anyInt());
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(0).getTags().remove(tags.get(actual));

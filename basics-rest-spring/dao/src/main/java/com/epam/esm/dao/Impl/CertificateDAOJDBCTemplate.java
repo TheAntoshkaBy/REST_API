@@ -145,17 +145,6 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
     }
 
     @Override
-    public void addTag(int id, Tag tag) {
-        int tagId = tagDAO.addTag(tag);
-
-        Map<String, Object> namedParameters = new HashMap<>();
-        namedParameters.put("id_certificate", id);
-        namedParameters.put("id_tag", tagId);
-
-        jdbcTemplate.update(SQLRequests.ADD_TAG_TO_CERTIFICATE, namedParameters);
-    }
-
-    @Override
     public void addTag(int idCertificate, int idTag) {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id_certificate", idCertificate);

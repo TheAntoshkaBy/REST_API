@@ -1,10 +1,12 @@
 package com.epam.esm.service.Impl.Impl;
 
 import com.epam.esm.dao.CertificateDAO;
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.service.Impl.CertificateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +17,10 @@ import java.util.List;
 public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDAO certificateDAO;
+    private TagDAO tagDAO;
 
-    public CertificateServiceImpl(@Qualifier("certificateDAOJDBCTemplate") CertificateDAO certificateDAO) {
+    public CertificateServiceImpl
+            (@Qualifier("certificateDAOJDBCTemplate") CertificateDAO certificateDAO) {
         this.certificateDAO = certificateDAO;
     }
 
@@ -71,7 +75,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public void addTag(int id, Tag tag) {
-        certificateDAO.addTag(id, tag);
+        certificateDAO.addTag(id,tagDAO.addTag(tag));
     }
 
     @Override
@@ -103,5 +107,10 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public List<Certificate> findAllCertificatesByTag(Tag tag) throws CertificateNotFoundException {
         return certificateDAO.findCertificateWhereTagNameIs(tag);
+    }
+
+    @Autowired
+    public void setTagDAO(TagDAO tagDAO) {
+        this.tagDAO = tagDAO;
     }
 }
