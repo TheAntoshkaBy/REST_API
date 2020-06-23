@@ -1,11 +1,13 @@
-package com.epam.esm.service.Impl.Impl;
+package com.epam.esm.service.Impl;
 
 import com.epam.esm.dao.CertificateDAO;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.service.Impl.CertificateService;
+import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -18,34 +20,24 @@ public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDAO certificateDAO;
     private TagDAO tagDAO;
+    private CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler;
 
     public CertificateServiceImpl
             (@Qualifier("certificateDAOJDBCTemplate") CertificateDAO certificateDAO) {
         this.certificateDAO = certificateDAO;
     }
 
+    /**
+     *
+     * @param params Request params for choice
+     *               selection of certificate display type
+     *
+     * @return Certificate list
+     * @throws CertificateNotFoundException
+     */
     @Override
     public List<Certificate> findAll(HttpServletRequest params) throws CertificateNotFoundException {
-        if (params.getParameter("filter") == null) {
-            return findAll();
-        }
-
-        switch (params.getParameter("filter")) {
-            case "date": {
-                return findAllCertificatesByDate();
-            }
-            case "By name part": {
-                return findByAllCertificatesByNamePart(params.getParameterValues("name")[0]);
-            }
-            case "more id": {
-                return findAllCertificatesWhereIdMoreThenTransmittedId(
-                        Integer.parseInt(params.getParameterValues("id")[0])
-                );
-            }
-            default: {
-                return findAll();
-            }
-        }
+       return certificateServiceRequestParameterHandler.filter(params);
     }
 
     @Override
@@ -112,5 +104,10 @@ public class CertificateServiceImpl implements CertificateService {
     @Autowired
     public void setTagDAO(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
+    }
+
+    @Autowired
+    public void setCertificateServiceRequestParameterHandler(CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
+        this.certificateServiceRequestParameterHandler = certificateServiceRequestParameterHandler;
     }
 }

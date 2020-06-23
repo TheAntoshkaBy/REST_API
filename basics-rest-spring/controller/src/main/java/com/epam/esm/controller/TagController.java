@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.service.Impl.TagService;
+import com.epam.esm.service.TagService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class TagController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Tag>> addTag(@RequestBody Tag tag) {
         service.create(tag);
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(service.findAll(), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "/{id}")

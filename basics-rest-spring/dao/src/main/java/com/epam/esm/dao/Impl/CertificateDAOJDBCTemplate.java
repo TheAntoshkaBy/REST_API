@@ -8,6 +8,7 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +44,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
             certificate = jdbcTemplate.queryForObject(
                     SQLRequests.FIND_CERTIFICATE_BY_ID, namedParameters, new CertificateDAORowMapper()
             );
-        } catch (RuntimeException e) {
+        } catch (DataAccessException e) {
             throw new CertificateNotFoundException();
         }
 
@@ -60,7 +61,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
            certificates  = jdbcTemplate.query(
                     SQLRequests.FIND_ALL_CERTIFICATES, new CertificateDAORowMapper()
             );
-        }catch (RuntimeException e){
+        }catch (DataAccessException e){
             throw new CertificateNotFoundException();
         }
 
@@ -78,7 +79,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
             certificates = jdbcTemplate.query(
                     SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE, new CertificateDAORowMapper()
             );
-        }catch (RuntimeException e){
+        }catch (DataAccessException e){
             throw new CertificateNotFoundException();
         }
 

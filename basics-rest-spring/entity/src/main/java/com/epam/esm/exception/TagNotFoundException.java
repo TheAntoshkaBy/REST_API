@@ -19,4 +19,9 @@ public class TagNotFoundException extends Exception {
     public TagNotFoundException(Throwable throwable) {
         super(throwable);
     }
+
+    @Override
+    public String getMessage() {
+        return MESSAGE;
+    }
 }

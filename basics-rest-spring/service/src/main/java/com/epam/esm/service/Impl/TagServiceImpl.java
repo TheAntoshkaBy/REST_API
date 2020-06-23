@@ -1,9 +1,9 @@
-package com.epam.esm.service.Impl.Impl;
+package com.epam.esm.service.Impl;
 
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.service.Impl.TagService;
+import com.epam.esm.service.TagService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

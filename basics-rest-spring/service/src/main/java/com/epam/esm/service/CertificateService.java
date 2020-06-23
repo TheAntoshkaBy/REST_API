@@ -1,4 +1,4 @@
-package com.epam.esm.service.Impl;
+package com.epam.esm.service;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;

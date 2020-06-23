@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.service.Impl.TagService;
+import com.epam.esm.service.TagService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,9 +1,9 @@
-package com.epam.esm.service.Impl;
+package com.epam.esm.service;
 
 import com.epam.esm.dao.Impl.TagDAOJDBCTemplate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.service.Impl.Impl.TagServiceImpl;
+import com.epam.esm.service.Impl.TagServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
