@@ -1,8 +1,10 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -103,4 +105,8 @@ public interface CertificateService {
      * This method delete all tags
      **/
     void deleteTag(int idCertificate, int idTag) throws CertificateNotFoundException;
+
+    void setCertificateServiceRequestParameterHandler
+            (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
 }
+

@@ -15,15 +15,15 @@ public class ByDateFilter implements CertificateFilterRequestParameter {
     private final String FILTER_TYPE = "date";
     private CertificateService certificateService;
 
+    @Autowired
+    public void setCertificateService(CertificateService certificateService) {
+        this.certificateService = certificateService;
+    }
+
     @Override
     public List<Certificate> filterOutOurCertificates(HttpServletRequest request)
             throws CertificateNotFoundException {
         return certificateService.findAllCertificatesByDate();
-    }
-
-    @Autowired
-    public void setCertificateService(CertificateService certificateService) {
-        this.certificateService = certificateService;
     }
 
     public String getType() {

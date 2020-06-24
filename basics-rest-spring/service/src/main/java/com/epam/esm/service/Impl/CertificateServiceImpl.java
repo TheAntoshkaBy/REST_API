@@ -107,7 +107,8 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Autowired
-    public void setCertificateServiceRequestParameterHandler(CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
+    public void setCertificateServiceRequestParameterHandler
+            (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
         this.certificateServiceRequestParameterHandler = certificateServiceRequestParameterHandler;
     }
 }

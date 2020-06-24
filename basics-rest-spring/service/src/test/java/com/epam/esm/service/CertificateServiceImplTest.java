@@ -5,10 +5,12 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.service.Impl.CertificateServiceImpl;
+import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -278,5 +280,31 @@ public class CertificateServiceImplTest {
                         .stream()
                         .anyMatch(tag1 -> tag1.getName().equals("Is")))
                 .collect(Collectors.toList()));
+    }
+
+    @Test
+    public void findAll() throws CertificateNotFoundException {
+        CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler =
+                mock(CertificateServiceRequestParameterHandler.class);
+        when(certificateServiceRequestParameterHandler.filter(any(HttpServletRequest.class)))
+                .thenReturn(certificates);
+
+        certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
+        certificateService.setCertificateServiceRequestParameterHandler(certificateServiceRequestParameterHandler);
+
+        Assert.assertEquals(certificates,certificateService.findAll(mock(HttpServletRequest.class)));
+    }
+
+    @Test
+    public void setCertificateServiceRequestParameterHandler() throws CertificateNotFoundException {
+        CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler =
+                mock(CertificateServiceRequestParameterHandler.class);
+        when(certificateServiceRequestParameterHandler.filter(any(HttpServletRequest.class)))
+                .thenReturn(certificates);
+
+        certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
+        certificateService.setCertificateServiceRequestParameterHandler(certificateServiceRequestParameterHandler);
+
+        Assert.assertNotNull(certificateService.findAll(mock(HttpServletRequest.class)));
     }
 }

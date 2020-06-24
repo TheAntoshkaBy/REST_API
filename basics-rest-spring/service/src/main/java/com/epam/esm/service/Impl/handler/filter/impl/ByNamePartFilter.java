@@ -12,20 +12,19 @@ import java.util.List;
 
 @Component
 public class ByNamePartFilter implements CertificateFilterRequestParameter {
-
     private final String FILTER_TYPE = "by name part";
     private CertificateService certificateService;
+
+    @Autowired
+    public void setCertificateService(CertificateService certificateService) {
+        this.certificateService = certificateService;
+    }
 
     @Override
     public List<Certificate> filterOutOurCertificates(HttpServletRequest request)
             throws CertificateNotFoundException {
         return certificateService
                 .findByAllCertificatesByNamePart(request.getParameterValues("name")[0]);
-    }
-
-    @Autowired
-    public void setCertificateService(CertificateService certificateService) {
-        this.certificateService = certificateService;
     }
 
     @Override

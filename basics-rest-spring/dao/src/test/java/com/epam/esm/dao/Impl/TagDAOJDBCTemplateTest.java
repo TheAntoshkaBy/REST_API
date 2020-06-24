@@ -57,7 +57,9 @@ public class TagDAOJDBCTemplateTest {
     @Test
     public void findTagById_FindTagByIdInMethodParameter_ActualTagIdAreEqualWithExpectedTagId()
             throws TagNotFoundException {
-        tagExpected = tagsListActual.get(0);
+        int getFirst = 0;
+
+        tagExpected = tagsListActual.get(getFirst);
         tagActual = tagDAOJDBCTemplate.findTagById(tagExpected.getId());
         Assert.assertEquals(tagExpected.getId(), tagActual.getId());
     }
@@ -73,7 +75,9 @@ public class TagDAOJDBCTemplateTest {
     @Test
     public void deleteTagById_FindAnDeleteTagById_TagMustBeRemovedFromDatabaseAndActualTagsList()
             throws TagNotFoundException {
-        tagExpected = tagsListActual.get(0);
+        int getFirst = 0;
+
+        tagExpected = tagsListActual.get(getFirst);
         tagDAOJDBCTemplate.deleteTagById(tagExpected.getId());
         tagsListActual = tagDAOJDBCTemplate.findAll();
         Assert.assertFalse(tagsListActual.stream()

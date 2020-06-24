@@ -72,8 +72,10 @@ public class CertificateDAOJDBCTemplateTest {
     @Test
     public void findCertificateById_idCertificate_CertificateWhichContainTransmittedId()
             throws CertificateNotFoundException {
+        int getFirst = 0;
+
         certificatesListActual = certificateDAOJDBCTemplate.findAll();
-        certificateExpected = certificatesListActual.get(0);
+        certificateExpected = certificatesListActual.get(getFirst);
         certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
 
         Assert.assertEquals(certificateExpected.getId(), certificateActual.getId());
@@ -99,7 +101,11 @@ public class CertificateDAOJDBCTemplateTest {
     @Test
     public void updateCertificate_DataFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate()
             throws CertificateNotFoundException {
-        Certificate bufferCertificate = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        int getFirst = 0;
+
+        Certificate bufferCertificate = certificateDAOJDBCTemplate
+                .findCertificateByNamePart("Football")
+                .get(getFirst);
 
         certificateExpected.setId(bufferCertificate.getId());
         certificateDAOJDBCTemplate.updateCertificate(certificateExpected.getId(), certificateExpected);
@@ -111,7 +117,9 @@ public class CertificateDAOJDBCTemplateTest {
     @Test
     public void findCertificateById_IdFromExpectedCertificate_ExpectedCertificateEqualWithActualCertificate()
             throws CertificateNotFoundException {
-        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        int getFirst = 0;
+
+        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
         certificateActual = certificateDAOJDBCTemplate.findCertificateById(certificateExpected.getId());
 
         Assert.assertEquals(certificateExpected, certificateActual);
@@ -120,7 +128,9 @@ public class CertificateDAOJDBCTemplateTest {
     @Test
     public void deleteCertificateById_IdFromExpectedCertificate_ActualCertificatesListDoesNotContainExpectedCertificate()
             throws CertificateNotFoundException {
-        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        int getFirst = 0;
+
+        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
         certificateDAOJDBCTemplate.deleteCertificateById(certificateExpected.getId());
         certificatesListActual = certificateDAOJDBCTemplate.findAll();
 
@@ -129,14 +139,18 @@ public class CertificateDAOJDBCTemplateTest {
 
     @Test
     public void findCertificateWhereIdMoreThanParameter_ParameterId_AllCertificatesIdLessTransmittedParameter() {
-        certificatesListExpected = certificateDAOJDBCTemplate.findCertificateWhereIdMoreThanParameter(300);
+        int max = 300;
 
-        Assert.assertFalse(certificatesListExpected.stream().anyMatch(certificate -> certificate.getId() <= 300));
+        certificatesListExpected = certificateDAOJDBCTemplate.findCertificateWhereIdMoreThanParameter(max);
+
+        Assert.assertFalse(certificatesListExpected.stream().anyMatch(certificate -> certificate.getId() <= max));
     }
 
     @Test
     public void findCertificateByNamePart_NamePart_CertificateActualNotNull() throws CertificateNotFoundException {
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        int getFirst = 0;
+
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
 
         Assert.assertNotNull(certificateActual);
     }
@@ -148,8 +162,10 @@ public class CertificateDAOJDBCTemplateTest {
 
     @Test
     public void findCertificateWhereTagNameIs_Tag_CertificateWithNameEqualsExpectedTagName() {
+        int getFirst = 0;
+
         certificateActual = certificateDAOJDBCTemplate
-                .findCertificateWhereTagNameIs(tagExpected).get(0);
+                .findCertificateWhereTagNameIs(tagExpected).get(getFirst);
 
         Assert.assertTrue(certificateActual.getTags()
                 .stream()
@@ -158,11 +174,13 @@ public class CertificateDAOJDBCTemplateTest {
 
     @Test
     public void testAddTag_AddTagByCertificateIdAndTagId_TagMustBeAddedToDatabaseAndActualCertificatesList() {
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
-        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Box").get(0);
+        int getFirst = 0;
 
-        certificateDAOJDBCTemplate.addTag(certificateActual.getId(), certificateExpected.getTags().get(0).getId());
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
+        certificateExpected = certificateDAOJDBCTemplate.findCertificateByNamePart("Box").get(getFirst);
+
+        certificateDAOJDBCTemplate.addTag(certificateActual.getId(), certificateExpected.getTags().get(getFirst).getId());
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
 
         Assert.assertTrue(certificateActual.getTags().stream().anyMatch(tag -> tag.getName().equals("PlayTheMan")));
     }
@@ -170,11 +188,13 @@ public class CertificateDAOJDBCTemplateTest {
     @Test
     public void deleteTag_DeleteTagByTagId_TagMustBeDeletedFromDatabaseAndActualCertificate()
             throws CertificateNotFoundException {
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        int getFirst = 0;
 
-        tagExpected = certificateActual.getTags().get(0);
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
+
+        tagExpected = certificateActual.getTags().get(getFirst);
         certificateDAOJDBCTemplate.deleteTag(certificateActual.getId(), tagExpected.getId());
-        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(0);
+        certificateActual = certificateDAOJDBCTemplate.findCertificateByNamePart("Football").get(getFirst);
 
         Assert.assertTrue(certificateActual.getTags()
                 .stream()

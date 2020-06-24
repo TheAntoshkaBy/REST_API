@@ -14,16 +14,16 @@ public class ByIdFindCertificatesWhereIdMoreThanParameter implements Certificate
     private final String FILTER_TYPE = "more id";
     private CertificateService certificateService;
 
+    @Autowired
+    public void setCertificateService(CertificateService certificateService) {
+        this.certificateService = certificateService;
+    }
+
     @Override
     public List<Certificate> filterOutOurCertificates(HttpServletRequest request) {
         return certificateService.findAllCertificatesWhereIdMoreThenTransmittedId(
                 Integer.parseInt(request.getParameterValues("id")[0])
         );
-    }
-
-    @Autowired
-    public void setCertificateService(CertificateService certificateService) {
-        this.certificateService = certificateService;
     }
 
     public String getType() {

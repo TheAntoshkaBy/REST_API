@@ -42,36 +42,45 @@ public class TagServiceImplTest {
 
     @Test
     public void find() throws TagNotFoundException {
+        Integer tagId = 1;
+        Integer getFirst = 0;
+
         when(tagDAOJDBCTemplate.findTagById(anyInt())).thenReturn(tags.get(0));
 
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
-        Tag tagActual = tagService.find(1);
+        Tag tagActual = tagService.find(tagId);
 
-        Assert.assertEquals(tagActual, tags.get(0));
+        Assert.assertEquals(tagActual, tags.get(getFirst));
     }
 
     @Test
     public void delete() throws TagNotFoundException {
+        Integer tagId = 2;
+        Integer getFirst = 0;
+
         doAnswer(invocation -> {
-            Object id = invocation.getArgument(0);
-            assertEquals(2, id);
-            tags.remove(2);
+            Object id = invocation.getArgument(getFirst);
+            assertEquals(tagId, id);
+            tags.remove(tagId);
             return null;
         }).when(tagDAOJDBCTemplate).deleteTagById(anyInt());
 
         List<Tag> expectedTags = tags;
 
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
-        tagService.delete(2);
+        tagService.delete(tagId);
 
         assertEquals(expectedTags, tags);
     }
 
     @Test
     public void create() throws TagNotFoundException {
+        Integer tagId = 2;
+        Integer getFirst = 0;
+
         doAnswer(invocation -> {
-            Object id = invocation.getArgument(0);
-            assertEquals(2,id);
+            Object id = invocation.getArgument(getFirst);
+            assertEquals(tagId,id);
             tags.add(tag);
             return null;
         }).when(tagDAOJDBCTemplate).addTag(any(Tag.class));
@@ -79,7 +88,7 @@ public class TagServiceImplTest {
         List<Tag> expectedTags = tags;
 
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
-        tagService.delete(2);
+        tagService.delete(tagId);
 
         assertEquals(expectedTags, tags);
     }

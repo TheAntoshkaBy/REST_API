@@ -45,9 +45,11 @@ public class TagControllerTest {
 
     @Test
     public void findTag_TagId_TagWhichContainTransmittedId() throws TagNotFoundException {
+        int tagId = 4;
+
         when(service.find(anyInt())).thenReturn(expectedTag);
 
-        actualResponseEntity = tagController.findTag(13);
+        actualResponseEntity = tagController.findTag(tagId);
         expectedResponseEntity = new ResponseEntity<>(expectedTag, HttpStatus.OK);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
@@ -65,8 +67,10 @@ public class TagControllerTest {
 
     @Test
     public void addTag_Tag_TagListWhichContainsTransmittedTag() {
+        int getFirst = 0;
+
         doAnswer(invocation -> {
-            Object tag = invocation.getArgument(0);
+            Object tag = invocation.getArgument(getFirst);
             assertEquals(any(Tag.class), tag);
             tags.add(expectedTag);
             return null;
@@ -75,23 +79,25 @@ public class TagControllerTest {
         when(service.findAll()).thenReturn(tags);
 
         actualResponseEntity = tagController.addTag(any(Tag.class));
-        expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
+        expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.CREATED);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
 
     @Test
     public void deleteTag_TagId_TagWhichNotContainTransmittedId() throws TagNotFoundException {
+        int getFirst = 0;
+
         doAnswer(invocation -> {
-            Object tagId = invocation.getArgument(0);
-            assertEquals(0, tagId);
-            tags.remove(0);
+            Object tagId = invocation.getArgument(getFirst);
+            assertEquals(getFirst, tagId);
+            tags.remove(getFirst);
             return null;
-        }).when(service).delete(0);
+        }).when(service).delete(getFirst);
 
         when(service.findAll()).thenReturn(tags);
 
-        actualResponseEntity = tagController.deleteTag(0);
+        actualResponseEntity = tagController.deleteTag(getFirst);
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);

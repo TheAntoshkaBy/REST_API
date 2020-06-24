@@ -88,8 +88,10 @@ public class CertificateControllerTest {
     @Test
     public void addCertificate_NewCertificate_ListCertificatesWhichContainTransmittedCertificate()
             throws CertificateNotFoundException {
+        int getFirst = 0;
+
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
+            Object certificateId = invocation.getArgument(getFirst);
             assertEquals(expectedCertificate, certificateId);
             expectedCertificates.add(expectedCertificate);
             return null;
@@ -99,7 +101,7 @@ public class CertificateControllerTest {
 
         actualResponseEntity = certificateController.findAll(any(HttpServletRequest.class));
         actualResponseEntity = certificateController.addCertificate(expectedCertificate);
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
+        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.CREATED);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
@@ -107,19 +109,22 @@ public class CertificateControllerTest {
     @Test
     public void updateCertificate_NewCertificateData_ListCertificatesWhichContainCertificateWithTransmittedData()
             throws CertificateNotFoundException {
+        int getFirst = 0;
+        int getSecond = 1;
+
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object certificate = invocation.getArgument(1);
+            Object certificateId = invocation.getArgument(getFirst);
+            Object certificate = invocation.getArgument(getSecond);
             assertEquals(anyInt(), certificateId);
             assertEquals(any(Certificate.class), certificate);
             expectedCertificates.set(0,expectedCertificate);
             return null;
         }).when(service).update(anyInt(),any(Certificate.class));
 
-        when(service.findAll()).thenReturn(expectedCertificates);
+        when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
         actualResponseEntity = certificateController.updateCertificate(any(Certificate.class),anyInt());
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
+        expectedResponseEntity = new ResponseEntity<>(service.find(getFirst), HttpStatus.OK);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
@@ -127,12 +132,15 @@ public class CertificateControllerTest {
     @Test
     public void deleteCertificate_DeletedCertificate_ListCertificatesWithoutDeletedCertificate()
             throws CertificateNotFoundException {
+        int getFirst = 0;
+        int getSecond = 1;
+
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
+            Object certificateId = invocation.getArgument(getFirst);
             assertEquals(anyInt(), certificateId);
-            expectedCertificates.remove(0);
+            expectedCertificates.remove(getFirst);
             return null;
-        }).when(service).delete(1);
+        }).when(service).delete(getSecond);
 
         when(service.findAll()).thenReturn(expectedCertificates);
 
@@ -145,19 +153,22 @@ public class CertificateControllerTest {
     @Test
     public void addTagToCertificate_NewTag_CertificateTagsWithContainsTransmittedTag()
             throws CertificateNotFoundException {
+        int getFirst = 0;
+        int getSecond = 1;
+
         doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object tag = invocation.getArgument(1);
-            assertEquals(anyInt(), certificateId);
-            assertEquals(any(Tag.class), tag);
-            expectedCertificates.get(0).getTags().add(testTag);
+            Object certificateId = invocation.getArgument(getFirst);
+            Object tag = invocation.getArgument(getSecond);
+            assertEquals(getFirst, certificateId);
+            assertEquals(testTag, tag);
+            expectedCertificates.get(getFirst).getTags().add(testTag);
             return null;
-        }).when(service).addTag(anyInt(), any(Tag.class));
+        }).when(service).addTag(getFirst,testTag);
 
-        when(service.findAll()).thenReturn(expectedCertificates);
+        when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
-        actualResponseEntity = certificateController.addTagToCertificate(anyInt(),any(Tag.class));
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
+        actualResponseEntity = certificateController.addTagToCertificate(getFirst,testTag);
+        expectedResponseEntity = new ResponseEntity<>(service.find(getFirst), HttpStatus.CREATED);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
@@ -165,19 +176,22 @@ public class CertificateControllerTest {
     @Test
     public void addTagToCertificate_idTag_CertificateTagsWithTagWhichContainsTransmittedIdTag()
             throws CertificateNotFoundException {
-        doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object tagId = invocation.getArgument(1);
-            assertEquals(0, certificateId);
-            assertEquals(0, tagId);
-            expectedCertificates.get(0).getTags().add(tags.get(0));
-            return null;
-        }).when(service).addTag(0, 0);
+        int getFirst = 0;
+        int getSecond = 1;
 
-        when(service.findAll()).thenReturn(expectedCertificates);
+        doAnswer(invocation -> {
+            Object certificateId = invocation.getArgument(getFirst);
+            Object tagId = invocation.getArgument(getSecond);
+            assertEquals(getFirst, certificateId);
+            assertEquals(getFirst, tagId);
+            expectedCertificates.get(getFirst).getTags().add(tags.get(getFirst));
+            return null;
+        }).when(service).addTag(getFirst, getFirst);
+
+        when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
         actualResponseEntity = certificateController.addTagToCertificate(anyInt(),anyInt());
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
+        expectedResponseEntity = new ResponseEntity<>(expectedCertificates.get(getFirst), HttpStatus.OK);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
@@ -185,19 +199,22 @@ public class CertificateControllerTest {
     @Test
     public void deleteTagToCertificate_idTag_CertificateTagsWithoutTagWhichContainsTransmittedIdTag()
             throws CertificateNotFoundException {
-        doAnswer(invocation -> {
-            Object certificateId = invocation.getArgument(0);
-            Object tagId = invocation.getArgument(1);
-            assertEquals(0, certificateId);
-            assertEquals(0, tagId);
-            expectedCertificates.get(0).getTags().remove(0);
-            return null;
-        }).when(service).deleteTag(0, 0);
+        int getFirst = 0;
+        int getSecond = 1;
 
-        when(service.findAll()).thenReturn(expectedCertificates);
+        doAnswer(invocation -> {
+            Object certificateId = invocation.getArgument(getFirst);
+            Object tagId = invocation.getArgument(getSecond);
+            assertEquals(getFirst, certificateId);
+            assertEquals(getFirst, tagId);
+            expectedCertificates.get(getFirst).getTags().remove(getFirst);
+            return null;
+        }).when(service).deleteTag(getFirst, getFirst);
+
+        when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
         actualResponseEntity = certificateController.deleteTagToCertificate(anyInt(),anyInt());
-        expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
+        expectedResponseEntity = new ResponseEntity<>(expectedCertificates.get(getFirst), HttpStatus.OK);
 
         Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
     }
