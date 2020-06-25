@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Component
 public class CertificateServiceRequestParameterHandler {
@@ -25,13 +24,17 @@ public class CertificateServiceRequestParameterHandler {
         if (request.getParameter("filter") == null) {
             result = certificateService.findAll();
         } else {
-            result = certificateFilterRequestParameterList.stream()
-                    .filter(certificateFilter -> certificateFilter
-                            .getType()
-                            .equals(request.getParameter("filter")))
-                    .findFirst()
-                    .get()
-                    .filterOutOurCertificates(request);
+            try {
+                result = certificateFilterRequestParameterList.stream()
+                        .filter(certificateFilter -> certificateFilter
+                                .getType()
+                                .equals(request.getParameter("filter")))
+                        .findFirst()
+                        .get()
+                        .filterOutOurCertificates(request);
+            } catch (NoSuchElementException e) {
+                throw new CertificateNotFoundException();
+            }
         }
 
         return result;

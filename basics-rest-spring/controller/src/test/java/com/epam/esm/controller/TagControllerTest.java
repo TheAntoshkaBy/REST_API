@@ -33,14 +33,14 @@ public class TagControllerTest {
     }
 
     @Before
-    public void initTagTest(){
+    public void initTagTest() {
         tags = new ArrayList<>();
 
-        tags.add(new Tag(1,"AllGreat"));
-        tags.add(new Tag(2,"LiveIsWonderful"));
-        tags.add(new Tag(3,"PlayTheMan"));
+        tags.add(new Tag(1, "AllGreat"));
+        tags.add(new Tag(2, "LiveIsWonderful"));
+        tags.add(new Tag(3, "PlayTheMan"));
 
-        expectedTag = new Tag(4,"BeStrong");
+        expectedTag = new Tag(4, "BeStrong");
     }
 
     @Test
@@ -52,7 +52,7 @@ public class TagControllerTest {
         actualResponseEntity = tagController.findTag(tagId);
         expectedResponseEntity = new ResponseEntity<>(expectedTag, HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TagControllerTest {
         actualResponseEntity = tagController.findAll();
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TagControllerTest {
         actualResponseEntity = tagController.addTag(any(Tag.class));
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.CREATED);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -100,6 +100,6 @@ public class TagControllerTest {
         actualResponseEntity = tagController.deleteTag(getFirst);
         expectedResponseEntity = new ResponseEntity<>(tags, HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 }

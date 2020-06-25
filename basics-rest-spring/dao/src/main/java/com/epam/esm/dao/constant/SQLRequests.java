@@ -16,11 +16,10 @@ public class SQLRequests {
             "SELECT name, description, date_of_creation, " +
                     "date_of_modification,duration_days,certificate.id_certificate,price " +
                     "FROM rest_api_basics.many_certificates_to_many_tags\n" +
-                    "JOIN rest_api_basics.certificate " +
+                    "INNER JOIN rest_api_basics.certificate " +
                     "ON many_certificates_to_many_tags.id_certificate = certificate.id_certificate\n" +
-                    "JOIN rest_api_basics.tag " +
+                    "INNER JOIN rest_api_basics.tag " +
                     "ON many_certificates_to_many_tags.id_tag = tag.id_tag\n" +
-                    "WHERE certificate.id_certificate = many_certificates_to_many_tags.id_certificate\n" +
                     "AND tag_name LIKE :name " +
                     "GROUP BY certificate.id_certificate";
 
@@ -75,4 +74,13 @@ public class SQLRequests {
 
     public static final String DELETE_ALL_RELATIONSHIPS =
             "DELETE FROM rest_api_basics.many_certificates_to_many_tags;";
+
+    public static final String ADD_NEW_TAG_TO_CERTIFICATE_TRANSACTION = "DO $$\n" +
+            "DECLARE\n" +
+            "tag_id_to_set int;\n" +
+            "BEGIN\n" +
+            "INSERT INTO rest_api_basics.tag (tag_name, id_tag) VALUES (:tag_name, DEFAULT) RETURNING id_tag INTO tag_id_to_set;\n" +
+            "INSERT INTO rest_api_basics.many_certificates_to_many_tags VALUES (:id_certificate, tag_id_to_set);\n" +
+            "COMMIT;\n" +
+            "END $$";
 }

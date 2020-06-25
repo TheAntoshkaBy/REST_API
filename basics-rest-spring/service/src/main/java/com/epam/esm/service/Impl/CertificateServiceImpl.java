@@ -7,7 +7,6 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -28,16 +27,14 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     /**
-     *
      * @param params Request params for choice
      *               selection of certificate display type
-     *
      * @return Certificate list
      * @throws CertificateNotFoundException
      */
     @Override
     public List<Certificate> findAll(HttpServletRequest params) throws CertificateNotFoundException {
-       return certificateServiceRequestParameterHandler.filter(params);
+        return certificateServiceRequestParameterHandler.filter(params);
     }
 
     @Override
@@ -67,7 +64,7 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public void addTag(int id, Tag tag) {
-        certificateDAO.addTag(id,tagDAO.addTag(tag));
+        certificateDAO.addTag(id, tagDAO.addTag(tag));
     }
 
     @Override

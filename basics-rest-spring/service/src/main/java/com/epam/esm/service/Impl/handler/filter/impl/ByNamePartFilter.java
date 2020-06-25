@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 public class ByNamePartFilter implements CertificateFilterRequestParameter {
-    private final String FILTER_TYPE = "by name part";
+    private static final String FILTER_TYPE = "by name part";
     private CertificateService certificateService;
 
     @Autowired

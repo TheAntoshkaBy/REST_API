@@ -25,10 +25,10 @@ public class TagServiceImplTest {
     @Before
     public void init() {
         tags = new ArrayList<>();
-        tags.add(new Tag(1,"AllGreat"));
-        tags.add(new Tag(2,"LiveIsWonderful"));
-        tags.add(new Tag(3,"PlayTheMan"));
-        tag = new Tag(4,"BeStrong");
+        tags.add(new Tag(1, "AllGreat"));
+        tags.add(new Tag(2, "LiveIsWonderful"));
+        tags.add(new Tag(3, "PlayTheMan"));
+        tag = new Tag(4, "BeStrong");
         tagDAOJDBCTemplate = mock(TagDAOJDBCTemplate.class);
     }
 
@@ -80,7 +80,7 @@ public class TagServiceImplTest {
 
         doAnswer(invocation -> {
             Object id = invocation.getArgument(getFirst);
-            assertEquals(tagId,id);
+            assertEquals(tagId, id);
             tags.add(tag);
             return null;
         }).when(tagDAOJDBCTemplate).addTag(any(Tag.class));

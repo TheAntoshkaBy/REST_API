@@ -42,8 +42,8 @@ public class TagDAOJDBCTemplateTest {
         tagDAOJDBCTemplate.addTag(playTheMan);
         tagsListExpected.add(playTheMan);
 
-        tagExpected = new Tag(4,"BeStrong");
-        tagActual = new Tag(5,"BeBest");
+        tagExpected = new Tag(4, "BeStrong");
+        tagActual = new Tag(5, "BeBest");
 
         tagsListActual = tagDAOJDBCTemplate.findAll();
     }
@@ -51,7 +51,7 @@ public class TagDAOJDBCTemplateTest {
     @Test
     public void getAll_FindAllListOfTags_TagsListExpectedAreEqualWithTagListActual() {
         tagsListActual = tagDAOJDBCTemplate.findAll();
-        Assert.assertEquals(tagsListExpected,tagsListActual);
+        Assert.assertEquals(tagsListExpected, tagsListActual);
     }
 
     @Test

@@ -1,7 +1,7 @@
 package com.epam.esm.exception;
 
 
-public class TagNotFoundException extends Exception {
+public class TagNotFoundException extends RuntimeException {
 
     private final String MESSAGE = "This tag is not available or does not exist, please check the entered data!";
 

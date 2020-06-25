@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 public class ByDateFilter implements CertificateFilterRequestParameter {
-    private final String FILTER_TYPE = "date";
+    private static final String FILTER_TYPE = "date";
     private CertificateService certificateService;
 
     @Autowired

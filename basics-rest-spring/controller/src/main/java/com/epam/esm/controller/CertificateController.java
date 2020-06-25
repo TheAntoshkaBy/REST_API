@@ -50,8 +50,8 @@ public class CertificateController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificate(@RequestBody Certificate certificate) {
-        service.create(certificate);
         try {
+            service.create(certificate);
             return new ResponseEntity<>(service.findAll(), HttpStatus.CREATED);
         } catch (CertificateNotFoundException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
@@ -60,8 +60,8 @@ public class CertificateController {
 
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
-        service.addTag(id, tag);
         try {
+            service.addTag(id, tag);
             return new ResponseEntity<>(service.find(id), HttpStatus.CREATED);
         } catch (CertificateNotFoundException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
@@ -71,8 +71,8 @@ public class CertificateController {
     @PostMapping(path = "{id}/tags/{idTag}")
     public ResponseEntity<?> addTagToCertificate
             (@PathVariable Integer id, @PathVariable Integer idTag) {
-        service.addTag(id, idTag);
         try {
+            service.addTag(id, idTag);
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
         } catch (CertificateNotFoundException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);

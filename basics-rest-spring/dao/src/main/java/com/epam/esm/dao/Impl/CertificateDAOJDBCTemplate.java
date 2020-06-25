@@ -58,10 +58,10 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         List<Certificate> certificates;
 
         try {
-           certificates  = jdbcTemplate.query(
+            certificates = jdbcTemplate.query(
                     SQLRequests.FIND_ALL_CERTIFICATES, new CertificateDAORowMapper()
             );
-        }catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new CertificateNotFoundException();
         }
 
@@ -79,7 +79,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
             certificates = jdbcTemplate.query(
                     SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE, new CertificateDAORowMapper()
             );
-        }catch (DataAccessException e){
+        } catch (DataAccessException e) {
             throw new CertificateNotFoundException();
         }
 
@@ -159,7 +159,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         Map<String, Object> namedParameters = namedParamsCreate(certificate);
         namedParameters.put("id", id);
 
-        if(jdbcTemplate.update(SQLRequests.UPDATE_CERTIFICATE, namedParameters) == 0){
+        if (jdbcTemplate.update(SQLRequests.UPDATE_CERTIFICATE, namedParameters) == 0) {
             throw new CertificateNotFoundException();
         }
     }
@@ -169,7 +169,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
 
-        if(jdbcTemplate.update(SQLRequests.DELETE_CERTIFICATE, namedParameters) == 0){
+        if (jdbcTemplate.update(SQLRequests.DELETE_CERTIFICATE, namedParameters) == 0) {
             throw new CertificateNotFoundException();
         }
     }
@@ -180,7 +180,7 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("id_certificate", idCertificate);
         namedParameters.put("id_tag", idTag);
 
-        if(jdbcTemplate.update(SQLRequests.DELETE_TAG_FROM_CERTIFICATE, namedParameters) == 0){
+        if (jdbcTemplate.update(SQLRequests.DELETE_TAG_FROM_CERTIFICATE, namedParameters) == 0) {
             throw new CertificateNotFoundException();
         }
     }

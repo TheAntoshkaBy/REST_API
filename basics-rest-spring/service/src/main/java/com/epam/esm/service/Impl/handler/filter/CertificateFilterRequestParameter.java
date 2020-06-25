@@ -11,5 +11,4 @@ public interface CertificateFilterRequestParameter {
     List<Certificate> filterOutOurCertificates(HttpServletRequest request) throws CertificateNotFoundException;
 
     String getType();
-
 }

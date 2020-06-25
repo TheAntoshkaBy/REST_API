@@ -18,23 +18,23 @@ public interface TagService {
     /**
      * This method finds concrete Tag By Id using DAO
      *
-     * @param id  Tag Id
+     * @param id Tag Id
      * @return Tag
      **/
     Tag find(int id) throws TagNotFoundException;
 
     /**
      * This method delete tag by transmitted tag id
-     *      to certificate with transmitted certificate id using DAO
+     * to certificate with transmitted certificate id using DAO
      *
-     * @param id  certificate id which will be edit
+     * @param id certificate id which will be edit
      **/
     void delete(int id) throws TagNotFoundException;
 
     /**
      * This method add new Tag
      *
-     * @param tag  Tag object
+     * @param tag Tag object
      **/
     void create(Tag tag);
 }

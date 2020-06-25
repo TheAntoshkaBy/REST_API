@@ -39,7 +39,7 @@ public class TagDAOJDBCTemplate implements TagDAO {
         Tag tag;
         try {
             tag = jdbcTemplate.queryForObject(SQLRequests.FIND_TAG_BY_ID, namedParameters, new TagDAORowMapper());
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new TagNotFoundException();
         }
         return tag;
@@ -62,7 +62,7 @@ public class TagDAOJDBCTemplate implements TagDAO {
         Map<String, Object> namedParameters = new HashMap<>();
         namedParameters.put("id", id);
 
-        if(jdbcTemplate.update(SQLRequests.DELETE_TAG_BY_ID, namedParameters) == 0){
+        if (jdbcTemplate.update(SQLRequests.DELETE_TAG_BY_ID, namedParameters) == 0) {
             throw new TagNotFoundException();
         }
     }
@@ -71,7 +71,7 @@ public class TagDAOJDBCTemplate implements TagDAO {
     public void deleteAll() throws TagNotFoundException {
         Map<String, Object> namedParameters = new HashMap<>();
 
-        if(jdbcTemplate.update(SQLRequests.DELETE_ALL_TAGS, namedParameters) == 0){
+        if (jdbcTemplate.update(SQLRequests.DELETE_ALL_TAGS, namedParameters) == 0) {
             throw new TagNotFoundException();
         }
     }

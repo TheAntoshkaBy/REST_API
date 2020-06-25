@@ -203,7 +203,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedId, tagId);
             certificates.get(0).getTags().remove(tags.get(3));
             return null;
-        }).when(certificateDAOJDBCTemplate).deleteTag(anyInt(),anyInt());
+        }).when(certificateDAOJDBCTemplate).deleteTag(anyInt(), anyInt());
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(0).getTags().remove(tags.get(actual));
@@ -292,7 +292,7 @@ public class CertificateServiceImplTest {
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
         certificateService.setCertificateServiceRequestParameterHandler(certificateServiceRequestParameterHandler);
 
-        Assert.assertEquals(certificates,certificateService.findAll(mock(HttpServletRequest.class)));
+        Assert.assertEquals(certificates, certificateService.findAll(mock(HttpServletRequest.class)));
     }
 
     @Test

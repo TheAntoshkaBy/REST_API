@@ -1,6 +1,6 @@
 package com.epam.esm.exception;
 
-public class CertificateNotFoundException extends Exception {
+public class CertificateNotFoundException extends RuntimeException {
     private final String MESSAGE = "This certificate is not available or does not exist, please check the entered data!";
 
     public CertificateNotFoundException() {

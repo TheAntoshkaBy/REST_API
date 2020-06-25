@@ -39,22 +39,22 @@ public class CertificateControllerTest {
     }
 
     @Before
-    public void initTestTags(){
+    public void initTestTags() {
         tags = new ArrayList<>();
 
-        tags.add(new Tag(1,"AllGreat"));
-        tags.add(new Tag(2,"LiveIsWonderful"));
-        tags.add(new Tag(3,"PlayTheMan"));
+        tags.add(new Tag(1, "AllGreat"));
+        tags.add(new Tag(2, "LiveIsWonderful"));
+        tags.add(new Tag(3, "PlayTheMan"));
 
-        testTag = new Tag(4,"BeStrong");
+        testTag = new Tag(4, "BeStrong");
     }
 
     @Before
-    public void initTestCertificates(){
+    public void initTestCertificates() {
         expectedCertificates = new ArrayList<>();
 
         expectedCertificates.add(new Certificate(10, "Football", "for You",
-                34.54, new Date(), new Date(), 10,tags));
+                34.54, new Date(), new Date(), 10, tags));
         expectedCertificates.add(new Certificate(11, "Bolls", "for You",
                 34.54, new Date(), new Date(), 10, tags));
         expectedCertificates.add(new Certificate(12, "Success", "for You",
@@ -72,7 +72,7 @@ public class CertificateControllerTest {
         actualResponseEntity = certificateController.findCertificateById(13);
         expectedResponseEntity = new ResponseEntity<>(expectedCertificate, HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class CertificateControllerTest {
         actualResponseEntity = certificateController.findByTag(testTag);
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class CertificateControllerTest {
         actualResponseEntity = certificateController.addCertificate(expectedCertificate);
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.CREATED);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -117,16 +117,16 @@ public class CertificateControllerTest {
             Object certificate = invocation.getArgument(getSecond);
             assertEquals(anyInt(), certificateId);
             assertEquals(any(Certificate.class), certificate);
-            expectedCertificates.set(0,expectedCertificate);
+            expectedCertificates.set(0, expectedCertificate);
             return null;
-        }).when(service).update(anyInt(),any(Certificate.class));
+        }).when(service).update(anyInt(), any(Certificate.class));
 
         when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
-        actualResponseEntity = certificateController.updateCertificate(any(Certificate.class),anyInt());
+        actualResponseEntity = certificateController.updateCertificate(any(Certificate.class), anyInt());
         expectedResponseEntity = new ResponseEntity<>(service.find(getFirst), HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class CertificateControllerTest {
         actualResponseEntity = certificateController.deleteCertificate(anyInt());
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -163,14 +163,14 @@ public class CertificateControllerTest {
             assertEquals(testTag, tag);
             expectedCertificates.get(getFirst).getTags().add(testTag);
             return null;
-        }).when(service).addTag(getFirst,testTag);
+        }).when(service).addTag(getFirst, testTag);
 
         when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
-        actualResponseEntity = certificateController.addTagToCertificate(getFirst,testTag);
+        actualResponseEntity = certificateController.addTagToCertificate(getFirst, testTag);
         expectedResponseEntity = new ResponseEntity<>(service.find(getFirst), HttpStatus.CREATED);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -190,10 +190,10 @@ public class CertificateControllerTest {
 
         when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
-        actualResponseEntity = certificateController.addTagToCertificate(anyInt(),anyInt());
+        actualResponseEntity = certificateController.addTagToCertificate(anyInt(), anyInt());
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates.get(getFirst), HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 
     @Test
@@ -213,9 +213,9 @@ public class CertificateControllerTest {
 
         when(service.find(getFirst)).thenReturn(expectedCertificates.get(getFirst));
 
-        actualResponseEntity = certificateController.deleteTagToCertificate(anyInt(),anyInt());
+        actualResponseEntity = certificateController.deleteTagToCertificate(anyInt(), anyInt());
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates.get(getFirst), HttpStatus.OK);
 
-        Assert.assertEquals(expectedResponseEntity,actualResponseEntity);
+        Assert.assertEquals(expectedResponseEntity, actualResponseEntity);
     }
 }
