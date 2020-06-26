@@ -6,7 +6,7 @@ import com.epam.esm.dao.mapper.CertificateDAORowMapper;
 import com.epam.esm.dao.mapper.TagDAORowMapper;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

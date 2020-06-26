@@ -2,8 +2,9 @@ package com.epam.esm.service;
 
 import com.epam.esm.dao.Impl.TagDAOJDBCTemplate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.Impl.TagServiceImpl;
+import com.epam.esm.service.validator.TagValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ public class TagServiceImplTest {
     private List<Tag> tags;
     private Tag tag;
     private TagService tagService;
+    private TagValidator tagValidator;
 
     @Before
     public void init() {
@@ -29,6 +31,8 @@ public class TagServiceImplTest {
         tags.add(new Tag(2, "LiveIsWonderful"));
         tags.add(new Tag(3, "PlayTheMan"));
         tag = new Tag(4, "BeStrong");
+
+        tagValidator = mock(TagValidator.class);
         tagDAOJDBCTemplate = mock(TagDAOJDBCTemplate.class);
     }
 
@@ -88,6 +92,7 @@ public class TagServiceImplTest {
         List<Tag> expectedTags = tags;
 
         tagService = new TagServiceImpl(tagDAOJDBCTemplate);
+        tagService.setTagValidator(tagValidator);
         tagService.delete(tagId);
 
         assertEquals(expectedTags, tags);

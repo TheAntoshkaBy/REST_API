@@ -2,8 +2,9 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.validator.CertificateValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -107,5 +108,7 @@ public interface CertificateService {
 
     void setCertificateServiceRequestParameterHandler
             (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
+
+    void setCertificateValidator(CertificateValidator certificateValidator);
 }
 

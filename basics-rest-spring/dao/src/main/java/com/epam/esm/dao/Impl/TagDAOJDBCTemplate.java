@@ -4,7 +4,7 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.constant.SQLRequests;
 import com.epam.esm.dao.mapper.TagDAORowMapper;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.tag.TagNotFoundException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;

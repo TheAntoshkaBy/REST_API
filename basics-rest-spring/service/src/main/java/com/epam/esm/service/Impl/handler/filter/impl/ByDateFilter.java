@@ -1,7 +1,7 @@
 package com.epam.esm.service.Impl.handler.filter.impl;
 
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
 import org.springframework.beans.factory.annotation.Autowired;

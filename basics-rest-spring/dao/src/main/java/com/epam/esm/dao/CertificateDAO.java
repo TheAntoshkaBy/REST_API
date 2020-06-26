@@ -2,7 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.certificate.CertificateNotFoundException;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public interface CertificateDAO {
     /**
      * This method finds concrete Certificate By Id
      *
-     * @param id  Certificate Id
+     * @param id Certificate Id
      * @return Certificate
      **/
     Certificate findCertificateById(int id) throws CertificateNotFoundException;
@@ -44,7 +44,7 @@ public interface CertificateDAO {
     /**
      * This method finds Certificates where Id more than @param
      *
-     * @param id  Certificate Id
+     * @param id Certificate Id
      * @return Certificates List
      **/
     List<Certificate> findCertificateWhereIdMoreThanParameter(int id);
@@ -52,14 +52,14 @@ public interface CertificateDAO {
     /**
      * This method add new Certificate
      *
-     * @param certificate  Certificate object
+     * @param certificate Certificate object
      **/
     void addCertificate(Certificate certificate);
 
     /**
      * This method update concrete Certificate by transmitted id
      *
-     * @param id  certificate id which will be edit
+     * @param id          certificate id which will be edit
      * @param certificate edit data
      **/
     void updateCertificate(int id, Certificate certificate) throws CertificateNotFoundException;
@@ -67,14 +67,14 @@ public interface CertificateDAO {
     /**
      * This method delete concrete Certificate by transmitted id
      *
-     * @param id  certificate id which will be delete
+     * @param id certificate id which will be delete
      **/
     void deleteCertificateById(int id) throws CertificateNotFoundException;
 
     /**
      * This method add tag by transmitted tag id to certificate with transmitted certificate id
      *
-     * @param id  certificate id which will be edit
+     * @param id    certificate id which will be edit
      * @param idTag tag id which we will be add to certificate
      **/
     void addTag(int idCertificate, int idTag);
@@ -82,8 +82,8 @@ public interface CertificateDAO {
     /**
      * This method delete tag by transmitted tag id to certificate with transmitted certificate id
      *
-     * @param idCertificate  certificate id which will be edit
-     * @param idTag tag id which we will be add to certificate
+     * @param idCertificate certificate id which will be edit
+     * @param idTag         tag id which we will be add to certificate
      **/
     void deleteTag(int idCertificate, int idTag) throws CertificateNotFoundException;
 

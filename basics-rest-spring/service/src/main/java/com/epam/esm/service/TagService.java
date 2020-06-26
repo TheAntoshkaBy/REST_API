@@ -1,7 +1,8 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.tag.TagNotFoundException;
+import com.epam.esm.service.validator.TagValidator;
 
 import java.util.List;
 
@@ -37,4 +38,6 @@ public interface TagService {
      * @param tag Tag object
      **/
     void create(Tag tag);
+
+    void setTagValidator(TagValidator tagValidator);
 }

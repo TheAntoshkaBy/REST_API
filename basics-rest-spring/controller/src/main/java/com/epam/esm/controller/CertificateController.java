@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.ServiceException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +25,7 @@ public class CertificateController {
     public ResponseEntity<?> findCertificateById(@PathVariable Integer id) {
         try {
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -34,7 +34,7 @@ public class CertificateController {
     public ResponseEntity<?> findAll(HttpServletRequest params) {
         try {
             return new ResponseEntity<>(service.findAll(params), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -43,7 +43,7 @@ public class CertificateController {
     public ResponseEntity<?> findByTag(@RequestBody Tag tag) {
         try {
             return new ResponseEntity<>(service.findAllCertificatesByTag(tag), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -53,7 +53,7 @@ public class CertificateController {
         try {
             service.create(certificate);
             return new ResponseEntity<>(service.findAll(), HttpStatus.CREATED);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -63,7 +63,7 @@ public class CertificateController {
         try {
             service.addTag(id, tag);
             return new ResponseEntity<>(service.find(id), HttpStatus.CREATED);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -74,7 +74,7 @@ public class CertificateController {
         try {
             service.addTag(id, idTag);
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -86,7 +86,7 @@ public class CertificateController {
         try {
             service.update(id, certificate);
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -96,7 +96,7 @@ public class CertificateController {
         try {
             service.delete(id);
             return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -107,7 +107,7 @@ public class CertificateController {
         try {
             service.deleteTag(id, idTag);
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
-        } catch (CertificateNotFoundException e) {
+        } catch (ServiceException e) {
             return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
         }
     }

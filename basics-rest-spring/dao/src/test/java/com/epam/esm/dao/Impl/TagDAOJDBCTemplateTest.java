@@ -1,7 +1,7 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.tag.TagNotFoundException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

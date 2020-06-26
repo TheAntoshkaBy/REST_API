@@ -3,9 +3,10 @@ package com.epam.esm.service;
 import com.epam.esm.dao.Impl.CertificateDAOJDBCTemplate;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.Impl.CertificateServiceImpl;
 import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.validator.CertificateValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,13 +26,16 @@ public class CertificateServiceImplTest {
     private Certificate expectedCertificate;
     private CertificateService certificateService;
     private List<Certificate> certificates;
-    private CertificateDAOJDBCTemplate certificateDAOJDBCTemplate;
     private List<Tag> tags;
     private Tag tag;
+
+    private CertificateDAOJDBCTemplate certificateDAOJDBCTemplate;
+    private CertificateValidator certificateValidator;
 
     @Before
     public void init() {
         certificateDAOJDBCTemplate = mock(CertificateDAOJDBCTemplate.class);
+        certificateValidator = mock(CertificateValidator.class);
     }
 
     @Before
@@ -133,6 +137,7 @@ public class CertificateServiceImplTest {
         expectedCertificates.set(2, expectedCertificate);
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
+        certificateService.setCertificateValidator(certificateValidator);
         certificateService.update(12, expectedCertificate);
 
         assertEquals(expectedCertificates, certificates);
@@ -155,6 +160,7 @@ public class CertificateServiceImplTest {
         expectedCertificates.add(expectedCertificate);
 
         certificateService = new CertificateServiceImpl(certificateDAOJDBCTemplate);
+        certificateService.setCertificateValidator(certificateValidator);
         certificateService.create(expectedCertificate);
 
         assertEquals(expectedCertificates, certificates);

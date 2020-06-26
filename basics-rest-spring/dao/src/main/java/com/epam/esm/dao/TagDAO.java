@@ -1,7 +1,7 @@
 package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.tag.TagNotFoundException;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface TagDAO {
     /**
      * This method finds concrete Tag By Id
      *
-     * @param id  Tag Id
+     * @param id Tag Id
      * @return Tag
      **/
     Tag findTagById(int id) throws TagNotFoundException;
@@ -26,14 +26,14 @@ public interface TagDAO {
     /**
      * This method add new Tag
      *
-     * @param tag  Tag object
+     * @param tag Tag object
      **/
     int addTag(Tag tag);
 
     /**
      * This method delete tag by transmitted tag id to certificate with transmitted certificate id
      *
-     * @param id  certificate id which will be edit
+     * @param id certificate id which will be edit
      **/
     void deleteTagById(int id) throws TagNotFoundException;
 

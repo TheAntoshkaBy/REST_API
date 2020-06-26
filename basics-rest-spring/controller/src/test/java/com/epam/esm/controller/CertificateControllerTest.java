@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.ServiceException;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.Impl.CertificateServiceImpl;
 import org.junit.Assert;
@@ -66,7 +66,7 @@ public class CertificateControllerTest {
 
     @Test
     public void findCertificate_CertificateId_ResponseEntityWithCertificateWhichContainTransmittedId()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         when(service.find(anyInt())).thenReturn(expectedCertificate);
 
         actualResponseEntity = certificateController.findCertificateById(13);
@@ -76,7 +76,7 @@ public class CertificateControllerTest {
     }
 
     @Test
-    public void findByTag_Tag_CertificatesWhichContainsTransmittedTag() throws CertificateNotFoundException {
+    public void findByTag_Tag_CertificatesWhichContainsTransmittedTag() throws ServiceException {
         when(service.findAllCertificatesByTag(any(Tag.class))).thenReturn(expectedCertificates);
 
         actualResponseEntity = certificateController.findByTag(testTag);
@@ -87,7 +87,7 @@ public class CertificateControllerTest {
 
     @Test
     public void addCertificate_NewCertificate_ListCertificatesWhichContainTransmittedCertificate()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         int getFirst = 0;
 
         doAnswer(invocation -> {
@@ -108,7 +108,7 @@ public class CertificateControllerTest {
 
     @Test
     public void updateCertificate_NewCertificateData_ListCertificatesWhichContainCertificateWithTransmittedData()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         int getFirst = 0;
         int getSecond = 1;
 
@@ -131,7 +131,7 @@ public class CertificateControllerTest {
 
     @Test
     public void deleteCertificate_DeletedCertificate_ListCertificatesWithoutDeletedCertificate()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         int getFirst = 0;
         int getSecond = 1;
 
@@ -152,7 +152,7 @@ public class CertificateControllerTest {
 
     @Test
     public void addTagToCertificate_NewTag_CertificateTagsWithContainsTransmittedTag()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         int getFirst = 0;
         int getSecond = 1;
 
@@ -175,7 +175,7 @@ public class CertificateControllerTest {
 
     @Test
     public void addTagToCertificate_idTag_CertificateTagsWithTagWhichContainsTransmittedIdTag()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         int getFirst = 0;
         int getSecond = 1;
 
@@ -198,7 +198,7 @@ public class CertificateControllerTest {
 
     @Test
     public void deleteTagToCertificate_idTag_CertificateTagsWithoutTagWhichContainsTransmittedIdTag()
-            throws CertificateNotFoundException {
+            throws ServiceException {
         int getFirst = 0;
         int getSecond = 1;
 
