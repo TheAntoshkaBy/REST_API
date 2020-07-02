@@ -4,20 +4,24 @@ import com.epam.esm.entity.InvalidDataMessage;
 
 import java.util.List;
 
-public class CertificateInvalidDataException extends CertificateException {
+public class CertificateInvalidParameterDataException extends CertificateException {
     private static final String MESSAGE = "This parameter is invalid, please rewrite";
     private static final String MESSAGE_SECOND = "parameter";
-    private static String informPart;
+    private String informPart;
 
-    public CertificateInvalidDataException(List<InvalidDataMessage> messages) {
+    public CertificateInvalidParameterDataException(List<InvalidDataMessage> messages) {
         super(messages);
     }
 
-    public CertificateInvalidDataException(InvalidDataMessage message) {
+    public CertificateInvalidParameterDataException() {
+    }
+
+    public CertificateInvalidParameterDataException(InvalidDataMessage message) {
         super(message);
     }
 
-    public CertificateInvalidDataException() {
+    public CertificateInvalidParameterDataException(String informPart) {
+        this.informPart = informPart;
     }
 
     @Override

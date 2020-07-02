@@ -1,9 +1,13 @@
 package com.epam.esm.service.Impl.handler;
 
+import com.epam.esm.constant.ErrorTextMessageConstants;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.exception.certificate.CertificateNotFoundException;
+import com.epam.esm.entity.InvalidDataMessage;
+import com.epam.esm.exception.certificate.CertificateException;
+import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
+import com.epam.esm.service.Impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +22,17 @@ public class CertificateServiceRequestParameterHandler {
 
     @Autowired
     private List<CertificateFilterRequestParameter> certificateFilterRequestParameterList;
+    @Autowired
+    private List<CertificateSortBy> certificateSortRequestParameterList;
 
-    public List<Certificate> filter(HttpServletRequest request) throws CertificateNotFoundException {
+    public List<Certificate> find(HttpServletRequest request){
+        return filter(request);
+    }
+
+    public List<Certificate> filter(HttpServletRequest request) throws CertificateException {
         List<Certificate> result;
         if (request.getParameter("filter") == null) {
-            result = certificateService.findAll();
+            result = sort(request);
         } else {
             try {
                 result = certificateFilterRequestParameterList.stream()
@@ -33,7 +43,33 @@ public class CertificateServiceRequestParameterHandler {
                         .get()
                         .filterOutOurCertificates(request);
             } catch (NoSuchElementException e) {
-                throw new CertificateNotFoundException();
+                throw new CertificateInvalidParameterDataException(
+                        new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
+                );
+            }
+        }
+
+        return result;
+    }
+
+    public List<Certificate> sort(HttpServletRequest request) throws CertificateException {
+        List<Certificate> result;
+        if (request.getParameter("sort") == null) {
+            result = certificateService.findAll();
+        } else {
+            try {
+                result = certificateSortRequestParameterList.stream()
+                        .filter(certificateFilter -> certificateFilter
+                                .getType()
+                                .equals(request.getParameter("sort")))
+                        .findFirst()
+                        .get()
+                        .sortOurCertificates(request);
+            } catch (NoSuchElementException e) {
+                throw new CertificateInvalidParameterDataException(
+                        new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)
+
+                );
             }
         }
 

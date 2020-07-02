@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 public class ByIdFindCertificatesWhereIdMoreThanParameter implements CertificateFilterRequestParameter {
-    private static final String FILTER_TYPE = "more id";
+    private static final String FILTER_TYPE = "greater than";
     private CertificateService certificateService;
 
     @Autowired

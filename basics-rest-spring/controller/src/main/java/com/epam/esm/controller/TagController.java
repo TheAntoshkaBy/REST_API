@@ -26,7 +26,7 @@ public class TagController {
         try {
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
         } catch (TagException e) {
-            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -41,7 +41,7 @@ public class TagController {
             service.create(tag);
             return new ResponseEntity<>(service.findAll(), HttpStatus.CREATED);
         } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -50,7 +50,7 @@ public class TagController {
         try {
             service.delete(id);
         } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }

@@ -1,7 +1,7 @@
 package com.epam.esm.dao.Impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao.constant.SQLRequests;
+import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;

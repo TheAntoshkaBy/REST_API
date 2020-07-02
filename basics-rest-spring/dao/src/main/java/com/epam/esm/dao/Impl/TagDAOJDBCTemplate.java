@@ -1,10 +1,16 @@
 package com.epam.esm.dao.Impl;
 
+import com.epam.esm.constant.ErrorTextMessageConstants;
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao.constant.SQLRequests;
+import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.dao.mapper.TagDAORowMapper;
+import com.epam.esm.entity.InvalidDataMessage;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.certificate.CertificateNotFoundException;
+import com.epam.esm.exception.tag.TagInvalidDataException;
 import com.epam.esm.exception.tag.TagNotFoundException;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -39,20 +45,31 @@ public class TagDAOJDBCTemplate implements TagDAO {
         Tag tag;
         try {
             tag = jdbcTemplate.queryForObject(SQLRequests.FIND_TAG_BY_ID, namedParameters, new TagDAORowMapper());
-        } catch (RuntimeException e) {
-            throw new TagNotFoundException();
+        } catch (DataAccessException e) {
+            throw new TagNotFoundException(
+                    new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_TAG
+                    ));
         }
         return tag;
     }
 
     @Override
     public int addTag(Tag tag) {
+        final String FIELD = "tag_name";
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("tag_name", tag.getName());
+                .addValue(FIELD, tag.getName());
 
-        jdbcTemplate.update(SQLRequests.ADD_TAG, sqlParameterSource, keyHolder);
+        try {
+            jdbcTemplate.update(SQLRequests.ADD_TAG, sqlParameterSource, keyHolder);
+
+        }catch (DuplicateKeyException e){
+            throw new TagInvalidDataException(
+                    new InvalidDataMessage(FIELD,ErrorTextMessageConstants.TAG_DUPLICATE_NAME
+                    ));
+        }
 
         return (int) Objects.requireNonNull(keyHolder.getKeys()).get("id_tag");
     }
@@ -63,7 +80,9 @@ public class TagDAOJDBCTemplate implements TagDAO {
         namedParameters.put("id", id);
 
         if (jdbcTemplate.update(SQLRequests.DELETE_TAG_BY_ID, namedParameters) == 0) {
-            throw new TagNotFoundException();
+            throw new TagNotFoundException(
+                    new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_TAG
+                    ));
         }
     }
 
@@ -72,7 +91,9 @@ public class TagDAOJDBCTemplate implements TagDAO {
         Map<String, Object> namedParameters = new HashMap<>();
 
         if (jdbcTemplate.update(SQLRequests.DELETE_ALL_TAGS, namedParameters) == 0) {
-            throw new TagNotFoundException();
+            throw new TagNotFoundException(
+                    new InvalidDataMessage(ErrorTextMessageConstants.EMPTY_DATA
+                    ));
         }
     }
 }

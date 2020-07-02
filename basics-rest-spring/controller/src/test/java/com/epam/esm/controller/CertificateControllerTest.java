@@ -99,7 +99,7 @@ public class CertificateControllerTest {
 
         when(service.findAll()).thenReturn(expectedCertificates);
 
-        actualResponseEntity = certificateController.findAll(any(HttpServletRequest.class));
+        actualResponseEntity = certificateController.find(any(HttpServletRequest.class));
         actualResponseEntity = certificateController.addCertificate(expectedCertificate);
         expectedResponseEntity = new ResponseEntity<>(expectedCertificates, HttpStatus.CREATED);
 

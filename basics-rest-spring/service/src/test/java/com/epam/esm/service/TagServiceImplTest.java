@@ -46,8 +46,8 @@ public class TagServiceImplTest {
 
     @Test
     public void find() throws TagNotFoundException {
-        Integer tagId = 1;
-        Integer getFirst = 0;
+        int tagId = 1;
+        int getFirst = 0;
 
         when(tagDAOJDBCTemplate.findTagById(anyInt())).thenReturn(tags.get(0));
 
@@ -79,8 +79,8 @@ public class TagServiceImplTest {
 
     @Test
     public void create() throws TagNotFoundException {
-        Integer tagId = 2;
-        Integer getFirst = 0;
+        int tagId = 2;
+        int getFirst = 0;
 
         doAnswer(invocation -> {
             Object id = invocation.getArgument(getFirst);

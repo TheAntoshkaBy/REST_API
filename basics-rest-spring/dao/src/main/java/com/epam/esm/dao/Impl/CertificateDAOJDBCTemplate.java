@@ -1,10 +1,12 @@
 package com.epam.esm.dao.Impl;
 
+import com.epam.esm.constant.ErrorTextMessageConstants;
 import com.epam.esm.dao.CertificateDAO;
-import com.epam.esm.dao.constant.SQLRequests;
+import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.dao.mapper.CertificateDAORowMapper;
 import com.epam.esm.dao.mapper.TagDAORowMapper;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.InvalidDataMessage;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +47,8 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
                     SQLRequests.FIND_CERTIFICATE_BY_ID, namedParameters, new CertificateDAORowMapper()
             );
         } catch (DataAccessException e) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException(new InvalidDataMessage
+                    (ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
         certificate.setTags(findAllTagsWhichBelowConcreteCertificate(certificate));
@@ -62,7 +65,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
                     SQLRequests.FIND_ALL_CERTIFICATES, new CertificateDAORowMapper()
             );
         } catch (DataAccessException e) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException(
+                    new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE
+                    ));
         }
 
         certificates.forEach(certificate -> certificate.
@@ -80,7 +85,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
                     SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE, new CertificateDAORowMapper()
             );
         } catch (DataAccessException e) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException(
+                    new InvalidDataMessage(ErrorTextMessageConstants.EMPTY_DATA)
+            );
         }
 
         certificates.forEach(certificate -> certificate.
@@ -160,7 +167,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("id", id);
 
         if (jdbcTemplate.update(SQLRequests.UPDATE_CERTIFICATE, namedParameters) == 0) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException(new InvalidDataMessage(
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE
+            ));
         }
     }
 
@@ -170,7 +179,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("id", id);
 
         if (jdbcTemplate.update(SQLRequests.DELETE_CERTIFICATE, namedParameters) == 0) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException(new InvalidDataMessage(
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE
+            ));
         }
     }
 
@@ -181,7 +192,9 @@ public class CertificateDAOJDBCTemplate implements CertificateDAO {
         namedParameters.put("id_tag", idTag);
 
         if (jdbcTemplate.update(SQLRequests.DELETE_TAG_FROM_CERTIFICATE, namedParameters) == 0) {
-            throw new CertificateNotFoundException();
+            throw new CertificateNotFoundException(new InvalidDataMessage(
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE_OR_TAG_BY_ID
+            ));
         }
     }
 

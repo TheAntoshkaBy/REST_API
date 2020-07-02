@@ -11,9 +11,11 @@ import com.epam.esm.service.validator.CertificateValidator;
 import com.epam.esm.service.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -30,7 +32,7 @@ public class CertificateServiceImpl implements CertificateService {
         this.certificateDAO = certificateDAO;
     }
 
-    @Autowired
+    @Autowired()
     public void setCertificateValidator(CertificateValidator certificateValidator) {
         this.certificateValidator = certificateValidator;
     }
@@ -48,7 +50,7 @@ public class CertificateServiceImpl implements CertificateService {
      */
     @Override
     public List<Certificate> findAll(HttpServletRequest params) throws CertificateNotFoundException {
-        return certificateServiceRequestParameterHandler.filter(params);
+        return certificateServiceRequestParameterHandler.find(params);
     }
 
     @Override
@@ -68,13 +70,16 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public void update(int id, Certificate certificate) throws CertificateNotFoundException {
-        certificateValidator.isCorrectCertificateData(certificate);
+        certificateValidator.isCorrectCertificateUpdateData(certificate);
+        certificate.setModification(new Date());
         certificateDAO.updateCertificate(id, certificate);
     }
 
     @Override
     public void create(Certificate certificate) {
-        certificateValidator.isCorrectCertificateData(certificate);
+        certificateValidator.isCorrectCertificateCreateData(certificate);
+        certificate.setCreationDate(new Date());
+        certificate.setModification(new Date());
         certificateDAO.addCertificate(certificate);
     }
 
