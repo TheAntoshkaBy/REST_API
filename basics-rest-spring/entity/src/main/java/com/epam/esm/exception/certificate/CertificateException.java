@@ -8,13 +8,6 @@ import java.util.List;
 public class CertificateException extends ServiceException {
     private final static String MESSAGE = "Certificate exception";
 
-    @Override
-    public String getMessage() {
-        return "Error Code: " +
-                CertificateException.class.getName().hashCode() + " "
-                + MESSAGE;
-    }
-
     public CertificateException() {
     }
 
@@ -24,5 +17,12 @@ public class CertificateException extends ServiceException {
 
     public CertificateException(List<InvalidDataMessage> messages) {
         super(messages);
+    }
+
+    @Override
+    public String getMessage() {
+        return "Error Code: " +
+                CertificateException.class.getName().hashCode() + " "
+                + MESSAGE;
     }
 }

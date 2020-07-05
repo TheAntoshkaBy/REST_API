@@ -11,6 +11,18 @@ public class InvalidDataMessage {
     private String field;
     private String message;
 
+    public InvalidDataMessage(String field, String message) {
+        this.field = field;
+        this.message = message;
+    }
+
+    public InvalidDataMessage() {
+    }
+
+    public InvalidDataMessage(String message) {
+        this.message = message;
+    }
+
     public String getField() {
         return field;
     }
@@ -24,18 +36,6 @@ public class InvalidDataMessage {
     }
 
     public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public InvalidDataMessage(String field, String message) {
-        this.field = field;
-        this.message = message;
-    }
-
-    public InvalidDataMessage() {
-    }
-
-    public InvalidDataMessage(String message) {
         this.message = message;
     }
 }

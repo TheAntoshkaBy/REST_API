@@ -11,18 +11,18 @@ public class TagNotFoundException extends TagException {
     public TagNotFoundException() {
     }
 
-    @Override
-    public String getMessage() {
-        return "Error Code: " +
-                CertificateException.class.getName().hashCode() + " "
-                + MESSAGE;
-    }
-
     public TagNotFoundException(List<InvalidDataMessage> messages) {
         super(messages);
     }
 
     public TagNotFoundException(InvalidDataMessage message) {
         super(message);
+    }
+
+    @Override
+    public String getMessage() {
+        return "Error Code: " +
+                CertificateException.class.getName().hashCode() + " "
+                + MESSAGE;
     }
 }

@@ -4,7 +4,6 @@ import com.epam.esm.constant.ErrorTextMessageConstants;
 import com.epam.esm.entity.InvalidDataMessage;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
-import com.epam.esm.exception.tag.TagInvalidDataException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
