@@ -51,7 +51,7 @@ public class CertificateController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> find(HttpServletRequest params) {
+    public ResponseEntity<?> find(HttpServletRequest params) { //fixme заменить статик метод на конструктор пакеты переназвать дто и пожо
         try {
             return new ResponseEntity<>(new CertificateList(service.findAll(params)
                     .stream()

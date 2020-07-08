@@ -1,8 +1,10 @@
 package com.epam.esm.entity;
 
-import javax.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TagDTO {
     private Long id;
     private String name;
@@ -58,5 +60,4 @@ public class TagDTO {
     public static TagDTO pojoToDTO(TagPOJO tag){
         return new TagDTO(tag.getId(),tag.getName());
     }
-
 }
