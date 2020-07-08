@@ -1,6 +1,7 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagPOJO;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.repository.jpa.impl.CertificateJPQLJPARepository;
 import com.epam.esm.repository.jpa.impl.TagJPAJPQLRepository;
@@ -93,7 +94,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificatePOJO> findAllCertificatesByTag(Tag tag) {
+    public List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag) {
         return certificateRepository.findByTagName(tag.getName())
                 .stream()
                 .map(CertificatePOJO::entityToPOJO)
@@ -120,9 +121,9 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public void addTag(long id, Tag tag) {
+    public void addTag(long id, TagPOJO tag) {
         tagValidator.isCorrectTag(tag);
-        certificateRepository.addTag(id, tagRepository.create(tag).getId());
+        certificateRepository.addTag(id, tagRepository.create(TagPOJO.pojoToEntity(tag)).getId());
     }
 
     @Override

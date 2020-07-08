@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.entity.CertificatePOJO;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagPOJO;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.repository.jpa.impl.TagJPAJPQLRepository;
 import com.epam.esm.service.TagService;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TagServiceImpl implements TagService {
@@ -21,13 +24,16 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findAll() {
-        return tagRepository.findAll();
+    public List<TagPOJO> findAll() {
+        return tagRepository.findAll()
+                .stream()
+                .map(TagPOJO::entityToPOJO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Tag find(long id) throws TagNotFoundException {
-        return tagRepository.findById(id);
+    public TagPOJO find(long id) throws TagNotFoundException {
+        return TagPOJO.entityToPOJO(tagRepository.findById(id));
     }
 
     @Override
@@ -36,9 +42,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag create(Tag tag) {
+    public TagPOJO create(TagPOJO tag) {
         tagValidator.isCorrectTag(tag);
-        return tagRepository.create(tag);
+        return TagPOJO.entityToPOJO(tagRepository.create(TagPOJO.pojoToEntity(tag)));
     }
 
     @Override

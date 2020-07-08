@@ -1,6 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.TagPOJO;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.entity.CertificatePOJO;
@@ -44,7 +45,7 @@ public interface CertificateService {
      * This method finds all certificates which
      * contain string in tag name from database using DAO
      **/
-    List<CertificatePOJO> findAllCertificatesByTag(Tag tag) throws CertificateNotFoundException;
+    List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag) throws CertificateNotFoundException;
 
     /**
      * This method finds all certificates
@@ -90,7 +91,7 @@ public interface CertificateService {
      * @param id  certificate id which will be edit
      * @param tag edit data
      **/
-    void addTag(long id, Tag tag);
+    void addTag(long id, TagPOJO tag);
 
     /**
      * This method add tag by transmitted tag id

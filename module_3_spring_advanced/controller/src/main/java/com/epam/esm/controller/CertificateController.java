@@ -1,8 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.entity.CertificateDTO;
-import com.epam.esm.entity.CertificateList;
-import com.epam.esm.entity.Tag;
+import com.epam.esm.entity.*;
 import com.epam.esm.exception.ServiceException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +38,9 @@ public class CertificateController {
     }
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findByTag(@RequestBody Tag tag) {
+    public ResponseEntity<?> findByTag(@RequestBody TagDTO tag) {
         try {
-            return new ResponseEntity<>(service.findAllCertificatesByTag(tag)
+            return new ResponseEntity<>(service.findAllCertificatesByTag(TagDTO.dtoToPOJO(tag))
                     .stream()
                     .map(CertificateDTO::pojoToDTO)
                     .collect(Collectors.toList()), HttpStatus.OK);
@@ -100,9 +98,9 @@ public class CertificateController {
     }
 
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
+    public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody TagDTO tag) {
         try {
-            service.addTag(id, tag);
+            service.addTag(id, TagDTO.dtoToPOJO(tag));
             return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.CREATED);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
