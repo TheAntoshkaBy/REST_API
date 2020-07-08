@@ -1,8 +1,8 @@
-package com.epam.esm.service.Impl.handler.filter.impl;
+package com.epam.esm.service.impl.handler.filter.impl;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
+import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class ByIdFindCertificatesWhereIdMoreThanParameter implements Certificate
     }
 
     @Override
-    public List<Certificate> filterOutOurCertificates(HttpServletRequest request) {
+    public List<CertificatePOJO> filterOutOurCertificates(HttpServletRequest request) {
         return certificateService.findAllCertificatesByIdThreshold(
                 Long.parseLong(request.getParameterValues("id")[0])
         );

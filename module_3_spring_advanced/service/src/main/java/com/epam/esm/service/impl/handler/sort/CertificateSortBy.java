@@ -1,13 +1,13 @@
-package com.epam.esm.service.Impl.handler.sort;
+package com.epam.esm.service.impl.handler.sort;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
+import com.epam.esm.entity.CertificatePOJO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface CertificateSortBy {
-    List<Certificate> sortOurCertificates(HttpServletRequest request) throws CertificateNotFoundException;
+    List<CertificatePOJO> sortOurCertificates(HttpServletRequest request) throws CertificateNotFoundException;
 
     String getType();
 }

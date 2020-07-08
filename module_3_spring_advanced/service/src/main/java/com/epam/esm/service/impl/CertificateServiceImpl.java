@@ -1,12 +1,12 @@
-package com.epam.esm.service.Impl;
+package com.epam.esm.service.impl;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.repository.jpa.impl.CertificateJPQLJPARepository;
 import com.epam.esm.repository.jpa.impl.TagJPAJPQLRepository;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.entity.CertificatePOJO;
 import com.epam.esm.service.validator.CertificateValidator;
 import com.epam.esm.service.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -59,33 +60,44 @@ public class CertificateServiceImpl implements CertificateService {
      * @throws CertificateNotFoundException
      */
     @Override
-    public List<Certificate> findAll(HttpServletRequest params) {
+    public List<CertificatePOJO> findAll(HttpServletRequest params) {
         return certificateServiceRequestParameterHandler.find(params);
     }
 
     @Override
-    public List<Certificate> findAll() {
-        return certificateRepository.findAll();
+    public List<CertificatePOJO> findAll() {
+        return certificateRepository.findAll()
+                .stream()
+                .map(CertificatePOJO::entityToPOJO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Certificate find(long id) {
-        return certificateRepository.findById(id);
+    public CertificatePOJO find(long id) {
+        return CertificatePOJO.entityToPOJO(certificateRepository.findById(id));
     }
 
     @Override
-    public List<Certificate> findAllCertificatesByDate() {
-        return certificateRepository.findAllByDate();
+    public List<CertificatePOJO> findAllCertificatesByDate() {
+        return certificateRepository.findAllByDate()
+                .stream()
+                .map(CertificatePOJO::entityToPOJO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Certificate> findAllCertificatesByIdThreshold(long id) {
-        return certificateRepository.findAllByIdThreshold(id);
+    public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id) {
+        return certificateRepository.findAllByIdThreshold(id).stream()
+                .map(CertificatePOJO::entityToPOJO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Certificate> findAllCertificatesByTag(Tag tag) {
-        return certificateRepository.findByTagName(tag.getName());
+    public List<CertificatePOJO> findAllCertificatesByTag(Tag tag) {
+        return certificateRepository.findByTagName(tag.getName())
+                .stream()
+                .map(CertificatePOJO::entityToPOJO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -94,17 +106,17 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public void update(long id, Certificate certificate) {
+    public void update(long id, CertificatePOJO certificate) {
         certificateValidator.isCorrectCertificateUpdateData(certificate);
         certificate.setModification(new Date());
-        certificateRepository.update(certificate, id);
+        certificateRepository.update(CertificatePOJO.pojoToEntity(certificate), id);
     }
 
     @Override
-    public void create(Certificate certificate) {
+    public void create(CertificatePOJO certificate) {
         certificateValidator.isCorrectCertificateCreateData(certificate);
         certificate.setCreationDate(new Date());
-        certificateRepository.create(certificate);
+        certificateRepository.create(CertificatePOJO.pojoToEntity(certificate));
     }
 
     @Override
@@ -124,8 +136,11 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<Certificate> findByAllCertificatesByNamePart(String text) {
+    public List<CertificatePOJO> findByAllCertificatesByNamePart(String text) {
         text += '%';
-        return certificateRepository.findAllByNamePart(text);
+        return certificateRepository.findAllByNamePart(text)
+                .stream()
+                .map(CertificatePOJO::entityToPOJO)
+                .collect(Collectors.toList());
     }
 }

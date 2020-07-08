@@ -1,9 +1,9 @@
-package com.epam.esm.service.Impl.handler.filter.impl;
+package com.epam.esm.service.impl.handler.sort.impl;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
+import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Component
-public class ByNamePartFilter implements CertificateFilterRequestParameter {
-    private static final String FILTER_TYPE = "by name part";
+public class CertificateSortByDate implements CertificateSortBy {
+    private static final String SORT_TYPE = "date";
     private CertificateService certificateService;
 
     @Autowired
@@ -21,14 +21,12 @@ public class ByNamePartFilter implements CertificateFilterRequestParameter {
     }
 
     @Override
-    public List<Certificate> filterOutOurCertificates(HttpServletRequest request)
+    public List<CertificatePOJO> sortOurCertificates(HttpServletRequest request)
             throws CertificateNotFoundException {
-        return certificateService
-                .findByAllCertificatesByNamePart(request.getParameterValues("name")[0]);
+        return certificateService.findAllCertificatesByDate();
     }
 
-    @Override
     public String getType() {
-        return FILTER_TYPE;
+        return SORT_TYPE;
     }
 }

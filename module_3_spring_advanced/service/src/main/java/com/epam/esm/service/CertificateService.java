@@ -1,9 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
-import com.epam.esm.service.Impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.entity.CertificatePOJO;
 import com.epam.esm.service.validator.CertificateValidator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,19 +17,19 @@ public interface CertificateService {
     /**
      * This method delegates management to one of find methods.
      **/
-    List<Certificate> findAll(HttpServletRequest params) throws CertificateNotFoundException;
+    List<CertificatePOJO> findAll(HttpServletRequest params) throws CertificateNotFoundException;
 
     /**
      * This method finds all certificates from database using DAO
      **/
-    List<Certificate> findAll() throws CertificateNotFoundException;
+    List<CertificatePOJO> findAll() throws CertificateNotFoundException;
 
     /**
      * This method finds all certificates from database and sorted them using DAO
      *
      * @return Certificates list
      **/
-    List<Certificate> findAllCertificatesByDate() throws CertificateNotFoundException;
+    List<CertificatePOJO> findAllCertificatesByDate() throws CertificateNotFoundException;
 
     /**
      * This method finds concrete Certificate which contains
@@ -38,19 +38,19 @@ public interface CertificateService {
      * @param id Certificate Id
      * @return Certificate List
      **/
-    List<Certificate> findAllCertificatesByIdThreshold(long id);
+    List<CertificatePOJO> findAllCertificatesByIdThreshold(long id);
 
     /**
      * This method finds all certificates which
      * contain string in tag name from database using DAO
      **/
-    List<Certificate> findAllCertificatesByTag(Tag tag) throws CertificateNotFoundException;
+    List<CertificatePOJO> findAllCertificatesByTag(Tag tag) throws CertificateNotFoundException;
 
     /**
      * This method finds all certificates
      * which contain string in name from database using DAO
      **/
-    List<Certificate> findByAllCertificatesByNamePart(String text) throws CertificateNotFoundException;
+    List<CertificatePOJO> findByAllCertificatesByNamePart(String text) throws CertificateNotFoundException;
 
     /**
      * This method finds concrete Certificate By Id using DAO
@@ -58,7 +58,7 @@ public interface CertificateService {
      * @param id Certificate Id
      * @return Certificate
      **/
-    Certificate find(long id) throws CertificateNotFoundException;
+    CertificatePOJO find(long id) throws CertificateNotFoundException;
 
     /**
      * This method delete concrete Certificate by
@@ -74,14 +74,14 @@ public interface CertificateService {
      * @param id          certificate id which will be edit
      * @param certificate edit data
      **/
-    void update(long id, Certificate certificate) throws CertificateNotFoundException;
+    void update(long id, CertificatePOJO certificate) throws CertificateNotFoundException;
 
     /**
      * This method add new Certificate using DAO
      *
      * @param certificate Certificate object
      **/
-    void create(Certificate certificate);
+    void create(CertificatePOJO certificate);
 
     /**
      * This method add new tag by transmitted data

@@ -1,9 +1,9 @@
-package com.epam.esm.service.Impl.handler.filter.impl;
+package com.epam.esm.service.impl.handler.filter.impl;
 
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
+import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class ByDateFilter implements CertificateFilterRequestParameter {
     }
 
     @Override
-    public List<Certificate> filterOutOurCertificates(HttpServletRequest request)
+    public List<CertificatePOJO> filterOutOurCertificates(HttpServletRequest request)
             throws CertificateNotFoundException {
         return certificateService.findAllCertificatesByDate();
     }

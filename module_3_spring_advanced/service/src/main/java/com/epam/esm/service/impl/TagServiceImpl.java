@@ -1,4 +1,4 @@
-package com.epam.esm.service.Impl;
+package com.epam.esm.service.impl;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.tag.TagNotFoundException;

@@ -1,83 +1,38 @@
 package com.epam.esm.entity;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-@Entity(name = "certificate")
-@Table(name = "certificate")
-@NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery(
-                name = "findByNameProcedure",
-                procedureName = "return_t_certificate3",
-                resultClasses = { Certificate.class },
-                parameters = {
-                        @StoredProcedureParameter
-                                (
-                                name = "text",
-                                type = String.class
-                                )
-                })
-})
-public class Certificate implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "certificate_id")
+public class CertificatePOJO {
     private Long id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "price")
     private Double price;
-
-    @Column(name = "duration_days")
     private Integer durationDays;
-
-    @Column(name = "date_of_creation")
+    private List<Tag> tags;
     private Date creationDate;
-
-    @Column(name = "date_of_modification")
     private Date modification;
 
-    @ManyToMany
-    @JoinTable(
-            name = "c_t",
-            joinColumns = @JoinColumn(name = "certificate_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tags = new ArrayList<>(); //fixme как вытягивать листы, подумать
-
-    public Certificate(Long id, String name, String description, Double price,
-                       Date creationDate, Date modification, Integer durationDays) {
+    public CertificatePOJO(Long id, String name, String description, Double price, Integer durationDays, List<Tag> tags, Date creationDate, Date modification) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.durationDays = durationDays;
+        this.tags = tags;
         this.creationDate = creationDate;
         this.modification = modification;
-        this.durationDays = durationDays;
     }
 
-    public Certificate(Long id, String name, String description, Double price,
-                       Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
+    public CertificatePOJO(Long id, String name, String description, Double price, Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.durationDays = durationDays;
         this.creationDate = creationDate;
         this.modification = modification;
-        this.durationDays = durationDays;
-    }
-
-    public Certificate() {
     }
 
     public Long getId() {
@@ -136,11 +91,19 @@ public class Certificate implements Serializable {
         this.durationDays = durationDays;
     }
 
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Certificate that = (Certificate) o;
+        CertificatePOJO that = (CertificatePOJO) o;
         return Objects.equals(name, that.name) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(price, that.price) &&
@@ -165,11 +128,29 @@ public class Certificate implements Serializable {
                 '}';
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public static Certificate pojoToEntity(CertificatePOJO certificatePOJO){
+        return new Certificate(
+                certificatePOJO.id,
+                certificatePOJO.name,
+                certificatePOJO.description,
+                certificatePOJO.price,
+                certificatePOJO.creationDate,
+                certificatePOJO.modification,
+                certificatePOJO.durationDays
+        );
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public static CertificatePOJO entityToPOJO(Certificate certificate){
+        System.out.println(certificate);
+        return new CertificatePOJO(
+                certificate.getId(),
+                certificate.getName(),
+                certificate.getDescription(),
+                certificate.getPrice(),
+                certificate.getDurationDays(),
+                certificate.getTags(),
+                certificate.getCreationDate(),
+                certificate.getModification()
+        );
     }
 }

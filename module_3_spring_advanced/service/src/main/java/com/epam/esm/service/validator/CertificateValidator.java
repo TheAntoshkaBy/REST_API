@@ -1,9 +1,9 @@
 package com.epam.esm.service.validator;
 
 import com.epam.esm.constant.ErrorTextMessageConstants;
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.InvalidDataMessage;
 import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
+import com.epam.esm.entity.CertificatePOJO;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +59,7 @@ public class CertificateValidator {
         }
     }
 
-    public void isCorrectCertificateUpdateData(Certificate certificate) {
+    public void isCorrectCertificateUpdateData(CertificatePOJO certificate) {
         invalidDataMessageList = new ArrayList<>();
         nameLength(certificate.getName());
         priceCheck(certificate.getPrice());
@@ -69,7 +69,7 @@ public class CertificateValidator {
         }
     }
 
-    public void isCorrectCertificateCreateData(Certificate certificate) {
+    public void isCorrectCertificateCreateData(CertificatePOJO certificate) {
         invalidDataMessageList = new ArrayList<>();
         nameLength(certificate.getName());
         priceCheck(certificate.getPrice());

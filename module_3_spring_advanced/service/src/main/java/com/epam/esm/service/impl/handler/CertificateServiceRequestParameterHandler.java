@@ -1,13 +1,13 @@
-package com.epam.esm.service.Impl.handler;
+package com.epam.esm.service.impl.handler;
 
 import com.epam.esm.constant.ErrorTextMessageConstants;
-import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.InvalidDataMessage;
 import com.epam.esm.exception.certificate.CertificateException;
 import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.service.Impl.handler.filter.CertificateFilterRequestParameter;
-import com.epam.esm.service.Impl.handler.sort.CertificateSortBy;
+import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
+import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,12 +25,12 @@ public class CertificateServiceRequestParameterHandler {
     @Autowired
     private List<CertificateSortBy> certificateSortRequestParameterList;
 
-    public List<Certificate> find(HttpServletRequest request){
+    public List<CertificatePOJO> find(HttpServletRequest request){
         return filter(request);
     }
 
-    public List<Certificate> filter(HttpServletRequest request) throws CertificateException {
-        List<Certificate> result;
+    public List<CertificatePOJO> filter(HttpServletRequest request) throws CertificateException {
+        List<CertificatePOJO> result;
         if (request.getParameter("filter") == null) {
             result = sort(request);
         } else {
@@ -52,8 +52,8 @@ public class CertificateServiceRequestParameterHandler {
         return result;
     }
 
-    public List<Certificate> sort(HttpServletRequest request) throws CertificateException {
-        List<Certificate> result;
+    public List<CertificatePOJO> sort(HttpServletRequest request) throws CertificateException {
+        List<CertificatePOJO> result;
         if (request.getParameter("sort") == null) {
             result = certificateService.findAll();
         } else {

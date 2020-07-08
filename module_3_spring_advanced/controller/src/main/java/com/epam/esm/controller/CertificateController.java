@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.CertificateDTO;
 import com.epam.esm.entity.CertificateList;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ServiceException;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("certificates")
@@ -25,10 +26,14 @@ public class CertificateController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addCertificate(@RequestBody Certificate certificate) {
+    public ResponseEntity<?> addCertificate(@RequestBody CertificateDTO certificateDTO) {
         try {
-            service.create(certificate);
-            return new ResponseEntity<>(new CertificateList(service.findAll()), HttpStatus.CREATED);
+            service.create(CertificateDTO.dtoToPOJO(certificateDTO));
+            return new ResponseEntity<>(new CertificateList(service.findAll()
+                    .stream()
+                    .map(CertificateDTO::pojoToDTO)
+                    .collect(Collectors.toList())), HttpStatus.CREATED);
+
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -37,7 +42,11 @@ public class CertificateController {
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findByTag(@RequestBody Tag tag) {
         try {
-            return new ResponseEntity<>(service.findAllCertificatesByTag(tag), HttpStatus.OK);
+            return new ResponseEntity<>(service.findAllCertificatesByTag(tag)
+                    .stream()
+                    .map(CertificateDTO::pojoToDTO)
+                    .collect(Collectors.toList()), HttpStatus.OK);
+
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -46,7 +55,11 @@ public class CertificateController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> find(HttpServletRequest params) {
         try {
-            return new ResponseEntity<>(new CertificateList(service.findAll(params)), HttpStatus.OK);
+            return new ResponseEntity<>(new CertificateList(service.findAll(params)
+                    .stream()
+                    .map(CertificateDTO::pojoToDTO)
+                    .collect(Collectors.toList())), HttpStatus.OK);
+
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -55,7 +68,7 @@ public class CertificateController {
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable long id) {
         try {
-            return new ResponseEntity<>(service.find(id), HttpStatus.OK);
+            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -65,7 +78,10 @@ public class CertificateController {
     public ResponseEntity<?> deleteCertificate(@PathVariable Integer id) {
         try {
             service.delete(id);
-            return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+            return new ResponseEntity<>(service.findAll()
+                    .stream()
+                    .map(CertificateDTO::pojoToDTO)
+                    .collect(Collectors.toList()), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -74,19 +90,20 @@ public class CertificateController {
     @PutMapping(path = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCertificate
-            (@RequestBody Certificate certificate, @PathVariable int id) {
+            (@RequestBody CertificateDTO certificate, @PathVariable int id) {
         try {
-            service.update(id, certificate);
+            service.update(id, CertificateDTO.dtoToPOJO(certificate));
             return new ResponseEntity<>(service.find(id), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody Tag tag) {
         try {
             service.addTag(id, tag);
-            return new ResponseEntity<>(service.find(id), HttpStatus.CREATED);
+            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.CREATED);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -97,7 +114,7 @@ public class CertificateController {
             (@PathVariable Integer id, @PathVariable Integer idTag) {
         try {
             service.addTag(id, idTag);
-            return new ResponseEntity<>(service.find(id), HttpStatus.OK);
+            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -108,7 +125,7 @@ public class CertificateController {
             (@PathVariable Integer id, @PathVariable Integer idTag) {
         try {
             service.deleteTag(id, idTag);
-            return new ResponseEntity<>(service.find(id), HttpStatus.OK);
+            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
