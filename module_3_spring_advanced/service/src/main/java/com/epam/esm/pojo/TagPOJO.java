@@ -1,25 +1,17 @@
-package com.epam.esm.entity;
+package com.epam.esm.pojo;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import com.epam.esm.entity.Tag;
+
 import java.util.Objects;
 
-@Entity(name = "tag")
-@Table(name = "tag")
-public class Tag implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
+public class TagPOJO {
     private Long id;
-
-    @Column(name = "name")
     private String name;
 
-    public Tag() {
+    public TagPOJO() {
     }
 
-    public Tag(Long id, String name) {
+    public TagPOJO(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -52,12 +44,20 @@ public class Tag implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
+        TagPOJO tag = (TagPOJO) o;
         return Objects.equals(name, tag.name);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public TagPOJO(Tag tag){
+        this.id = tag.getId();
+        this.name = tag.getName();
+    }
+    public Tag pojoToEntity(){
+        return new Tag(this.id,this.name);
     }
 }

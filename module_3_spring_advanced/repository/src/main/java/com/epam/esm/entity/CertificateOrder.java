@@ -16,13 +16,16 @@ public class CertificateOrder {
     @Column(name = "order_time")
     private Date timestamp;
 
-    @Column(name = "summary_coast")
-    private Double summaryCoast;
+    @Column(name = "coast")
+    private Double coast;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "o_c",
             joinColumns = @JoinColumn(name = "order_id"),
@@ -33,7 +36,7 @@ public class CertificateOrder {
     public CertificateOrder(Long id, Date timestamp, Double summaryCoast, User owner, List<Certificate> certificates) {
         this.id = id;
         this.timestamp = timestamp;
-        this.summaryCoast = summaryCoast;
+        this.coast = summaryCoast;
         this.owner = owner;
         this.certificates = certificates;
     }
@@ -57,12 +60,12 @@ public class CertificateOrder {
         this.timestamp = timestamp;
     }
 
-    public Double getSummaryCoast() {
-        return summaryCoast;
+    public Double getCoast() {
+        return coast;
     }
 
-    public void setSummaryCoast(Double summaryCoast) {
-        this.summaryCoast = summaryCoast;
+    public void setCoast(Double summaryCoast) {
+        this.coast = summaryCoast;
     }
 
     public User getOwner() {

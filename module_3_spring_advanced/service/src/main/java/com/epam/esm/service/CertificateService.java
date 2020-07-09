@@ -1,10 +1,9 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.TagPOJO;
+import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.service.validator.CertificateValidator;
 
 import javax.servlet.http.HttpServletRequest;

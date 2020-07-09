@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.TagPOJO;
+import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.validator.TagValidator;
 

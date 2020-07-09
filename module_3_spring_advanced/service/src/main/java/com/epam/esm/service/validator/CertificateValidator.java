@@ -1,9 +1,9 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.constant.ErrorTextMessageConstants;
-import com.epam.esm.entity.InvalidDataMessage;
 import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
-import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.pojo.CertificatePOJO;
+import com.epam.esm.exception.constant.ErrorTextMessageConstants;
+import com.epam.esm.exception.entity.InvalidDataMessage;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

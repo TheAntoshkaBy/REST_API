@@ -1,27 +1,26 @@
-package com.epam.esm.entity;
+package com.epam.esm.dto;
 
-import javax.persistence.*;
-import java.io.Serializable;
+import com.epam.esm.pojo.TagPOJO;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.Objects;
 
-@Entity(name = "tag")
-@Table(name = "tag")
-public class Tag implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class TagDTO {
     private Long id;
-
-    @Column(name = "name")
     private String name;
 
-    public Tag() {
+    public TagDTO() {
     }
 
-    public Tag(Long id, String name) {
+    public TagDTO(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public TagDTO(TagPOJO tag){
+        this.name = tag.getName();
+        this.id = tag.getId();
     }
 
     public Long getId() {
@@ -52,12 +51,16 @@ public class Tag implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tag tag = (Tag) o;
+        TagDTO tag = (TagDTO) o;
         return Objects.equals(name, tag.name);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public TagPOJO dtoToPOJO(){
+        return new TagPOJO(this.id,this.name);
     }
 }

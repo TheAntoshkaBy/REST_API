@@ -1,10 +1,9 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.constant.ErrorTextMessageConstants;
-import com.epam.esm.entity.InvalidDataMessage;
-import com.epam.esm.entity.Tag;
-import com.epam.esm.entity.TagPOJO;
+import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
+import com.epam.esm.exception.constant.ErrorTextMessageConstants;
+import com.epam.esm.exception.entity.InvalidDataMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

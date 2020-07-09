@@ -1,7 +1,7 @@
 package com.epam.esm.service.impl.handler.filter;
 
 import com.epam.esm.exception.certificate.CertificateNotFoundException;
-import com.epam.esm.entity.CertificatePOJO;
+import com.epam.esm.pojo.CertificatePOJO;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

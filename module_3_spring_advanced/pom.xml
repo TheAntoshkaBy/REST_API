@@ -14,6 +14,7 @@
         <version>2.3.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.epam.esm</groupId>
     <artifactId>module_3_spring_advanced</artifactId>
     <version>0.0.1-SNAPSHOT</version>

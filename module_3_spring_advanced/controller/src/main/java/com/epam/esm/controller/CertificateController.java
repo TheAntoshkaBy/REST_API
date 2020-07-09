@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.entity.*;
+import com.epam.esm.dto.*;
 import com.epam.esm.exception.ServiceException;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,12 @@ public class CertificateController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificate(@RequestBody CertificateDTO certificateDTO) {
         try {
-            service.create(CertificateDTO.dtoToPOJO(certificateDTO));
+            service.create(certificateDTO.dtoToPOJO());
             return new ResponseEntity<>(new CertificateList(service.findAll()
                     .stream()
-                    .map(CertificateDTO::pojoToDTO)
-                    .collect(Collectors.toList())), HttpStatus.CREATED);
+                    .map(CertificateDTO::new)
+                    .collect(Collectors.toList())),
+                    HttpStatus.CREATED);
 
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
@@ -40,9 +41,9 @@ public class CertificateController {
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findByTag(@RequestBody TagDTO tag) {
         try {
-            return new ResponseEntity<>(service.findAllCertificatesByTag(TagDTO.dtoToPOJO(tag))
+            return new ResponseEntity<>(service.findAllCertificatesByTag(tag.dtoToPOJO())
                     .stream()
-                    .map(CertificateDTO::pojoToDTO)
+                    .map(CertificateDTO::new)
                     .collect(Collectors.toList()), HttpStatus.OK);
 
         } catch (ServiceException e) {
@@ -55,7 +56,7 @@ public class CertificateController {
         try {
             return new ResponseEntity<>(new CertificateList(service.findAll(params)
                     .stream()
-                    .map(CertificateDTO::pojoToDTO)
+                    .map(CertificateDTO::new)
                     .collect(Collectors.toList())), HttpStatus.OK);
 
         } catch (ServiceException e) {
@@ -66,7 +67,7 @@ public class CertificateController {
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable long id) {
         try {
-            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.OK);
+            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -78,7 +79,7 @@ public class CertificateController {
             service.delete(id);
             return new ResponseEntity<>(service.findAll()
                     .stream()
-                    .map(CertificateDTO::pojoToDTO)
+                    .map(CertificateDTO::new)
                     .collect(Collectors.toList()), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
@@ -90,8 +91,8 @@ public class CertificateController {
     public ResponseEntity<?> updateCertificate
             (@RequestBody CertificateDTO certificate, @PathVariable int id) {
         try {
-            service.update(id, CertificateDTO.dtoToPOJO(certificate));
-            return new ResponseEntity<>(service.find(id), HttpStatus.OK);
+            service.update(id, certificate.dtoToPOJO());
+            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -100,8 +101,8 @@ public class CertificateController {
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody TagDTO tag) {
         try {
-            service.addTag(id, TagDTO.dtoToPOJO(tag));
-            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.CREATED);
+            service.addTag(id, tag.dtoToPOJO());
+            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.CREATED);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -112,7 +113,7 @@ public class CertificateController {
             (@PathVariable Integer id, @PathVariable Integer idTag) {
         try {
             service.addTag(id, idTag);
-            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.OK);
+            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -123,7 +124,7 @@ public class CertificateController {
             (@PathVariable Integer id, @PathVariable Integer idTag) {
         try {
             service.deleteTag(id, idTag);
-            return new ResponseEntity<>(CertificateDTO.pojoToDTO(service.find(id)), HttpStatus.OK);
+            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }

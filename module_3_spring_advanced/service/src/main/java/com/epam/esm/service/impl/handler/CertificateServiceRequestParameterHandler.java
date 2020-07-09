@@ -1,11 +1,11 @@
 package com.epam.esm.service.impl.handler;
 
-import com.epam.esm.constant.ErrorTextMessageConstants;
-import com.epam.esm.entity.InvalidDataMessage;
+import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.exception.certificate.CertificateException;
 import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
+import com.epam.esm.exception.constant.ErrorTextMessageConstants;
+import com.epam.esm.exception.entity.InvalidDataMessage;
 import com.epam.esm.service.CertificateService;
-import com.epam.esm.entity.CertificatePOJO;
 import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
 import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
