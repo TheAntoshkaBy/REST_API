@@ -5,7 +5,7 @@ import com.epam.esm.exception.entity.InvalidDataMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServiceException extends RuntimeException {
+public class ServiceException extends RuntimeException { //fixme почему exception нельзя по слоям мешать
     private final static String MESSAGE = "Service exception";
     private List<InvalidDataMessage> messages;
     private InvalidDataMessage message;

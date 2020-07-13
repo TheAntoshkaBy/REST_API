@@ -31,20 +31,10 @@ public class User {
     @Column(name = "user_password")
     private String password;
 
-    @OneToMany(
-            mappedBy = "owner",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<CertificateOrder> orders;
-
-    public void addOrder(CertificateOrder order) {
-        orders.add(order);
-        order.setOwner(this);
-    }
-
-    public void removeOrder(CertificateOrder order) {
-        orders.remove(order);
-        order.setOwner(null);
+    public User(String name, String surname, String login, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.login = login;
+        this.password = password;
     }
 }

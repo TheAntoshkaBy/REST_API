@@ -13,4 +13,6 @@ public interface OrderRepository {
     List<CertificateOrder> findAll();
 
     CertificateOrder create(CertificateOrder order);
+
+    List<CertificateOrder> findAllByOwner(long id);
 }

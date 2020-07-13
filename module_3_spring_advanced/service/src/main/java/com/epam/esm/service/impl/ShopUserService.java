@@ -1,5 +1,6 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.entity.User;
 import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.repository.jpa.UserRepository;
 import com.epam.esm.repository.jpa.impl.UserRepositoryJPA;
@@ -21,7 +22,8 @@ public class ShopUserService implements UserService {
 
     @Override
     public List<UserPOJO> findAll() {
-        return repository.findAll()
+        List<User> userPOJOS = repository.findAll();
+        return userPOJOS
                 .stream()
                 .map(UserPOJO::new)
                 .collect(Collectors.toList());
@@ -39,6 +41,7 @@ public class ShopUserService implements UserService {
 
     @Override
     public UserPOJO create(UserPOJO user) {
-        return new UserPOJO(repository.create(user.pojoToEntity()));
+        User user1 = repository.create(user.pojoToEntity());
+        return new UserPOJO(user1);
     }
 }

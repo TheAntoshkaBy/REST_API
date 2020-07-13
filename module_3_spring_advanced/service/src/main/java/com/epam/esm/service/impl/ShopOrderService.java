@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.pojo.CertificateOrderPOJO;
+import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,8 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public List<CertificateOrderPOJO> findAll() {
-        return repository.findAll()
+        List<CertificateOrder> certificateOrders = repository.findAll();
+        return certificateOrders
                 .stream()
                 .map(CertificateOrderPOJO::new)
                 .collect(Collectors.toList());
@@ -39,5 +42,12 @@ public class ShopOrderService implements OrderService {
     @Override
     public CertificateOrderPOJO create(CertificateOrderPOJO order) {
         return new CertificateOrderPOJO(repository.create(order.pojoToEntity()));
+    }//fixme формат получения данных: данные о юзере (айди) и данные о заказе
+
+    @Override
+    public List<CertificateOrderPOJO> findAllByOwner(long id) {
+        return repository.findAllByOwner(id).stream()
+                .map(CertificateOrderPOJO::new)
+                .collect(Collectors.toList());
     }
 }

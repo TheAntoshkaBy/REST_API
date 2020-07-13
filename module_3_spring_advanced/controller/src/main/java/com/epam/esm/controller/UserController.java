@@ -1,8 +1,10 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.UserDTO;
+import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.exception.ServiceException;
+import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/users")
 public class UserController {
     private final UserService service;
+    private final OrderService orderService;
 
     @Autowired
-    public UserController(UserService service) {
+    public UserController(UserService service, OrderService orderService) {
         this.service = service;
+        this.orderService = orderService;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -43,4 +47,14 @@ public class UserController {
                 .map(UserDTO::new)
                 .collect(Collectors.toList()), HttpStatus.OK);
     }
+
+    @GetMapping(path = "/{id}/orders", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CertificateOrderDTO>> findOrders(@PathVariable long id) {
+
+        return new ResponseEntity<>(orderService.findAllByOwner(id)
+                .stream()
+                .map(CertificateOrderDTO::new)
+                .collect(Collectors.toList()), HttpStatus.OK);
+    }
+
 }

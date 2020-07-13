@@ -77,6 +77,14 @@ public interface CertificateService {
     void update(long id, CertificatePOJO certificate) throws CertificateNotFoundException;
 
     /**
+     * This method update concrete Certificate field (price) by transmitted id and new price value
+     *
+     * @param id          certificate id which will be edit
+     * @param certificate edit data
+     **/
+    void updatePrice(long id, double price) throws CertificateNotFoundException;
+
+    /**
      * This method add new Certificate using DAO
      *
      * @param certificate Certificate object

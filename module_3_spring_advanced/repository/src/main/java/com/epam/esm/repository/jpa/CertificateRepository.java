@@ -21,6 +21,8 @@ public interface CertificateRepository {
 
     void update(Certificate certificate, long id);
 
+    void updatePrice(long id, double price);
+
     List<Certificate> findByTagName(String name);
 
     void addTag(long idCertificate, long idTag);

@@ -91,6 +91,12 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
         buffCert.setPrice(certificate.getPrice());
     }
 
+    @Override
+    public void updatePrice(long id, double price) {
+        Certificate buffCert = entityManager.find(Certificate.class, id);
+        buffCert.setPrice(price);
+    }
+
     @SuppressWarnings("unchecked")
     public List<Certificate> findByTagName(String name) {
         return entityManager.createQuery(SQLRequests.FIND_CERTIFICATE_BY_TAG_NAME)

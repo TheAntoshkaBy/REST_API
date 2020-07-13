@@ -3,6 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.*;
 import com.epam.esm.exception.ServiceException;
 import com.epam.esm.service.CertificateService;
+import com.sun.org.glassfish.gmbal.ParameterNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -92,6 +93,18 @@ public class CertificateController {
             (@RequestBody CertificateDTO certificate, @PathVariable int id) {
         try {
             service.update(id, certificate.dtoToPOJO());
+            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
+        } catch (ServiceException e) {
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping(path = "/{id}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateCertificatePrice
+            (@RequestParam double price, @PathVariable long id) {
+        try {
+            service.updatePrice(id, price);
             return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
         } catch (ServiceException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);

@@ -1,17 +1,23 @@
 package com.epam.esm.dto;
 
-import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.pojo.UserPOJO;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
+    @ToString.Exclude
     private Long id;
 
     private String name;
@@ -19,25 +25,20 @@ public class UserDTO {
     private String login;
     private String password;
 
-    private List<CertificateOrder> orders;
-
     public UserDTO(UserPOJO user){
         this.id = user.getId();
         this.name = user.getName();
         this.surname = user.getSurname();
         this.login = user.getLogin();
         this.password = user.getPassword();
-        this.orders = user.getOrders();
      }
 
     public UserPOJO dtoToPojo(){
         return new UserPOJO(
-                this.id,
                 this.name,
                 this.surname,
                 this.login,
-                this.password,
-                this.orders
+                this.password
         );
     }
 }

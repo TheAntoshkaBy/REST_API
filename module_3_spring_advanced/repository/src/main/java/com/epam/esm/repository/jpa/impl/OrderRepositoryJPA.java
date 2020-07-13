@@ -24,6 +24,15 @@ public class OrderRepositoryJPA  extends ShopJPARepository<CertificateOrder> imp
     @Override
     @SuppressWarnings("unchecked")
     public List<CertificateOrder> findAll() {
-        return entityManager.createQuery(SQLRequests.FIND_ALL_ORDERS).getResultList();
+        List<CertificateOrder> certificateOrders = entityManager.createQuery(SQLRequests.FIND_ALL_ORDERS).getResultList();
+        return certificateOrders;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<CertificateOrder> findAllByOwner(long id) {
+        List<CertificateOrder> certificateOrders = entityManager
+                .createQuery(SQLRequests.FIND_ALL_ORDERS_BY_OWNER).setParameter(1, id).getResultList();
+        return certificateOrders;
     }
 }

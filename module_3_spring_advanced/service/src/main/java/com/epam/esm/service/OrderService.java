@@ -32,4 +32,10 @@ public interface OrderService {
      * @param tag User object
      **/
     CertificateOrderPOJO create(CertificateOrderPOJO user);
+
+    /**
+     * This method finds all orders from database using DAO
+     * which belong concrete user
+     **/
+    List<CertificateOrderPOJO> findAllByOwner(long id);
 }

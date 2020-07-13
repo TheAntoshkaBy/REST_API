@@ -24,7 +24,6 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
     @Override
     @SuppressWarnings("unchecked")
     public List<User> findAll() {
-        System.out.println(entityManager);
        return entityManager.createQuery(SQLRequests.FIND_ALL_USERS).getResultList();
     }
 }

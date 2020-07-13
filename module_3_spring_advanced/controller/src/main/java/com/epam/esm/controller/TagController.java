@@ -40,7 +40,7 @@ public class TagController {
     public ResponseEntity<?> findTag(@PathVariable Integer id) {
         try {
             return new ResponseEntity<>(new TagDTO(service.find(id)), HttpStatus.OK);
-        } catch (TagException e) {
+        } catch (TagException e) { //
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
     }

@@ -1,9 +1,18 @@
 package com.epam.esm.entity;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @Entity(name = "certificate_order")
 @Table(name = "certificate_order")
 public class CertificateOrder {
@@ -19,7 +28,8 @@ public class CertificateOrder {
     @Column(name = "coast")
     private Double coast;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User owner;
 
     @ManyToMany(cascade = {
@@ -41,7 +51,20 @@ public class CertificateOrder {
         this.certificates = certificates;
     }
 
+    public CertificateOrder(Long id, Date timestamp, Double summaryCoast, List<Certificate> certificates) {
+        this.id = id;
+        this.timestamp = timestamp;
+        this.coast = summaryCoast;
+        this.certificates = certificates;
+    }
+
     public CertificateOrder() {
+    }
+
+    public CertificateOrder(Date timestamp, Double summaryCoast) {
+        this.timestamp = timestamp;
+        this.coast = summaryCoast;
+
     }
 
     public Long getId() {

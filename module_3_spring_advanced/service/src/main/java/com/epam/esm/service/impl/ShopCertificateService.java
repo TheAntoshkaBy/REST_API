@@ -115,6 +115,11 @@ public class ShopCertificateService implements CertificateService {
     }
 
     @Override
+    public void updatePrice(long id, double price) throws CertificateNotFoundException {
+        certificateRepository.updatePrice(id, price);
+    }
+
+    @Override
     public void create(CertificatePOJO certificate) {
         certificateValidator.isCorrectCertificateCreateData(certificate);
         certificate.setCreationDate(new Date());

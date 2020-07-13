@@ -60,6 +60,8 @@ public class SQLRequests {
 
     public static final String FIND_ALL_ORDERS = "select o from certificate_order o";
 
+    public static final String FIND_ALL_ORDERS_BY_OWNER = "select o from certificate_order o where o.owner.id = ?1";
+
     public static final String FIND_TAG_BY_ID = "select * from rest_api_basics.tag where id_tag = :id";
 
     public static final String ADD_TAG =

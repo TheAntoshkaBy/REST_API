@@ -40,9 +40,9 @@ public class OrderController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CertificateOrderDTO>> findAll() {
-        return new ResponseEntity<>(service.findAll()
-                .stream()
-                .map(CertificateOrderDTO::new)
-                .collect(Collectors.toList()), HttpStatus.OK);
+            return new ResponseEntity<>(service.findAll()
+                    .stream()
+                    .map(CertificateOrderDTO::new)
+                    .collect(Collectors.toList()), HttpStatus.OK);
     }
 }
