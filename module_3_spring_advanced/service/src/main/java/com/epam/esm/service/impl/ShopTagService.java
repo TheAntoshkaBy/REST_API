@@ -1,7 +1,6 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.repository.jpa.impl.TagRepositoryJPA;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validator.TagValidator;
@@ -22,20 +21,28 @@ public class ShopTagService implements TagService {
     }
 
     @Override
-    public List<TagPOJO> findAll() {
-        return tagRepository.findAll()
+    public List<TagPOJO> findAll(int page, int size) {
+        if (page != 1) {
+            page = size * (page - 1) + 1;
+        }
+        return tagRepository.findAll(page, size)
                 .stream()
                 .map(TagPOJO::new)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public TagPOJO find(long id) throws TagNotFoundException {
+    public TagPOJO find(long id) {
         return new TagPOJO(tagRepository.findById(id));
     }
 
     @Override
-    public void delete(long id) throws TagNotFoundException {
+    public TagPOJO findMostWidelyUsedTag() {
+        return new TagPOJO(tagRepository.findById(tagRepository.findMostWidelyUsedTag()));
+    }
+
+    @Override
+    public void delete(long id) {
         tagRepository.delete(id);
     }
 
@@ -43,6 +50,11 @@ public class ShopTagService implements TagService {
     public TagPOJO create(TagPOJO tag) {
         tagValidator.isCorrectTag(tag);
         return new TagPOJO(tagRepository.create(tag.pojoToEntity()));
+    }
+
+    @Override
+    public int getTagCount() {
+        return tagRepository.getTagCount();
     }
 
     @Override

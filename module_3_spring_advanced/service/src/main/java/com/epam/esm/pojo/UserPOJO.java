@@ -34,7 +34,8 @@ public class UserPOJO {
         this.login = login;
     }
 
-    public UserPOJO(String name, String surname, String login, String password) {
+    public UserPOJO(long id,String name, String surname, String login, String password) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.login = login;
@@ -43,6 +44,7 @@ public class UserPOJO {
 
     public User pojoToEntity() {
         return new User(
+                this.id,
                 this.name,
                 this.surname,
                 this.login,

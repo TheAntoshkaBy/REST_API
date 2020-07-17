@@ -1,16 +1,18 @@
 package com.epam.esm.repository.jpa.impl;
 
 import com.epam.esm.constant.SQLRequests;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.certificate.CertificateNotFoundException;
+import com.epam.esm.exception.RepositoryException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
-import com.epam.esm.exception.entity.InvalidDataMessage;
-import com.epam.esm.exception.tag.TagNotFoundException;
+import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.ShopJPARepository;
 import com.epam.esm.repository.jpa.TagRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.StoredProcedureQuery;
+import java.math.BigInteger;
 import java.util.List;
 
 @Transactional
@@ -19,29 +21,44 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
 
     @Override
     public void delete(long id) {
-        if (entityManager.createQuery(SQLRequests.DELETE_TAG_BY_ID)
-                .setParameter(1, id).executeUpdate() == 0) {
-            throw new CertificateNotFoundException(new InvalidDataMessage(
-                    ErrorTextMessageConstants.NOT_FOUND_TAG
-            ));
+        int col = entityManager.createQuery(SQLRequests.DELETE_TAG_BY_ID)
+                .setParameter(1, id).executeUpdate();
+        if(col == 0){
+            throw new RepositoryException(new InvalidDataOutputMessage("Tag",
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
     @Override
     public Tag findById(long id) {
         Tag tag = entityManager.find(Tag.class, id);
-        if (tag == null) {
-            throw new TagNotFoundException(
-                    new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_TAG
-                    ));
+        if(tag == null){
+            throw new RepositoryException(new InvalidDataOutputMessage("Tag",
+                    ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
         return tag;
     }
 
+    @SuppressWarnings("unchecked")
+    public Long findMostWidelyUsedTag() {
+        StoredProcedureQuery findByName = entityManager
+                .createNamedStoredProcedureQuery("module3");
+        BigInteger o = (BigInteger) findByName.getSingleResult();
+        return o.longValue();
+    }
+
+    @Override
+    public int getTagCount() {
+        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_TAG).getSingleResult();
+        return count.intValue();
+    }
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Tag> findAll() {
-        return entityManager.createQuery(SQLRequests.FIND_ALL_TAGS).getResultList();
+    public List<Tag> findAll(int offset, int limit) {
+        return entityManager.createQuery(SQLRequests.FIND_ALL_TAGS)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 }

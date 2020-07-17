@@ -6,6 +6,13 @@ import java.util.Objects;
 
 @Entity(name = "tag")
 @Table(name = "tag")
+@NamedStoredProcedureQueries({
+        @NamedStoredProcedureQuery
+                (
+                        name = "module3",
+                        procedureName = "greater"
+                )
+})
 public class Tag implements Serializable {
 
     @Id

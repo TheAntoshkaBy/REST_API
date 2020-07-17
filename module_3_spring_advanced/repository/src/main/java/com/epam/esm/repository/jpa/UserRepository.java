@@ -9,7 +9,9 @@ public interface UserRepository {
 
     User findById(long id);
 
-    List<User> findAll();
+    List<User> findAll(int offset, int limit);
 
     User create(User user);
+
+    int getUsersCount();
 }

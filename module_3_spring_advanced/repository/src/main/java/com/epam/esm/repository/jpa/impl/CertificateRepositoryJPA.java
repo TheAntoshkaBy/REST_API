@@ -3,16 +3,18 @@ package com.epam.esm.repository.jpa.impl;
 import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.certificate.CertificateNotFoundException;
+import com.epam.esm.exception.RepositoryException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
-import com.epam.esm.exception.entity.InvalidDataMessage;
+import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.ShopJPARepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Transactional
@@ -21,53 +23,72 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     @Override
     public void delete(long id) {
-        if (entityManager.createQuery(SQLRequests.DELETE_CERTIFICATE)
-                .setParameter(1, id).executeUpdate() == 0) {
-            throw new CertificateNotFoundException(new InvalidDataMessage(
-                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE
-            ));
+        int col = entityManager.createQuery(SQLRequests.DELETE_CERTIFICATE)
+                .setParameter(1, id).executeUpdate();
+        if(col == 0){
+            throw new RepositoryException(new InvalidDataOutputMessage("Certificate",
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
     @Override
     public Certificate findById(long id) {
         Certificate certificate = entityManager.find(Certificate.class, id);
-
-        if (certificate == null) {
-            throw new CertificateNotFoundException(new InvalidDataMessage
-                    (ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+        if(certificate == null){
+            throw new RepositoryException(new InvalidDataOutputMessage("Certificate",
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
-
         return certificate;
+    }
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Certificate> findAll() {
+        return (List<Certificate>) entityManager
+                .createQuery(SQLRequests.FIND_ALL_CERTIFICATES);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Certificate> findAll() {
-        List<Certificate> certificates = entityManager
-                .createQuery(SQLRequests.FIND_ALL_CERTIFICATES)
+    public List<Certificate> findAll(int offset, int limit) {
+        return (List<Certificate>) entityManager
+                .createQuery(SQLRequests.FIND_ALL_CERTIFICATES_WITH_LIMIT_OFFSET)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
                 .getResultList();
-
-        if (certificates == null) {
-            throw new CertificateNotFoundException(new InvalidDataMessage
-                    (ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
-        }
-
-        return certificates;
     }
 
     @SuppressWarnings("unchecked")
-    public List<Certificate> findAllByDate() {
-        List<Certificate> certificates = entityManager.createQuery(SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE).getResultList();
-
-        if (certificates == null) {
-            throw new CertificateNotFoundException(new InvalidDataMessage
-                    (ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+    @Override
+    public List<Certificate> findAllComplex(String query, Map<String, Object> params, int offset, int limit) {
+        Query finalQuery = entityManager.createQuery(query);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            finalQuery.setParameter(entry.getKey(), entry.getValue());
         }
-
-        return certificates;
+        return finalQuery.setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 
+    @Override
+    public int findCountComplex(String query, Map<String, Object> params) {
+        Query finalQuery = entityManager.createQuery(query);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            finalQuery.setParameter(entry.getKey(), entry.getValue());
+        }
+        Long count = (Long) finalQuery.getSingleResult();
+        return count.intValue();
+    }
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    public List<Certificate> findAllByDate() {
+
+        return (List<Certificate>) entityManager.createQuery(SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE).getResultList();
+    }
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     public List<Certificate> findAllByIdThreshold(long id) {
         return entityManager.createQuery(SQLRequests.FIND_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER)
@@ -75,6 +96,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
                 .getResultList();
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public List<Certificate> findAllByNamePart(String namePart) {
         StoredProcedureQuery findByName = entityManager
@@ -82,7 +104,17 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
         return findByName.getResultList();
     }
 
-    public void update(Certificate certificate, long id) { //fixme состояния entity  manger почитать!
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Certificate> findAllByTags(String query, int offset, int limit) {
+        return entityManager
+                .createQuery(query)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
+
+    public void update(Certificate certificate, long id) {
         Certificate buffCert = entityManager.find(Certificate.class, id);
 
         buffCert.setName(certificate.getName());
@@ -97,6 +129,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
         buffCert.setPrice(price);
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public List<Certificate> findByTagName(String name) {
         return entityManager.createQuery(SQLRequests.FIND_CERTIFICATE_BY_TAG_NAME)
@@ -111,7 +144,18 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     public void deleteTag(long idCertificate, long idTag) {
         Certificate buffCertificate = entityManager.find(Certificate.class, idCertificate);
+        if(buffCertificate == null){
+            throw new RepositoryException(new InvalidDataOutputMessage(Certificate.class.toString(),
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+        }
+
         Optional<Tag> buffTag = buffCertificate.getTags().stream().filter(tag -> tag.getId() == idTag).findFirst();
         buffTag.ifPresent(tag -> buffCertificate.getTags().remove(tag));
+    }
+
+    @Override
+    public int getCertificateCount() {
+        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_CERTIFICATE).getSingleResult();
+        return count.intValue();
     }
 }

@@ -13,12 +13,12 @@ import java.util.Objects;
         @NamedStoredProcedureQuery(
                 name = "findByNameProcedure",
                 procedureName = "return_t_certificate3",
-                resultClasses = { Certificate.class },
+                resultClasses = {Certificate.class},
                 parameters = {
                         @StoredProcedureParameter
                                 (
-                                name = "text",
-                                type = String.class
+                                        name = "text",
+                                        type = String.class
                                 )
                 })
 })
@@ -168,11 +168,11 @@ public class Certificate implements Serializable {
                 '}';
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
-
     public List<Tag> getTags() {
         return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 }

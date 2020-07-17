@@ -12,11 +12,16 @@
     <artifactId>controller</artifactId>
 
     <dependencies>
+
         <dependency>
             <groupId>com.epam.esm</groupId>
             <artifactId>service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
     </dependencies>
 

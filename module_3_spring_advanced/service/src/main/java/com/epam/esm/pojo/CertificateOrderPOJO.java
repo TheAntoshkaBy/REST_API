@@ -2,11 +2,8 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
-import com.epam.esm.entity.User;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
-import java.security.acl.Owner;
 import java.util.Date;
 import java.util.List;
 
@@ -17,8 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class CertificateOrderPOJO {
         private Long id;
-        private Date timestamp;
+        private Date endDate;
         private Double coast;
+        private String description;
+        private Date createdDate;
 
         private UserPOJO owner;
 
@@ -38,19 +37,23 @@ public class CertificateOrderPOJO {
                 }else {
                         this.owner = null;
                 }
-                this.timestamp = certificateOrder.getTimestamp();
+                this.endDate = certificateOrder.getEndTime();
                 this.certificates = certificateOrder.getCertificates();
+                this.description = certificateOrder.getDescription();
+                this.createdDate = certificateOrder.getCreateTime();
         }
 
         public CertificateOrder pojoToEntity(){
                 return new CertificateOrder(
-                        this.timestamp,
-                        this.coast
+                        this.endDate,
+                        this.coast,
+                        this.description,
+                        this.createdDate
                 );
         }
 
-        public CertificateOrderPOJO(Date timestamp, Double coast) {
-                this.timestamp = timestamp;
-                this.coast = coast;
+        public CertificateOrderPOJO(Date endDate, String description) {
+                this.endDate = endDate;
+                this.description = description;
         }
 }

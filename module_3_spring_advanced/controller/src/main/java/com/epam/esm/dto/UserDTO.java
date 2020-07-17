@@ -1,13 +1,14 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.controller.UserController;
 import com.epam.esm.pojo.UserPOJO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import org.springframework.hateoas.EntityModel;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Getter
 @Setter
@@ -25,20 +26,32 @@ public class UserDTO {
     private String login;
     private String password;
 
-    public UserDTO(UserPOJO user){
+    @JsonIgnore
+    private EntityModel<UserDTO> model;
+
+    public UserDTO(UserPOJO user) {
         this.id = user.getId();
         this.name = user.getName();
         this.surname = user.getSurname();
         this.login = user.getLogin();
         this.password = user.getPassword();
-     }
+    }
 
-    public UserPOJO dtoToPojo(){
+    public UserPOJO dtoToPojo() {
         return new UserPOJO(
+                this.id,
                 this.name,
                 this.surname,
                 this.login,
                 this.password
         );
+    }
+
+    public EntityModel<UserDTO> getModel() {
+        model = EntityModel.of(this,
+                linkTo(methodOn(UserController.class).findUserById(id)).withSelfRel(),
+                linkTo(methodOn(UserController.class).delete(id, 1, 5)).withRel("delete").withType("DELETE"),
+                linkTo(methodOn(UserController.class).findOrders(id, 1, 5)).withRel("orders").withType("GET"));
+        return model;
     }
 }

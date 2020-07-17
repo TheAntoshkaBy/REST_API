@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 
 @Repository
 public abstract class ShopJPARepository<T> implements ShopRepository<T> { //fixme имплементить интерфейс + иерархия интерфейсов добавить
@@ -14,7 +13,7 @@ public abstract class ShopJPARepository<T> implements ShopRepository<T> { //fixm
     protected EntityManager entityManager;
 
     @Transactional
-    public T create(T t){
+    public T create(T t) {
         entityManager.persist(t);
         return t;
     }

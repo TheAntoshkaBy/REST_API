@@ -13,15 +13,27 @@ public class SQLRequests {
             "SELECT c FROM certificate c WHERE id > ?1";
 
     public static final String FIND_CERTIFICATE_BY_TAG_NAME =
-                    "SELECT c " +
+            "SELECT c " +
                     "FROM certificate c " +
                     "JOIN c.tags tg " +
-                            "WHERE tg.name = ?1";
+                    "WHERE tg.name = ?1";
 
     public static final String FIND_CERTIFICATE_BY_ID =
             "select * from rest_api_basics.certificate where id_certificate = :id";
 
     public static final String FIND_ALL_CERTIFICATES = "select c from certificate c";
+
+    public static final String FIND_COUNT_OF_CERTIFICATE = "select count(c) from certificate c";
+
+    public static final String FIND_COUNT_OF_TAG = "select count(t) from tag t";
+
+    public static final String FIND_COUNT_OF_USER = "select count(t) from shop_user t";
+
+    public static final String FIND_COUNT_OF_ORDER = "select count(t) from certificate_order t";
+
+    public static final String FIND_ALL_CERTIFICATES_WITH_LIMIT_OFFSET = "select c from certificate c order by c.id";
+
+    public static final String FIND_ALL_ORDERS_WITH_LIMIT_OFFSET = "select o from certificate_order o order by o.id";
 
     public static final String FIND_ALL_CERTIFICATES_BY_DATE =
             "select c from certificate as c order by c.creationDate";
@@ -54,13 +66,13 @@ public class SQLRequests {
             "RIGHT JOIN rest_api_basics.tag ON many_certificates_to_many_tags.id_tag = tag.id_tag\n" +
             "WHERE id_certificate = :id";
 
-    public static final String FIND_ALL_TAGS = "select t from tag t";
+    public static final String FIND_ALL_TAGS = "select t from tag t order by t.id";
 
     public static final String FIND_ALL_USERS = "select u from shop_user u";
 
     public static final String FIND_ALL_ORDERS = "select o from certificate_order o";
 
-    public static final String FIND_ALL_ORDERS_BY_OWNER = "select o from certificate_order o where o.owner.id = ?1";
+    public static final String FIND_ALL_ORDERS_BY_OWNER = "select o from certificate_order o where o.owner.id = ?1 order by o.id";
 
     public static final String FIND_TAG_BY_ID = "select * from rest_api_basics.tag where id_tag = :id";
 
@@ -68,6 +80,10 @@ public class SQLRequests {
             "INSERT INTO rest_api_basics.tag (tag_name, id_tag) VALUES (:tag_name, DEFAULT )";
 
     public static final String DELETE_TAG_BY_ID = "DELETE FROM tag where id = ?1";
+
+    public static final String DELETE_ORDER_BY_ID = "DELETE FROM certificate_order where id = ?1";
+
+    public static final String DELETE_USER_BY_ID = "DELETE FROM shop_user where id = ?1";
 
     public static final String FIND_BY_PART_OF_NAME = "SELECT * FROM return_t_certificate(?)";
 

@@ -1,28 +1,40 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.pojo.CertificateOrderPOJO;
-import com.epam.esm.pojo.CertificatePOJO;
+import com.epam.esm.pojo.UserPOJO;
+import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.service.validator.OrderValidator;
+import org.apache.naming.LookupRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ShopOrderService implements OrderService {
     private final OrderRepository repository;
+    private final CertificateRepository certificateRepository;
+    private OrderValidator orderValidator;
 
     @Autowired
-    public ShopOrderService(OrderRepository repository) {
+    public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository, OrderValidator orderValidator) {
         this.repository = repository;
+        this.certificateRepository = certificateRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Override
-    public List<CertificateOrderPOJO> findAll() {
-        List<CertificateOrder> certificateOrders = repository.findAll();
+    public List<CertificateOrderPOJO> findAll(int page, int size) {
+        if (page != 1) {
+            page = size * (page - 1) + 1;
+        }
+        List<CertificateOrder> certificateOrders = repository.findAll(page, size);
         return certificateOrders
                 .stream()
                 .map(CertificateOrderPOJO::new)
@@ -31,23 +43,45 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public CertificateOrderPOJO find(long id) {
-        return null;
+        return new CertificateOrderPOJO(repository.findById(id));
     }
 
     @Override
     public void delete(long id) {
-
+        repository.delete(id);
     }
 
     @Override
-    public CertificateOrderPOJO create(CertificateOrderPOJO order) {
-        return new CertificateOrderPOJO(repository.create(order.pojoToEntity()));
-    }//fixme формат получения данных: данные о юзере (айди) и данные о заказе
+    public CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO) {
+        orderValidator.isCorrectOrder(order);
+        order.setCoast(0.0);
+        order.setCreatedDate(new Date());
+        return new CertificateOrderPOJO(repository.create(order.pojoToEntity(), userPOJO.pojoToEntity()));
+    }
 
     @Override
-    public List<CertificateOrderPOJO> findAllByOwner(long id) {
-        return repository.findAllByOwner(id).stream()
+    public List<CertificateOrderPOJO> findAllByOwner(long id, int page, int size) {
+        if (page != 1) {
+            page = size * (page - 1) + 1;
+        }
+        return repository.findAllByOwner(id, page, size).stream()
                 .map(CertificateOrderPOJO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CertificateOrderPOJO addCertificates(long orderId, List<Long> certificatesId) {
+        CertificateOrder certificateOrder = repository.findById(orderId);
+        List<Certificate> certificates = certificatesId
+                .stream()
+                .map(certificateRepository::findById)
+                .collect(Collectors.toList());
+        double summaryPrice = certificates.stream().mapToDouble(Certificate::getPrice).sum();
+        return new CertificateOrderPOJO(repository.addCertificates(certificateOrder, certificates, summaryPrice));
+    }
+
+    @Override
+    public int getOrdersCount() {
+        return repository.getOrdersCount();
     }
 }

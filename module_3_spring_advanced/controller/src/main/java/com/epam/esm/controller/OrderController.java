@@ -1,11 +1,9 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateOrderDTO;
-import com.epam.esm.dto.UserDTO;
-import com.epam.esm.entity.CertificateOrder;
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.dto.OrderList;
+import com.epam.esm.exception.RepositoryException;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,24 +23,48 @@ public class OrderController {
         this.service = service;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addUser(@RequestBody CertificateOrderDTO order) {
-        try {
-            service.create(order.dtoToPojo());
-            return new ResponseEntity<>(service.findAll()
-                    .stream()
-                    .map(CertificateOrderDTO::new)
-                    .collect(Collectors.toList()), HttpStatus.CREATED);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+    @GetMapping(params = {"page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
+                                     @RequestParam(value = "size", defaultValue = "5") int size) {
+        return new ResponseEntity<>(new OrderList(
+                service.findAll(page, size)
+                        .stream()
+                        .map(CertificateOrderDTO::new)
+                        .collect(Collectors.toList()),
+                service.getOrdersCount(),
+                page,
+                size
+        ), HttpStatus.OK);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<CertificateOrderDTO>> findAll() {
-            return new ResponseEntity<>(service.findAll()
-                    .stream()
-                    .map(CertificateOrderDTO::new)
-                    .collect(Collectors.toList()), HttpStatus.OK);
+    @DeleteMapping(params = {"page", "size"}, path = "/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id,
+                                         @RequestParam(value = "page", defaultValue = "1") int page,
+                                         @RequestParam(value = "size", defaultValue = "5") int size) {
+        try {
+            service.delete(id);
+        } catch (RepositoryException e) {
+            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new OrderList(
+                service.findAll(page, size)
+                        .stream()
+                        .map(CertificateOrderDTO::new)
+                        .collect(Collectors.toList()),
+                service.getOrdersCount(),
+                page,
+                size
+        ), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findOrderById(@PathVariable long id) {
+        return new ResponseEntity<>(new CertificateOrderDTO(service.find(id)).getModel(), HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addCertificates(@PathVariable long id, @RequestParam List<Long> certificatesId) {
+        return new ResponseEntity<>(new CertificateOrderDTO(service.addCertificates(id, certificatesId)).getModel()
+                , HttpStatus.OK);
     }
 }

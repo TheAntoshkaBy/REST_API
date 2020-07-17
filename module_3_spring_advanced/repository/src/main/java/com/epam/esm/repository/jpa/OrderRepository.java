@@ -1,5 +1,6 @@
 package com.epam.esm.repository.jpa;
 
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.entity.User;
 
@@ -10,9 +11,13 @@ public interface OrderRepository {
 
     CertificateOrder findById(long id);
 
-    List<CertificateOrder> findAll();
+    List<CertificateOrder> findAll(int offset, int limit);
 
-    CertificateOrder create(CertificateOrder order);
+    CertificateOrder create(CertificateOrder order, User user);
 
-    List<CertificateOrder> findAllByOwner(long id);
+    List<CertificateOrder> findAllByOwner(long id, int offset, int limit);
+
+    CertificateOrder addCertificates(CertificateOrder certificateOrder, List<Certificate> certificates, double coast);
+
+    int getOrdersCount();
 }

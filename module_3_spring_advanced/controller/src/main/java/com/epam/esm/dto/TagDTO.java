@@ -1,66 +1,44 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.controller.TagController;
 import com.epam.esm.pojo.TagPOJO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import org.springframework.hateoas.EntityModel;
 
-import java.util.Objects;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TagDTO {
     private Long id;
     private String name;
 
-    public TagDTO() {
-    }
+    @JsonIgnore
+    private EntityModel<TagDTO> model;
 
-    public TagDTO(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public TagDTO(TagPOJO tag){
+    public TagDTO(TagPOJO tag) {
         this.name = tag.getName();
         this.id = tag.getId();
     }
 
-    public Long getId() {
-        return id;
+    public TagPOJO dtoToPOJO() {
+        return new TagPOJO(this.id, this.name);
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Tag{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TagDTO tag = (TagDTO) o;
-        return Objects.equals(name, tag.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    public TagPOJO dtoToPOJO(){
-        return new TagPOJO(this.id,this.name);
+    public EntityModel<TagDTO> getModel() {
+        model = EntityModel.of(
+                this,
+                linkTo(methodOn(TagController.class).findTag(id)).withSelfRel(),
+                linkTo(methodOn(TagController.class).findTag(id)).withRel("delete").withType("DELETE")
+        );
+        return model;
     }
 }

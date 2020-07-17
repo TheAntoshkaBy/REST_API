@@ -1,8 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.exception.ServiceException;
-import com.epam.esm.exception.tag.TagException;
+import com.epam.esm.dto.TagList;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController()
@@ -25,44 +23,50 @@ public class TagController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTag(@RequestBody TagDTO tag) {
-        try {
-            service.create(tag.dtoToPOJO());
-            return new ResponseEntity<>(service.findAll()
-                    .stream()
-                    .map(TagDTO::new)
-                    .collect(Collectors.toList()), HttpStatus.CREATED);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+
+        return new ResponseEntity<>(new TagDTO(service.create(tag.dtoToPOJO())).getModel(), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findTag(@PathVariable Integer id) {
-        try {
-            return new ResponseEntity<>(new TagDTO(service.find(id)), HttpStatus.OK);
-        } catch (TagException e) { //
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> findTag(@PathVariable Long id) {
+        return new ResponseEntity<>(new TagDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TagDTO>> findAll() {
-        return new ResponseEntity<>(service.findAll()
-                .stream()
-                .map(TagDTO::new)
-                .collect(Collectors.toList()), HttpStatus.OK);
+    public ResponseEntity<?> findTag() {
+        return new ResponseEntity<>(new TagDTO(service.findMostWidelyUsedTag()).getModel(), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> deleteTag(@PathVariable Integer id) {
-        try {
-            service.delete(id);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(service.findAll()
-                .stream()
-                .map(TagDTO::new)
-                .collect(Collectors.toList()), HttpStatus.OK);
+    @GetMapping(params = {"page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
+                                     @RequestParam(value = "size", defaultValue = "5") int size) {
+
+        return new ResponseEntity<>(new TagList(
+                service.findAll(page, size)
+                        .stream()
+                        .map(TagDTO::new)
+                        .collect(Collectors.toList()),
+                service.getTagCount(),
+                page,
+                size
+        ), HttpStatus.OK);
+    }
+
+    @DeleteMapping(params = {"page", "size"}, path = "/{id}")
+    public ResponseEntity<?> deleteTag(@PathVariable Integer id,
+                                       @RequestParam(value = "page", defaultValue = "1") int page,
+                                       @RequestParam(value = "size", defaultValue = "5") int size) {
+
+        service.delete(id);
+
+        return new ResponseEntity<>(new TagList(
+                service.findAll(page, size)
+                        .stream()
+                        .map(TagDTO::new)
+                        .collect(Collectors.toList()),
+                service.getTagCount(),
+                page,
+                size
+        ), HttpStatus.OK);
     }
 }

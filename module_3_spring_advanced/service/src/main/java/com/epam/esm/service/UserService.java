@@ -1,7 +1,5 @@
 package com.epam.esm.service;
 
-import com.epam.esm.exception.tag.TagNotFoundException;
-import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.pojo.UserPOJO;
 
 import java.util.List;
@@ -10,7 +8,7 @@ public interface UserService {
     /**
      * This method finds all users from database using DAO
      **/
-    List<UserPOJO> findAll();
+    List<UserPOJO> findAll(int page, int size);
 
     /**
      * This method finds concrete User By Id using DAO
@@ -34,4 +32,5 @@ public interface UserService {
      **/
     UserPOJO create(UserPOJO user);
 
+    int getUsersCount();
 }

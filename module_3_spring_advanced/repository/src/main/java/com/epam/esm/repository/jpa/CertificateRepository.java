@@ -3,21 +3,36 @@ package com.epam.esm.repository.jpa;
 import com.epam.esm.entity.Certificate;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CertificateRepository {
     void delete(long id);
 
     Certificate findById(long id);
 
+    int getCertificateCount();
+
+    @Deprecated
     List<Certificate> findAll();
+
+    List<Certificate> findAll(int offset, int limit);
+
+    List<Certificate> findAllComplex(String query, Map<String, Object> params, int offset, int limit);
+
+    int findCountComplex(String query, Map<String, Object> params);
 
     Certificate create(Certificate certificate);
 
+    @Deprecated
     List<Certificate> findAllByDate();
 
+    @Deprecated
     List<Certificate> findAllByIdThreshold(long id);
 
+    @Deprecated
     List<Certificate> findAllByNamePart(String namePart);
+
+    List<Certificate> findAllByTags(String Query, int offset, int limit);
 
     void update(Certificate certificate, long id);
 

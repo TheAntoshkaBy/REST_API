@@ -1,9 +1,10 @@
-package com.epam.esm.exception.entity;
+package com.epam.esm.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.context.annotation.Scope;
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Component
 public class InvalidDataMessage {

@@ -7,9 +7,13 @@ import java.util.List;
 public interface TagRepository {
     Tag findById(long id);
 
-    List<Tag> findAll();
+    List<Tag> findAll(int limit, int offset);
 
     Tag create(Tag tag);
 
     void delete(long id);
+
+    int getTagCount();
+
+    Long findMostWidelyUsedTag();
 }

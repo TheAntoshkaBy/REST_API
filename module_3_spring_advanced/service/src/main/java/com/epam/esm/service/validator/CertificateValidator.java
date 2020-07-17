@@ -1,19 +1,17 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.exception.certificate.CertificateInvalidParameterDataException;
-import com.epam.esm.pojo.CertificatePOJO;
+import com.epam.esm.exception.ServiceException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
-import com.epam.esm.exception.entity.InvalidDataMessage;
-import org.springframework.context.annotation.Scope;
+import com.epam.esm.pojo.CertificatePOJO;
+import com.epam.esm.pojo.InvalidDataMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Scope("prototype")
 @Component
-public class CertificateValidator {
+public class CertificateValidator { //fixme () перенести валидацию в Controller для не спецефичных моментов.
 
     private List<InvalidDataMessage> invalidDataMessageList;
 
@@ -42,9 +40,8 @@ public class CertificateValidator {
     }
 
     private void isCorrectModificationDate(Date certificateData) {
-
         if (certificateData != null) {
-            final String FIELD = "modification date";
+            final String FIELD = "modification date"; //fixme constantы выносить
             invalidDataMessageList.add(new InvalidDataMessage(FIELD,
                     ErrorTextMessageConstants.MODIFICATION_DATE_FIELD));
         }
@@ -65,18 +62,18 @@ public class CertificateValidator {
         priceCheck(certificate.getPrice());
         isCorrectModificationDate(certificate.getModification());
         if (!invalidDataMessageList.isEmpty()) {
-            throw new CertificateInvalidParameterDataException(invalidDataMessageList);
+            throw new ServiceException(invalidDataMessageList);
         }
     }
 
-    public void isCorrectCertificateCreateData(CertificatePOJO certificate) {
-        invalidDataMessageList = new ArrayList<>();
+    public void isCorrectCertificateCreateData(CertificatePOJO certificate) {//fixme is - подразумевает true or false
+        invalidDataMessageList = new ArrayList<>();//fixme многопоточка
         nameLength(certificate.getName());
         priceCheck(certificate.getPrice());
         isCorrectCreationDate(certificate.getCreationDate());
         isCorrectModificationDate(certificate.getModification());
         if (!invalidDataMessageList.isEmpty()) {
-            throw new CertificateInvalidParameterDataException(invalidDataMessageList);
+            throw new ServiceException(invalidDataMessageList);
         }
     }
 }

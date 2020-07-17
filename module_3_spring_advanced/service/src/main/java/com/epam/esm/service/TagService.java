@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.exception.tag.TagNotFoundException;
 import com.epam.esm.service.validator.TagValidator;
 
 import java.util.List;
@@ -14,7 +13,9 @@ public interface TagService {
     /**
      * This method finds all tags from database using DAO
      **/
-    List<TagPOJO> findAll();
+    List<TagPOJO> findAll(int offset, int limit);
+
+    int getTagCount();
 
     /**
      * This method finds concrete Tag By Id using DAO
@@ -22,7 +23,9 @@ public interface TagService {
      * @param id Tag Id
      * @return Tag
      **/
-    TagPOJO find(long id) throws TagNotFoundException;
+    TagPOJO find(long id);
+
+    TagPOJO findMostWidelyUsedTag();
 
     /**
      * This method delete tag by transmitted tag id
@@ -30,7 +33,7 @@ public interface TagService {
      *
      * @param id certificate id which will be edit
      **/
-    void delete(long id) throws TagNotFoundException;
+    void delete(long id);
 
     /**
      * This method add new Tag

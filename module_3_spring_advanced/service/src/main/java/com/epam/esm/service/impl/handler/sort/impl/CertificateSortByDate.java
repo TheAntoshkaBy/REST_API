@@ -1,8 +1,7 @@
 package com.epam.esm.service.impl.handler.sort.impl;
 
-import com.epam.esm.exception.certificate.CertificateNotFoundException;
-import com.epam.esm.service.CertificateService;
 import com.epam.esm.pojo.CertificatePOJO;
+import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,8 +20,7 @@ public class CertificateSortByDate implements CertificateSortBy {
     }
 
     @Override
-    public List<CertificatePOJO> sortOurCertificates(HttpServletRequest request)
-            throws CertificateNotFoundException {
+    public List<CertificatePOJO> sortOurCertificates(HttpServletRequest request) {
         return certificateService.findAllCertificatesByDate();
     }
 

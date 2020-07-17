@@ -9,7 +9,7 @@ public interface OrderService {
     /**
      * This method finds all orders from database using DAO
      **/
-    List<CertificateOrderPOJO> findAll();
+    List<CertificateOrderPOJO> findAll(int page, int size);
 
     /**
      * This method finds concrete Order By Id using DAO
@@ -29,13 +29,17 @@ public interface OrderService {
     /**
      * This method add new Order
      *
-     * @param tag User object
+     * @param order User object
      **/
-    CertificateOrderPOJO create(CertificateOrderPOJO user);
+    CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO);
 
     /**
      * This method finds all orders from database using DAO
      * which belong concrete user
      **/
-    List<CertificateOrderPOJO> findAllByOwner(long id);
+    List<CertificateOrderPOJO> findAllByOwner(long id, int offset, int limit);
+
+    CertificateOrderPOJO addCertificates(long OrderId, List<Long> certificatesId);
+
+    int getOrdersCount();
 }

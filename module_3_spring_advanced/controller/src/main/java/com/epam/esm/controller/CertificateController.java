@@ -1,9 +1,10 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.*;
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.CertificateList;
+import com.epam.esm.dto.TagDTO;
+import com.epam.esm.exception.RepositoryException;
 import com.epam.esm.service.CertificateService;
-import com.sun.org.glassfish.gmbal.ParameterNames;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,63 +29,112 @@ public class CertificateController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificate(@RequestBody CertificateDTO certificateDTO) {
-        try {
-            service.create(certificateDTO.dtoToPOJO());
-            return new ResponseEntity<>(new CertificateList(service.findAll()
-                    .stream()
-                    .map(CertificateDTO::new)
-                    .collect(Collectors.toList())),
-                    HttpStatus.CREATED);
 
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+        service.create(certificateDTO.dtoToPOJO());
+        return new ResponseEntity<>(new CertificateDTO(service.create(certificateDTO.dtoToPOJO())).getModel(),
+                HttpStatus.CREATED);
     }
 
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findByTag(@RequestBody TagDTO tag) {
-        try {
-            return new ResponseEntity<>(service.findAllCertificatesByTag(tag.dtoToPOJO())
-                    .stream()
-                    .map(CertificateDTO::new)
-                    .collect(Collectors.toList()), HttpStatus.OK);
+    @GetMapping(params = {"page", "size"}, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findByTag(@RequestBody List<TagDTO> tags,
+                                       @RequestParam(value = "page", defaultValue = "1") int page,
+                                       @RequestParam(value = "size", defaultValue = "5") int size) {
 
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new CertificateList(service.findAllByTags(
+                tags.stream()
+                        .map(TagDTO::dtoToPOJO)
+                        .collect(Collectors.toList()), page, size)
+                .stream()
+                .map(CertificateDTO::new)
+                .collect(Collectors.toList()),
+                service.getCertificateCount(),
+                page,
+                size), HttpStatus.OK);
+
+    }
+
+    @GetMapping(params = "search", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> find(@RequestParam Map<String, String> params) {
+        if (params.get("search").equals("find")) {
+            return findAll(Integer.parseInt(params.get("page")), Integer.parseInt(params.get("size")), "find");
+        } else {
+            return findComplex(params);
         }
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> find(HttpServletRequest params) { //fixme заменить статик метод на конструктор пакеты переназвать дто и пожо
-        try {
-            return new ResponseEntity<>(new CertificateList(service.findAll(params)
-                    .stream()
-                    .map(CertificateDTO::new)
-                    .collect(Collectors.toList())), HttpStatus.OK);
+    public ResponseEntity<?> find(HttpServletRequest params,
+                                  @RequestParam(value = "page", defaultValue = "1") int page,
+                                  @RequestParam(value = "size", defaultValue = "5") int size) {
+        CertificateList certificateList = new CertificateList(
+                service.findAll(params)
+                        .stream()
+                        .map(CertificateDTO::new)
+                        .collect(Collectors.toList()),
+                service.getCertificateCount(),
+                page,
+                size
+        );
+            return new ResponseEntity<>(certificateList, HttpStatus.OK);
+    }
 
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
+                                     @RequestParam(value = "size", defaultValue = "5") int size,
+                                     @RequestParam(value = "search", defaultValue = "find") String search) {
+
+        CertificateList certificateList = new CertificateList(
+                service.findAll(page, size)
+                        .stream()
+                        .map(CertificateDTO::new)
+                        .collect(Collectors.toList()),
+                service.getCertificateCount(),
+                page,
+                size
+        );
+        return new ResponseEntity<>(certificateList, HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<?> findComplex(@RequestParam Map<String, String> params) {
+
+        return new ResponseEntity<>(new CertificateList(
+                service.findAllComplex(params)
+                        .stream()
+                        .map(CertificateDTO::new)
+                        .collect(Collectors.toList()),
+                service.getCountComplex(params),
+                params
+        ), HttpStatus.OK);
+
+
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findById(@PathVariable long id) {
-        try {
-            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+
+        return new ResponseEntity<>(
+                new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+
     }
 
-    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteCertificate(@PathVariable Integer id) {
+    @DeleteMapping(path = "/{id}", params = {"page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteCertificate(@PathVariable Integer id,
+                                               @RequestParam(value = "page", defaultValue = "1") int page,
+                                               @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             service.delete(id);
-            return new ResponseEntity<>(service.findAll()
-                    .stream()
-                    .map(CertificateDTO::new)
-                    .collect(Collectors.toList()), HttpStatus.OK);
-        } catch (ServiceException e) {
+            return new ResponseEntity<>(
+                    new CertificateList(
+                            service.findAll(page, size)
+                                    .stream()
+                                    .map(CertificateDTO::new)
+                                    .collect(Collectors.toList()),
+                            service.getCertificateCount(),
+                            page,
+                            size
+
+                    ), HttpStatus.OK);
+        } catch (RepositoryException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -91,55 +143,41 @@ public class CertificateController {
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCertificate
             (@RequestBody CertificateDTO certificate, @PathVariable int id) {
-        try {
-            service.update(id, certificate.dtoToPOJO());
-            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+
+        service.update(id, certificate.dtoToPOJO());
+        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+
     }
 
     @PatchMapping(path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCertificatePrice
             (@RequestParam double price, @PathVariable long id) {
-        try {
-            service.updatePrice(id, price);
-            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+        service.updatePrice(id, price);
+        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody TagDTO tag) {
-        try {
-            service.addTag(id, tag.dtoToPOJO());
-            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.CREATED);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+
+        service.addTag(id, tag.dtoToPOJO());
+        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTagToCertificate
             (@PathVariable Integer id, @PathVariable Integer idTag) {
-        try {
-            service.addTag(id, idTag);
-            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+
+        service.addTag(id, idTag);
+        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteTagToCertificate
             (@PathVariable Integer id, @PathVariable Integer idTag) {
-        try {
-            service.deleteTag(id, idTag);
-            return new ResponseEntity<>(new CertificateDTO(service.find(id)), HttpStatus.OK);
-        } catch (ServiceException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+
+        service.deleteTag(id, idTag);
+        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 }
