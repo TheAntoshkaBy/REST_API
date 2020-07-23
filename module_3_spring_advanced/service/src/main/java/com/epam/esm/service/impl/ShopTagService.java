@@ -25,7 +25,7 @@ public class ShopTagService implements TagService {
         if (page != 1) {
             page = size * (page - 1) + 1;
         }
-        return tagRepository.findAll(page, size)
+        return tagRepository.findAll(--page, size)
                 .stream()
                 .map(TagPOJO::new)
                 .collect(Collectors.toList());

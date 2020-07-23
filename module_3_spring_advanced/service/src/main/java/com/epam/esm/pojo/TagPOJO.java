@@ -16,6 +16,11 @@ public class TagPOJO {
         this.name = name;
     }
 
+    public TagPOJO(Tag tag) {
+        this.id = tag.getId();
+        this.name = tag.getName();
+    }
+
     public Long getId() {
         return id;
     }
@@ -53,11 +58,7 @@ public class TagPOJO {
         return Objects.hash(name);
     }
 
-    public TagPOJO(Tag tag){
-        this.id = tag.getId();
-        this.name = tag.getName();
-    }
-    public Tag pojoToEntity(){
-        return new Tag(this.id,this.name);
+    public Tag pojoToEntity() {
+        return new Tag(this.id, this.name);
     }
 }

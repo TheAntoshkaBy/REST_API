@@ -7,8 +7,6 @@ import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.validator.OrderValidator;
-import org.apache.naming.LookupRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +18,11 @@ import java.util.stream.Collectors;
 public class ShopOrderService implements OrderService {
     private final OrderRepository repository;
     private final CertificateRepository certificateRepository;
-    private OrderValidator orderValidator;
 
     @Autowired
-    public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository, OrderValidator orderValidator) {
+    public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository) {
         this.repository = repository;
         this.certificateRepository = certificateRepository;
-        this.orderValidator = orderValidator;
     }
 
     @Override
@@ -34,7 +30,7 @@ public class ShopOrderService implements OrderService {
         if (page != 1) {
             page = size * (page - 1) + 1;
         }
-        List<CertificateOrder> certificateOrders = repository.findAll(page, size);
+        List<CertificateOrder> certificateOrders = repository.findAll(--page, size);
         return certificateOrders
                 .stream()
                 .map(CertificateOrderPOJO::new)
@@ -53,7 +49,6 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO) {
-        orderValidator.isCorrectOrder(order);
         order.setCoast(0.0);
         order.setCreatedDate(new Date());
         return new CertificateOrderPOJO(repository.create(order.pojoToEntity(), userPOJO.pojoToEntity()));
@@ -64,9 +59,14 @@ public class ShopOrderService implements OrderService {
         if (page != 1) {
             page = size * (page - 1) + 1;
         }
-        return repository.findAllByOwner(id, page, size).stream()
+        return repository.findAllByOwner(id, --page, size).stream()
                 .map(CertificateOrderPOJO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public int ordersCountByOwner(long id) {
+        return repository.getOrdersCountByOwner(id);
     }
 
     @Override

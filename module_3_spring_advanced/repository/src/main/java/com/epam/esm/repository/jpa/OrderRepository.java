@@ -20,4 +20,6 @@ public interface OrderRepository {
     CertificateOrder addCertificates(CertificateOrder certificateOrder, List<Certificate> certificates, double coast);
 
     int getOrdersCount();
+
+    int getOrdersCountByOwner(long id);
 }

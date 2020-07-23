@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.stream.Collectors;
 
 @RestController()
@@ -22,7 +23,7 @@ public class TagController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTag(@RequestBody TagDTO tag) {
+    public ResponseEntity<?> addTag(@RequestBody @Valid TagDTO tag) {
 
         return new ResponseEntity<>(new TagDTO(service.create(tag.dtoToPOJO())).getModel(), HttpStatus.CREATED);
     }
@@ -33,13 +34,8 @@ public class TagController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findTag() {
-        return new ResponseEntity<>(new TagDTO(service.findMostWidelyUsedTag()).getModel(), HttpStatus.OK);
-    }
-
-    @GetMapping(params = {"page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                                     @RequestParam(value = "size", defaultValue = "5") int size) {
+    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                     @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
 
         return new ResponseEntity<>(new TagList(
                 service.findAll(page, size)
@@ -52,11 +48,10 @@ public class TagController {
         ), HttpStatus.OK);
     }
 
-    @DeleteMapping(params = {"page", "size"}, path = "/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteTag(@PathVariable Integer id,
-                                       @RequestParam(value = "page", defaultValue = "1") int page,
-                                       @RequestParam(value = "size", defaultValue = "5") int size) {
-
+                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                       @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         service.delete(id);
 
         return new ResponseEntity<>(new TagList(

@@ -7,6 +7,8 @@ import java.util.List;
 public interface TagRepository {
     Tag findById(long id);
 
+    Tag findByName(String name);
+
     List<Tag> findAll(int limit, int offset);
 
     Tag create(Tag tag);

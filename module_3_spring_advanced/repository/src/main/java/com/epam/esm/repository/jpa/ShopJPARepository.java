@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Repository
-public abstract class ShopJPARepository<T> implements ShopRepository<T> { //fixme имплементить интерфейс + иерархия интерфейсов добавить
+public abstract class ShopJPARepository<T> implements ShopRepository<T> {
     @PersistenceContext
     protected EntityManager entityManager;
 

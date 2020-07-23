@@ -2,6 +2,8 @@ package com.epam.esm.exception.constant;
 
 public class ErrorTextMessageConstants {
     public static final String NAME_FIELD = "The name field must contain more than 3 characters and less than 90";
+    public static final String TAG_NAME_FIELD_IS_EXIST = "This tag name field is exist, Tag name must be unique ";
+    public static final String USER_LOGIN_FIELD_IS_EXIST = "This user login is exist, User login must be unique ";
     public static final String PRICE_FIELD = "The price field must not be negative";
     public static final String MODIFICATION_DATE_FIELD = "This operation wait null modification date";
     public static final String CREATION_DATE_FIELD = "This operation wait null modification date";

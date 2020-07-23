@@ -12,7 +12,6 @@ import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,20 +29,20 @@ public class CertificateServiceRequestParameterHandler {
     @Autowired
     private List<ComplexFilter> filters;
 
-    public List<CertificatePOJO> find(HttpServletRequest request) {
+    public List<CertificatePOJO> find(Map<String, String> request) {
         return filter(request);
     }
 
-    public List<CertificatePOJO> filter(HttpServletRequest request) {
+    public List<CertificatePOJO> filter(Map<String, String> request) {
         List<CertificatePOJO> result;
         try {
-            if (request.getParameter("filter") == null) {
+            if (request.get("filter") == null) {
                 result = sort(request);
             } else {
                 result = certificateFilterRequestParameterList.stream()
                         .filter(certificateFilter -> certificateFilter
                                 .getType()
-                                .equals(request.getParameter("filter")))
+                                .equals(request.get("filter")))
                         .findFirst()
                         .get()
                         .filterOutOurCertificates(request);
@@ -57,21 +56,17 @@ public class CertificateServiceRequestParameterHandler {
         return result;
     }
 
-    public List<CertificatePOJO> sort(HttpServletRequest request) {
+    public List<CertificatePOJO> sort(Map<String, String> request) {
         List<CertificatePOJO> result;
         try {
-            if (request.getParameter("sort") == null) {
-                result = certificateService.findAll();
-            } else {
-                result = certificateSortRequestParameterList.stream()
-                        .filter(certificateFilter -> certificateFilter
-                                .getType()
-                                .equals(request.getParameter("sort")))
-                        .findFirst()
-                        .get()
-                        .sortOurCertificates(request);
-            }
-        } catch (NoSuchElementException e){
+            result = certificateSortRequestParameterList.stream()
+                    .filter(certificateFilter -> certificateFilter
+                            .getType()
+                            .equals(request.get("sort")))
+                    .findFirst()
+                    .get()
+                    .sortOurCertificates(request);
+        } catch (NoSuchElementException e) {
             throw new ServiceException(
                     new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)
             );
@@ -100,36 +95,79 @@ public class CertificateServiceRequestParameterHandler {
 
     private StringBuilder buildQuery(Map<String, String> parameters) {
         StringBuilder result = new StringBuilder();
-        result.append(filters.get(0).getPart());
-        for (int i = 1; i < filters.size(); i++) {
-            String param = parameters.get(filters.get(i).getType());
+        boolean isFirst = true;
+        for (ComplexFilter filter : filters) {
+            String param = parameters.get(filter.getType());
             if (param != null) {
-                result.append(" and ");
-                result.append(filters.get(i).getPart());
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    result.append(" and ");
+                }
+                result.append(filter.getPart());
             }
         }
         return result;
     }
 
-    public String filterAnd(Map<String, String> parameters) {
+    public String filterAnd(Map<String, String> parameters, List<TagPOJO> tags) {
         StringBuilder result;
 
-        result = new StringBuilder("select c from certificate c where ");
-        result.append(buildQuery(parameters));
+        if (tags == null) {
+            result = new StringBuilder("select c from certificate c where ");
+            StringBuilder buffResult = buildQuery(parameters);
+            if (buffResult.toString().isEmpty()) {
+                throw new ServiceException(new InvalidDataMessage("Equals search parameters!"));
+            }
+            result.append(buffResult);
+        } else {
+            result = new
+                    StringBuilder("select c from certificate c " +
+                    "join c.tags t where ");
+            appender(parameters, tags, result);
+            result.append("') group by c.id");
+        }
 
         return result.toString();
     }
 
-    public String filterAndGetCount(Map<String, String> parameters) {
+    public String filterAndGetCount(Map<String, String> parameters, List<TagPOJO> tags) {
         StringBuilder result;
 
-        result = new StringBuilder("select COUNT(c) from certificate c where ");
-        result.append(buildQuery(parameters));
+        if (tags == null) {
+            result = new StringBuilder("select COUNT(c) from certificate c where ");
+            StringBuilder buffResult = buildQuery(parameters);
+            if (buffResult.toString().isEmpty()) {
+                throw new ServiceException(new InvalidDataMessage("Equals search parameters!"));
+            }
+            result.append(buffResult);
+        } else {
+            result = new
+                    StringBuilder("select COUNT(c) from certificate c " +
+                    "join c.tags t where ");
+            appender(parameters, tags, result);
+            result.append("')");
 
+        }
         return result.toString();
     }
 
-    public String filterByTagsName(List<TagPOJO> tagsPOJO) {
+    private void appender(Map<String, String> parameters, List<TagPOJO> tags, StringBuilder result) {
+        StringBuilder buffResult = buildQuery(parameters);
+        result.append(buffResult);
+        if (!buffResult.toString().isEmpty())
+            result.append(" and t.name IN ('");
+        else
+            result.append(" t.name IN ('");
+
+        for (int i = 0; i < tags.size() - 1; i++) {
+            result.append(tags.get(i).getName());
+            result.append("', '");
+        }
+        result.append(tags.get(tags.size() - 1).getName());
+    }
+
+    /*public String filterByTagsName(List<TagPOJO> tagsPOJO) {
         StringBuilder result;
 
         result = new StringBuilder("select c from certificate c left join c.tags t where t.name IN ('");
@@ -141,7 +179,7 @@ public class CertificateServiceRequestParameterHandler {
         result.append("') group by c.id");
 
         return result.toString();
-    }
+    }*/
 
     @Autowired
     public void setCertificateService(CertificateService certificateService) {

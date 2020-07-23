@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.EntityModel;
 
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -24,13 +26,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateOrderDTO {
 
+    @Null
     private Long id;
 
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
+    @Null
     private Date endTime;
+    @Null
     private Double coast;
+
+    @Size(min = 3, max = 170, message
+            = "Surname must be between 3 and 170 characters")
     private String description;
 
+    @Null
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date createdTime;
 
@@ -39,7 +48,7 @@ public class CertificateOrderDTO {
     @JsonIgnore
     private EntityModel<CertificateOrderDTO> model;
 
-    private List<Certificate> certificates;//fixme доставать только имена сертификатов
+    private List<Certificate> certificates;
 
     public CertificateOrderDTO(CertificateOrderPOJO certificateOrderPOJO) {
         this.id = certificateOrderPOJO.getId();

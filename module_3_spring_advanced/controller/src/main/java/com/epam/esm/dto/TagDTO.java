@@ -7,6 +7,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.hateoas.EntityModel;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -18,10 +22,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TagDTO {
+
+    @Null
     private Long id;
+
+    @NotNull
+    @Size(min = 2, max = 70, message
+            = "Name must be between 2 and 70 characters")
     private String name;
 
     @JsonIgnore
+    @ToString.Exclude
     private EntityModel<TagDTO> model;
 
     public TagDTO(TagPOJO tag) {

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class ByPriceComplexPart implements ComplexFilter {
     @Override
     public String getPart() {
-        return "price = :price";
+        return "c.price = :price";
     }
 
     @Override

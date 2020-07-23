@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class ByNameComplexPart implements ComplexFilter {
     @Override
     public String getPart() {
-        return "name = :name";
+        return "c.name = :name";
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
-import com.epam.esm.exception.RepositoryException;
+import com.epam.esm.exception.ControllerException;
 import com.epam.esm.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +43,7 @@ public class OrderController {
                                          @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             service.delete(id);
-        } catch (RepositoryException e) {
+        } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(new OrderList(

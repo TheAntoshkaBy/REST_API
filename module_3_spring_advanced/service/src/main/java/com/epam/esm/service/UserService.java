@@ -32,5 +32,7 @@ public interface UserService {
      **/
     UserPOJO create(UserPOJO user);
 
+    UserPOJO findByLogin(String login);
+
     int getUsersCount();
 }

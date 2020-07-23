@@ -23,10 +23,7 @@ public class CertificateList {
 
     private CollectionModel<EntityModel<CertificateDTO>> certificates;
 
-    public CertificateList(List<CertificateDTO> certificateList, int certificatesCount, Map<String, String> params) {
-        int page = Integer.parseInt(params.get("page"));
-        int size = Integer.parseInt(params.get("size"));
-
+    public CertificateList(List<CertificateDTO> certificateList, int certificatesCount, Map<String, String> params, int page, int size) {
         this.certificates = CollectionModel.of(
                 certificateList
                         .stream()
@@ -38,17 +35,17 @@ public class CertificateList {
             int nextPage = page + 1;
             params.put("page", String.valueOf(nextPage));
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .findComplex(params)).withRel("next"));
+                    .find(params, null)).withRel("next"));
         }
 
         this.certificates.add(linkTo(methodOn(CertificateController.class)
-                .findComplex(params)).withRel("current"));
+                .find(params, null)).withRel("current"));
 
         if (page != 1) {
             int prevPage = page - 1;
             params.put("page", String.valueOf(prevPage));
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .findComplex(params)).withRel("previous"));
+                    .find(params, null)).withRel("previous"));
         }
     }
 
@@ -63,16 +60,16 @@ public class CertificateList {
         if (certificatesCount > page * size) {
             int nextPage = page + 1;
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .findAll(nextPage, size, "find")).withRel("next"));
+                    .findAll(nextPage, size)).withRel("next"));
         }
 
         this.certificates.add(linkTo(methodOn(CertificateController.class)
-                .findAll(page, size, "find")).withRel("current"));
+                .findAll(page, size)).withRel("current"));
 
         if (page != 1) {
             int prevPage = page - 1;
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .findAll(prevPage, size, "find")).withRel("previous"));
+                    .findAll(prevPage, size)).withRel("previous"));
         }
     }
 }

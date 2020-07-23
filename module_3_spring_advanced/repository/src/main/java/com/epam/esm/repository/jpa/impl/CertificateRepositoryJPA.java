@@ -19,13 +19,13 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> implements CertificateRepository { //fixme попробовать с проперти SQLRequest
+public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> implements CertificateRepository {
 
     @Override
     public void delete(long id) {
         int col = entityManager.createQuery(SQLRequests.DELETE_CERTIFICATE)
                 .setParameter(1, id).executeUpdate();
-        if(col == 0){
+        if (col == 0) {
             throw new RepositoryException(new InvalidDataOutputMessage("Certificate",
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
@@ -34,7 +34,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
     @Override
     public Certificate findById(long id) {
         Certificate certificate = entityManager.find(Certificate.class, id);
-        if(certificate == null){
+        if (certificate == null) {
             throw new RepositoryException(new InvalidDataOutputMessage("Certificate",
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
@@ -144,7 +144,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     public void deleteTag(long idCertificate, long idTag) {
         Certificate buffCertificate = entityManager.find(Certificate.class, idCertificate);
-        if(buffCertificate == null){
+        if (buffCertificate == null) {
             throw new RepositoryException(new InvalidDataOutputMessage(Certificate.class.toString(),
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }

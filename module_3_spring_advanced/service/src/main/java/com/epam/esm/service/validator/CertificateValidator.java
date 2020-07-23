@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class CertificateValidator { //fixme () перенести валидацию в Controller для не спецефичных моментов.
+public class CertificateValidator {
 
     private List<InvalidDataMessage> invalidDataMessageList;
 
@@ -41,7 +41,7 @@ public class CertificateValidator { //fixme () перенести валидац
 
     private void isCorrectModificationDate(Date certificateData) {
         if (certificateData != null) {
-            final String FIELD = "modification date"; //fixme constantы выносить
+            final String FIELD = "modification date";
             invalidDataMessageList.add(new InvalidDataMessage(FIELD,
                     ErrorTextMessageConstants.MODIFICATION_DATE_FIELD));
         }
@@ -66,8 +66,8 @@ public class CertificateValidator { //fixme () перенести валидац
         }
     }
 
-    public void isCorrectCertificateCreateData(CertificatePOJO certificate) {//fixme is - подразумевает true or false
-        invalidDataMessageList = new ArrayList<>();//fixme многопоточка
+    public void isCorrectCertificateCreateData(CertificatePOJO certificate) {
+        invalidDataMessageList = new ArrayList<>();
         nameLength(certificate.getName());
         priceCheck(certificate.getPrice());
         isCorrectCreationDate(certificate.getCreationDate());

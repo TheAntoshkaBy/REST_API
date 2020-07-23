@@ -39,6 +39,8 @@ public interface OrderService {
      **/
     List<CertificateOrderPOJO> findAllByOwner(long id, int offset, int limit);
 
+    int ordersCountByOwner(long id);
+
     CertificateOrderPOJO addCertificates(long OrderId, List<Long> certificatesId);
 
     int getOrdersCount();

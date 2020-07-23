@@ -1,10 +1,10 @@
 package com.epam.esm.pojo;
 
+import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
 import lombok.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,6 +18,8 @@ public class UserPOJO {
     private String surname;
     private String login;
     private String password;
+    private String email;
+    private List<Role> roles;
 
     public UserPOJO(User user) {
         this.id = user.getId();
@@ -25,30 +27,37 @@ public class UserPOJO {
         this.surname = user.getSurname();
         this.login = user.getLogin();
         this.password = user.getPassword();
+        this.email = user.getEmail();
+        this.roles = user.getRoles();
     }
 
-    public UserPOJO(Long id, String name, String surname, String login) {
-        this.id = id;
+    public UserPOJO(String name, String surname, String login, String password, List<Role> roles, String email) {
         this.name = name;
         this.surname = surname;
         this.login = login;
+        this.password = password;
+        this.roles = roles;
+        this.email = email;
     }
 
-    public UserPOJO(long id,String name, String surname, String login, String password) {
+    public UserPOJO(long id, String name, String surname, String login, String password, List<Role> roles, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.login = login;
         this.password = password;
+        this.roles = roles;
+        this.email = email;
     }
 
     public User pojoToEntity() {
         return new User(
-                this.id,
                 this.name,
                 this.surname,
                 this.login,
-                this.password
+                this.password,
+                this.roles,
+                this.email
         );
     }
 }

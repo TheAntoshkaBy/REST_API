@@ -10,6 +10,10 @@ import lombok.*;
 import org.springframework.hateoas.EntityModel;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -24,10 +28,26 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateDTO {
+
+    @Null
     private Long id;
+
+    @NotNull
+    @Size(min = 2, max = 70, message
+            = "Name must be between 2 and 70 characters")
     private String name;
+
+    @NotNull
+    @Size(min = 3, max = 170, message
+            = "Surname must be between 3 and 170 characters")
     private String description;
+
+    @NotNull
+    @PositiveOrZero
     private Double price;
+
+    @NotNull
+    @PositiveOrZero
     private Integer durationDays;
 
     @JsonIgnore
@@ -35,12 +55,15 @@ public class CertificateDTO {
 
     @Column(name = "date_of_creation")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
+    @Null
     private Date creationDate;
 
     @Column(name = "date_of_creation")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
+    @Null
     private Date modification;
 
+    @Null
     private List<Tag> tags;
 
     public CertificateDTO(CertificatePOJO certificate) {
@@ -56,14 +79,10 @@ public class CertificateDTO {
 
     public CertificatePOJO dtoToPOJO() {
         return new CertificatePOJO(
-                this.id,
                 this.name,
                 this.description,
                 this.price,
-                this.durationDays,
-                this.tags,
-                this.creationDate,
-                this.modification
+                this.durationDays
         );
     }
 

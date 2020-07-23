@@ -6,8 +6,8 @@ import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class CertificateSortByDate implements CertificateSortBy {
@@ -20,7 +20,7 @@ public class CertificateSortByDate implements CertificateSortBy {
     }
 
     @Override
-    public List<CertificatePOJO> sortOurCertificates(HttpServletRequest request) {
+    public List<CertificatePOJO> sortOurCertificates(Map<String, String> request) {
         return certificateService.findAllCertificatesByDate();
     }
 

@@ -56,7 +56,7 @@ public class Certificate implements Serializable {
             joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private List<Tag> tags = new ArrayList<>(); //fixme как вытягивать листы, подумать
+    private List<Tag> tags = new ArrayList<>();
 
     public Certificate(Long id, String name, String description, Double price,
                        Date creationDate, Date modification, Integer durationDays) {
@@ -66,6 +66,14 @@ public class Certificate implements Serializable {
         this.price = price;
         this.creationDate = creationDate;
         this.modification = modification;
+        this.durationDays = durationDays;
+    }
+
+    public Certificate(String name, String description, Double price,
+                       Integer durationDays) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
         this.durationDays = durationDays;
     }
 

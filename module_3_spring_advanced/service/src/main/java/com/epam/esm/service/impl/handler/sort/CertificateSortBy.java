@@ -2,11 +2,11 @@ package com.epam.esm.service.impl.handler.sort;
 
 import com.epam.esm.pojo.CertificatePOJO;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 public interface CertificateSortBy {
-    List<CertificatePOJO> sortOurCertificates(HttpServletRequest request);
+    List<CertificatePOJO> sortOurCertificates(Map<String, String> request);
 
     String getType();
 }

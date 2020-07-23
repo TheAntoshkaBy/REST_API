@@ -2,10 +2,12 @@ package com.epam.esm.service;
 
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
+import com.epam.esm.repository.jpa.CertificateRepository;
+import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.validator.CertificateValidator;
+import com.epam.esm.service.validator.TagValidator;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +19,7 @@ public interface CertificateService {
     /**
      * This method delegates management to one of find methods.
      **/
-    List<CertificatePOJO> findAll(HttpServletRequest params);
-
-    /**
-     * This method finds all certificates from database using DAO
-     **/
-    List<CertificatePOJO> findAll();
+    List<CertificatePOJO> findAll(Map<String, String> params);
 
     int getCertificateCount();
 
@@ -31,11 +28,11 @@ public interface CertificateService {
     /**
      * This method finds all certificates from database using DAO
      **/
-    List<CertificatePOJO> findAllComplex(Map<String, String> request);
+    List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size);
 
-    int getCountComplex(Map<String, String> request);
+    int getCountComplex(Map<String, String> request, List<TagPOJO> tags);
 
-    List<CertificatePOJO> findAllByTags(List<TagPOJO> tagsPOJO, int page, int size);
+    //List<CertificatePOJO> findAllByTags(List<TagPOJO> tagsPOJO, int page, int size);
 
 
     /**
@@ -93,7 +90,7 @@ public interface CertificateService {
     /**
      * This method update concrete Certificate field (price) by transmitted id and new price value
      *
-     * @param id          certificate id which will be edit
+     * @param id    certificate id which will be edit
      * @param price edit data
      **/
     void updatePrice(long id, double price);
@@ -132,5 +129,11 @@ public interface CertificateService {
             (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
 
     void setCertificateValidator(CertificateValidator certificateValidator);
+
+    void setCertificateRepository(CertificateRepository certificateRepository);
+
+    void setTagRepository(TagRepository tagRepository);
+
+    void setTagValidator(TagValidator tagValidator);
 }
 

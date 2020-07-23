@@ -2,12 +2,12 @@ package com.epam.esm.service.impl.handler.filter;
 
 import com.epam.esm.pojo.CertificatePOJO;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 public interface CertificateFilterRequestParameter {
 
-    List<CertificatePOJO> filterOutOurCertificates(HttpServletRequest request);
+    List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request);
 
     String getType();
 }

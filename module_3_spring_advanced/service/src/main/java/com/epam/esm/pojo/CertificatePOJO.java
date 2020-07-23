@@ -38,6 +38,24 @@ public class CertificatePOJO {
         this.modification = modification;
     }
 
+    public CertificatePOJO(String name, String description, Double price, Integer durationDays) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.durationDays = durationDays;
+    }
+
+    public CertificatePOJO(Certificate certificate) {
+        this.id = certificate.getId();
+        this.name = certificate.getName();
+        this.description = certificate.getDescription();
+        this.price = certificate.getPrice();
+        this.creationDate = certificate.getCreationDate();
+        this.modification = certificate.getModification();
+        this.durationDays = certificate.getDurationDays();
+        this.tags = certificate.getTags();
+    }
+
     public Long getId() {
         return id;
     }
@@ -133,25 +151,10 @@ public class CertificatePOJO {
 
     public Certificate pojoToEntity() {
         return new Certificate(
-                this.id,
                 this.name,
                 this.description,
                 this.price,
-                this.creationDate,
-                this.modification,
-                this.durationDays,
-                this.tags
+                this.durationDays
         );
-    }
-
-    public CertificatePOJO(Certificate certificate){
-        this.id = certificate.getId();
-        this.name = certificate.getName();
-        this.description = certificate.getDescription();
-        this.price = certificate.getPrice();
-        this.creationDate = certificate.getCreationDate();
-        this.modification = certificate.getModification();
-        this.durationDays = certificate.getDurationDays();
-        this.tags = certificate.getTags();
     }
 }

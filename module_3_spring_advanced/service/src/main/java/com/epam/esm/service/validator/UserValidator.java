@@ -1,10 +1,11 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.exception.RepositoryException;
 import com.epam.esm.exception.ServiceException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.UserPOJO;
+import com.epam.esm.repository.jpa.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,58 +13,37 @@ import java.util.List;
 
 @Component
 public class UserValidator {
-    private List<InvalidDataMessage> invalidDataMessageList;
+    private final UserRepository repository;
 
-    private void name(String name) {
-        final String FIELD = "name";
-        final int tag_max_length = 300;
-        final int tag_min_length = 3;
+    @Autowired
+    public UserValidator(UserRepository repository) {
+        this.repository = repository;
+    }
 
-        if (name.length() > tag_max_length || name.length() < tag_min_length) {
-            invalidDataMessageList.add(new InvalidDataMessage(FIELD,
-                    ErrorTextMessageConstants.NAME_FIELD));
+    private void checkLoginUnique(String login, List<InvalidDataMessage> invalidDataMessageList) {
+        final String field = "login";
+
+        if (repository.findByLogin(login) != null) {
+            invalidDataMessageList.add(new InvalidDataMessage(field,
+                    ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
         }
     }
 
-    private void surname(String surname) {
-        final String FIELD = "surname";
-        final int tag_max_length = 300;
-        final int tag_min_length = 3;
+    private void checkEmailUnique(String email, List<InvalidDataMessage> invalidDataMessageList) {
+        final String field = "email";
 
-        if (surname.length() > tag_max_length || surname.length() < tag_min_length) {
-            invalidDataMessageList.add(new InvalidDataMessage(FIELD,
-                    ErrorTextMessageConstants.NAME_FIELD));
-        }
-    }
-
-    private void login(String login) {
-        final String FIELD = "login";
-        final int tag_max_length = 300;
-        final int tag_min_length = 3;
-
-        if (login.length() > tag_max_length || login.length() < tag_min_length) {
-            invalidDataMessageList.add(new InvalidDataMessage(FIELD,
-                    ErrorTextMessageConstants.NAME_FIELD));
-        }
-    }
-
-    private void password(String password) {
-        final String FIELD = "password";
-        final int tag_max_length = 300;
-        final int tag_min_length = 3;
-
-        if (password.length() > tag_max_length || password.length() < tag_min_length) {
-            invalidDataMessageList.add(new InvalidDataMessage(FIELD,
-                    ErrorTextMessageConstants.NAME_FIELD));
+        if (repository.findByEmail(email) != null) {
+            invalidDataMessageList.add(new InvalidDataMessage(field,
+                    ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
         }
     }
 
     public void isCorrectUser(UserPOJO user) {
-        invalidDataMessageList = new ArrayList<>();
-        name(user.getName());
-        surname(user.getSurname());
-        login(user.getLogin());
-        password(user.getPassword());
+        List<InvalidDataMessage> invalidDataMessageList = new ArrayList<>();
+
+        checkEmailUnique(user.getEmail(), invalidDataMessageList);
+        checkLoginUnique(user.getLogin(), invalidDataMessageList);
+
         if (!invalidDataMessageList.isEmpty()) {
             throw new ServiceException(invalidDataMessageList);
         }

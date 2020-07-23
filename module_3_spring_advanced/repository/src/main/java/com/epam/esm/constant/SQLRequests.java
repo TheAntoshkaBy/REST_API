@@ -31,6 +31,8 @@ public class SQLRequests {
 
     public static final String FIND_COUNT_OF_ORDER = "select count(t) from certificate_order t";
 
+    public static final String FIND_COUNT_OF_ORDER_BY_OWNER = "select count(t) from certificate_order t where t.owner.id = ?1";
+
     public static final String FIND_ALL_CERTIFICATES_WITH_LIMIT_OFFSET = "select c from certificate c order by c.id";
 
     public static final String FIND_ALL_ORDERS_WITH_LIMIT_OFFSET = "select o from certificate_order o order by o.id";
@@ -68,6 +70,8 @@ public class SQLRequests {
 
     public static final String FIND_ALL_TAGS = "select t from tag t order by t.id";
 
+    public static final String FIND_ROLE_BY_NAME = "select r from role r where r.name = ?1";
+
     public static final String FIND_ALL_USERS = "select u from shop_user u";
 
     public static final String FIND_ALL_ORDERS = "select o from certificate_order o";
@@ -81,9 +85,15 @@ public class SQLRequests {
 
     public static final String DELETE_TAG_BY_ID = "DELETE FROM tag where id = ?1";
 
+    public static final String FIND_TAG_BY_NAME = "SELECT t FROM tag t where t.name = ?1";
+
     public static final String DELETE_ORDER_BY_ID = "DELETE FROM certificate_order where id = ?1";
 
     public static final String DELETE_USER_BY_ID = "DELETE FROM shop_user where id = ?1";
+
+    public static final String FIND_USER_BY_LOGIN = "SELECT u FROM shop_user u where login = ?1";
+
+    public static final String FIND_USER_BY_EMAIL = "SELECT u FROM shop_user u where email = ?1";
 
     public static final String FIND_BY_PART_OF_NAME = "SELECT * FROM return_t_certificate(?)";
 
