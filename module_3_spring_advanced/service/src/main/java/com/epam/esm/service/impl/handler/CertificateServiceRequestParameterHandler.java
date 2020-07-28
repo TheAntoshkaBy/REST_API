@@ -37,7 +37,7 @@ public class CertificateServiceRequestParameterHandler {
         List<CertificatePOJO> result;
         try {
             if (request.get("filter") == null) {
-                result = sort(request,page, size);
+                result = sort(request, page, size);
             } else {
                 result = certificateFilterRequestParameterList.stream()
                         .filter(certificateFilter -> certificateFilter
@@ -65,7 +65,7 @@ public class CertificateServiceRequestParameterHandler {
                             .equals(request.get("sort")))
                     .findFirst()
                     .get()
-                    .sortOurCertificates(request,page,size);
+                    .sortOurCertificates(request, page, size);
         } catch (NoSuchElementException e) {
             throw new ServiceException(
                     new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)
@@ -166,20 +166,6 @@ public class CertificateServiceRequestParameterHandler {
         }
         result.append(tags.get(tags.size() - 1).getName());
     }
-
-    /*public String filterByTagsName(List<TagPOJO> tagsPOJO) {
-        StringBuilder result;
-
-        result = new StringBuilder("select c from certificate c left join c.tags t where t.name IN ('");
-        for (int i = 0; i < tagsPOJO.size() - 1; i++) {
-            result.append(tagsPOJO.get(i).getName());
-            result.append("', '");
-        }
-        result.append(tagsPOJO.get(tagsPOJO.size() - 1).getName());
-        result.append("') group by c.id");
-
-        return result.toString();
-    }*/
 
     @Autowired
     public void setCertificateService(CertificateService certificateService) {

@@ -5,7 +5,6 @@ import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.service.validator.CertificateValidator;
 import com.epam.esm.service.validator.TagValidator;
 
 import java.util.List;
@@ -127,8 +126,6 @@ public interface CertificateService {
 
     void setCertificateServiceRequestParameterHandler
             (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
-
-    void setCertificateValidator(CertificateValidator certificateValidator);
 
     void setCertificateRepository(CertificateRepository certificateRepository);
 

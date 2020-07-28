@@ -1,18 +1,18 @@
 package com.epam.esm.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@ToString
+@Data
 @Entity(name = "certificate_order")
 @Table(name = "certificate_order")
+@NoArgsConstructor
+@AllArgsConstructor
 public class CertificateOrder {
 
     @Id

@@ -13,8 +13,6 @@ import java.util.List;
 
 @Component
 public class TagValidator {
-    final static int TAG_MAX_LENGTH = 60;
-    final static int TAG_MIN_LENGTH = 3;
     private List<InvalidDataMessage> invalidDataMessageList;
     private final TagRepository tagRepository;
 
@@ -33,6 +31,7 @@ public class TagValidator {
 
     private void checkNameUnique(String name) {
         String field = "Name";
+
         if (tagRepository.findByName(name) != null) {
             invalidDataMessageList.add(new InvalidDataMessage(field,
                     ErrorTextMessageConstants.TAG_NAME_FIELD_IS_EXIST));

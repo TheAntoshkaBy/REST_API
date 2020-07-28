@@ -5,11 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "shop_user")
 @Table(name = "shop_user")
 public class User {

@@ -60,8 +60,9 @@ public class CertificateController {
         if (searchParameter != null && searchParameter.equals(complexRequestParameter)) {
             return findComplex(params, tags, page, size);
         } else {
-            if (findParameter != null || sortParameter != null)
+            if (findParameter != null || sortParameter != null){
                 return findByFilter(params, page, size);
+            }
             return findAll(page, size);
         }
     }

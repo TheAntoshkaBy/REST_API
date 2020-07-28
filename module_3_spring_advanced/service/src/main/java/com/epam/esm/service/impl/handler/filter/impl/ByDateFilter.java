@@ -21,7 +21,7 @@ public class ByDateFilter implements CertificateFilterRequestParameter {
 
     @Override
     public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request, int page, int size) {
-        return certificateService.findAllCertificatesByDate(--page,size);
+        return certificateService.findAllCertificatesByDate(--page, size);
     }
 
     public String getType() {

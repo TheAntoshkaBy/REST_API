@@ -2,16 +2,16 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class CertificateOrderPOJO {
     private Long id;
     private Date endDate;

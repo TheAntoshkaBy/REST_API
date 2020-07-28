@@ -21,7 +21,7 @@ public class UserValidator {
     }
 
     private void checkLoginUnique(String login, List<InvalidDataMessage> invalidDataMessageList) {
-        final String field = "login";
+        String field = "login";
 
         if (repository.findByLogin(login) != null) {
             invalidDataMessageList.add(new InvalidDataMessage(field,
@@ -30,7 +30,7 @@ public class UserValidator {
     }
 
     private void checkEmailUnique(String email, List<InvalidDataMessage> invalidDataMessageList) {
-        final String field = "email";
+        String field = "email";
 
         if (repository.findByEmail(email) != null) {
             invalidDataMessageList.add(new InvalidDataMessage(field,

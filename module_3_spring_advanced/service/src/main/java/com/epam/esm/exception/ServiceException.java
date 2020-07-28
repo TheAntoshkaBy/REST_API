@@ -14,9 +14,6 @@ public class ServiceException extends RuntimeException {
         this.messages = messages;
     }
 
-    public ServiceException() {
-    }
-
     public ServiceException(InvalidDataMessage message) {
         this.message = message;
         messages = new ArrayList<>();
@@ -25,10 +22,6 @@ public class ServiceException extends RuntimeException {
 
     public List<InvalidDataMessage> getMessages() {
         return messages;
-    }
-
-    public InvalidDataMessage getErrorMessage() {
-        return message;
     }
 
     @Override

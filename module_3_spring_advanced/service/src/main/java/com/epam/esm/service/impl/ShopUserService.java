@@ -28,9 +28,8 @@ public class ShopUserService implements UserService {
 
     @Override
     public List<UserPOJO> findAll(int page, int size) {
-        if (page != 1) {
-            page = size * (page - 1) + 1;
-        }
+        page = setOffset(page, size);
+
         List<User> userPOJOS = repository.findAll(--page, size);
         return userPOJOS
                 .stream()
@@ -50,11 +49,14 @@ public class ShopUserService implements UserService {
 
     @Override
     public UserPOJO create(UserPOJO user) {
+        String nameRoleUser = "ROLE_USER";
+
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         String actualPassword = user.getPassword();
         user.setPassword(bCryptPasswordEncoder.encode(actualPassword));
         userValidator.isCorrectUser(user);
-        return new UserPOJO(repository.createWithRole(user.pojoToEntity(), roleRepository.findByRoleName("ROLE_USER")));
+        return new UserPOJO(repository.createWithRole(user.pojoToEntity(),
+                roleRepository.findByRoleName(nameRoleUser)));
     }
 
     @Override
@@ -65,5 +67,13 @@ public class ShopUserService implements UserService {
     @Override
     public int getUsersCount() {
         return repository.getUsersCount();
+    }
+
+    public int setOffset(int page, int size){
+        if (page != 1) {
+            return size * (page - 1) + 1;
+        }else {
+            return page;
+        }
     }
 }

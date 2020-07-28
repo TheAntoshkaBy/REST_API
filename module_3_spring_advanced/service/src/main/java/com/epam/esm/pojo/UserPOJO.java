@@ -6,11 +6,9 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserPOJO {
     private Long id;
 
@@ -40,7 +38,14 @@ public class UserPOJO {
         this.email = email;
     }
 
-    public UserPOJO(long id, String name, String surname, String login, String password, List<Role> roles, String email) {
+    public UserPOJO(
+            long id,
+            String name,
+            String surname,
+            String login,
+            String password,
+            List<Role> roles,
+            String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;

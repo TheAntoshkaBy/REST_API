@@ -8,16 +8,13 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.repository.jpa.impl.CertificateRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.TagRepositoryJPA;
-import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.ShopCertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.service.validator.CertificateValidator;
 import com.epam.esm.service.validator.TagValidator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,17 +34,14 @@ public class CertificateServiceImplTest {
     private CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler;
     private CertificateRepository certificateRepository;
     private TagRepository tagRepository;
-    private CertificateValidator certificateValidator;
     private TagValidator tagValidator;
 
     @Before
     public void init() {
         certificateRepository = mock(CertificateRepositoryJPA.class);
         tagRepository = mock(TagRepositoryJPA.class);
-        certificateValidator = mock(CertificateValidator.class);
         tagValidator = mock(TagValidator.class);
         certificateService = new ShopCertificateService();
-        certificateService.setCertificateValidator(certificateValidator);
         certificateService.setCertificateRepository(certificateRepository);
         certificateService.setTagRepository(tagRepository);
         certificateService.setTagValidator(tagValidator);
@@ -264,29 +258,6 @@ public class CertificateServiceImplTest {
 
         Assert.assertEquals(certificates, certificatesActual);
     }
-
-    @Test
-    public void findAllWhereContainTag_Tag_CertificateWithNameEqualsExpectedTagName() {
-        when(certificateRepository.findByTagName(anyString(),anyInt(),anyInt()))
-                .thenReturn(certificates.stream()
-                        .filter(certificate -> certificate.getTags()
-                                .stream()
-                                .anyMatch(tag1 -> tag1.getName().equals("Is")))
-                        .collect(Collectors.toList()));
-
-        List<Certificate> expectedCertificates = certificateService
-                .findAllCertificatesByTag(new TagPOJO(tag),anyInt(),anyInt()).stream()
-                .map(CertificatePOJO::pojoToEntity)
-                .collect(Collectors.toList());
-
-        Assert.assertEquals(expectedCertificates, certificates.stream()
-                .filter(certificate -> certificate.getTags()
-                        .stream()
-                        .anyMatch(tag1 -> tag1.getName().equals("Is")))
-                .collect(Collectors.toList()));
-    }
-
-
 
     @Test
     public void setCertificateServiceRequestParameterHandler() {

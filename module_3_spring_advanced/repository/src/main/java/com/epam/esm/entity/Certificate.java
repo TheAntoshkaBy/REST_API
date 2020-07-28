@@ -1,5 +1,9 @@
 package com.epam.esm.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +26,9 @@ import java.util.Objects;
                                 )
                 })
 })
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Certificate implements Serializable {
 
     @Id
@@ -86,101 +93,5 @@ public class Certificate implements Serializable {
         this.creationDate = creationDate;
         this.modification = modification;
         this.durationDays = durationDays;
-    }
-
-    public Certificate() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Date getModification() {
-        return modification;
-    }
-
-    public void setModification(Date modification) {
-        this.modification = modification;
-    }
-
-    public Integer getDurationDays() {
-        return durationDays;
-    }
-
-    public void setDurationDays(Integer durationDays) {
-        this.durationDays = durationDays;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Certificate that = (Certificate) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(description, that.description) &&
-                Objects.equals(price, that.price) &&
-                Objects.equals(durationDays, that.durationDays);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, price, durationDays);
-    }
-
-    @Override
-    public String toString() {
-        return "Certificate{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", creationDate=" + creationDate +
-                ", modification=" + modification +
-                ", durationDays=" + durationDays +
-                '}';
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
     }
 }

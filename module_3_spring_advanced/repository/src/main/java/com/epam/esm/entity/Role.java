@@ -1,12 +1,16 @@
 package com.epam.esm.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "role")
 @Table(name = "role")
-@Data
 public class Role {
 
     @Id

@@ -1,20 +1,12 @@
 package com.epam.esm.service;
 
-import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
-import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.repository.jpa.RoleRepository;
 import com.epam.esm.repository.jpa.UserRepository;
-import com.epam.esm.repository.jpa.impl.CertificateRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.RoleRepositoryJPA;
-import com.epam.esm.repository.jpa.impl.TagRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.UserRepositoryJPA;
-import com.epam.esm.service.impl.ShopCertificateService;
 import com.epam.esm.service.impl.ShopUserService;
-import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.service.validator.CertificateValidator;
-import com.epam.esm.service.validator.TagValidator;
 import com.epam.esm.service.validator.UserValidator;
 import org.junit.Assert;
 import org.junit.Before;

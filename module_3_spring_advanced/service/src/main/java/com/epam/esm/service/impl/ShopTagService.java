@@ -22,9 +22,8 @@ public class ShopTagService implements TagService {
 
     @Override
     public List<TagPOJO> findAll(int page, int size) {
-        if (page != 1) {
-            page = size * (page - 1) + 1;
-        }
+        page = setOffset(page, size);
+
         return tagRepository.findAll(--page, size)
                 .stream()
                 .map(TagPOJO::new)
@@ -61,5 +60,13 @@ public class ShopTagService implements TagService {
     @Autowired
     public void setTagValidator(TagValidator tagValidator) {
         this.tagValidator = tagValidator;
+    }
+
+    public int setOffset(int page, int size){
+        if (page != 1) {
+            return size * (page - 1) + 1;
+        }else {
+            return page;
+        }
     }
 }
