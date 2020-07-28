@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -56,12 +57,39 @@ public class CertificatePOJO {
         this.tags = certificate.getTags();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CertificatePOJO that = (CertificatePOJO) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(price, that.price) &&
+                Objects.equals(durationDays, that.durationDays) &&
+                Objects.equals(tags, that.tags);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, price, durationDays, tags);
+    }
+
     public Certificate pojoToEntity() {
-        return new Certificate(
-                this.name,
-                this.description,
-                this.price,
-                this.durationDays
-        );
+        if(this.id == null){
+            return new Certificate(
+                    this.name,
+                    this.description,
+                    this.price,
+                    this.durationDays
+            );
+        }else {
+            return new Certificate(
+                    this.id,
+                    this.name,
+                    this.description,
+                    this.price,
+                    this.durationDays
+            );
+        }
     }
 }

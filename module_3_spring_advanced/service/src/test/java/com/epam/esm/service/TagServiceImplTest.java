@@ -2,12 +2,9 @@ package com.epam.esm.service;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.repository.jpa.impl.TagRepositoryJPA;
-import com.epam.esm.service.TagService;
 import com.epam.esm.service.impl.ShopTagService;
 import com.epam.esm.service.validator.TagValidator;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,20 +39,20 @@ public class TagServiceImplTest {
 
     @Test
     public void findAll() {
-        when(tagRepository.findAll(anyInt(),anyInt())).thenReturn(tags);
+        when(tagRepository.findAll(anyInt(), anyInt())).thenReturn(tags);
 
-        List<Tag> tagsActual = tagService.findAll(1,5).stream().map(TagPOJO::pojoToEntity).collect(Collectors.toList());
-        Assert.assertEquals(tagsActual, tags);
+        List<Tag> tagsActual = tagService.findAll(1, 5).stream().map(TagPOJO::pojoToEntity).collect(Collectors.toList());
+        assertEquals(tagsActual, tags);
     }
 
     @Test
-    public void find()  {
+    public void find() {
         Long tagId = 1l;
         Long getFirst = 2l;
         tag = tags.get(getFirst.intValue());
         when(tagRepository.findById(anyInt())).thenReturn(tags.get(0));
 
-        Assert.assertEquals(tag, tags.get(getFirst.intValue()));
+        assertEquals(tag, tags.get(getFirst.intValue()));
     }
 
     @Test
@@ -78,7 +75,7 @@ public class TagServiceImplTest {
     }
 
     @Test
-    public void create(){
+    public void create() {
         Long tagId = 2L;
         Long getFirst = 0L;
 

@@ -21,10 +21,12 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
 
     @Override
     public void delete(long id) {
+        String wrongEntityName = "Tag";
+
         int col = entityManager.createQuery(SQLRequests.DELETE_TAG_BY_ID)
                 .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage("Tag",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
@@ -44,9 +46,11 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
 
     @Override
     public Tag findById(long id) {
+        String wrongEntityName = "Tag";
+
         Tag tag = entityManager.find(Tag.class, id);
         if (tag == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage("Tag",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
         return tag;
@@ -54,15 +58,19 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
 
     @SuppressWarnings("unchecked")
     public Long findMostWidelyUsedTag() {
+        String functionName = "greatest_tag";
+
         StoredProcedureQuery findByName = entityManager
-                .createNamedStoredProcedureQuery("module3");
+                .createNamedStoredProcedureQuery(functionName);
         BigInteger o = (BigInteger) findByName.getSingleResult();
         return o.longValue();
     }
 
     @Override
     public int getTagCount() {
-        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_TAG).getSingleResult();
+        Long count = (Long) entityManager
+                .createQuery(SQLRequests.FIND_COUNT_OF_TAG)
+                .getSingleResult();
         return count.intValue();
     }
 

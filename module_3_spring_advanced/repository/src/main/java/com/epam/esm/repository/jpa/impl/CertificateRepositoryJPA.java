@@ -23,19 +23,23 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     @Override
     public void delete(long id) {
+        String wrongEntityName = "Certificate";
+
         int col = entityManager.createQuery(SQLRequests.DELETE_CERTIFICATE)
                 .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage("Certificate",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
     @Override
     public Certificate findById(long id) {
+        String wrongEntityName = "Certificate";
+
         Certificate certificate = entityManager.find(Certificate.class, id);
         if (certificate == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage("Certificate",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
         return certificate;
@@ -102,8 +106,11 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
     @Deprecated
     @SuppressWarnings("unchecked")
     public List<Certificate> findAllByNamePart(String namePart) {
+        String nameProcedure = "findByNameProcedure";
+        String procedureParam = "text";
+
         StoredProcedureQuery findByName = entityManager
-                .createNamedStoredProcedureQuery("findByNameProcedure").setParameter("text", namePart);
+                .createNamedStoredProcedureQuery(nameProcedure).setParameter(procedureParam, namePart);
         return findByName.getResultList();
     }
 
@@ -154,7 +161,10 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
-        Optional<Tag> buffTag = buffCertificate.getTags().stream().filter(tag -> tag.getId() == idTag).findFirst();
+        Optional<Tag> buffTag = buffCertificate
+                .getTags()
+                .stream()
+                .filter(tag -> tag.getId() == idTag).findFirst();
         buffTag.ifPresent(tag -> buffCertificate.getTags().remove(tag));
     }
 

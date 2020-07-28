@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Entity(name = "certificate")
 @Table(name = "certificate")
@@ -92,6 +91,14 @@ public class Certificate implements Serializable {
         this.price = price;
         this.creationDate = creationDate;
         this.modification = modification;
+        this.durationDays = durationDays;
+    }
+
+    public Certificate(Long id, String name, String description, Double price, Integer durationDays) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
         this.durationDays = durationDays;
     }
 }

@@ -14,7 +14,9 @@ import java.util.List;
 public class RoleRepositoryJPA extends ShopJPARepository<Role> implements RoleRepository {
     @Override
     public Role findByRoleName(String roleName) {
-        return (Role) entityManager.createQuery(SQLRequests.FIND_ROLE_BY_NAME).setParameter(1, roleName)
+        return (Role) entityManager
+                .createQuery(SQLRequests.FIND_ROLE_BY_NAME)
+                .setParameter(1, roleName)
                 .getSingleResult();
     }
 

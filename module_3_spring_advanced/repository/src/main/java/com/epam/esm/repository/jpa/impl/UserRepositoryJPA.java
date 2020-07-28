@@ -20,19 +20,23 @@ import java.util.List;
 public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRepository {
     @Override
     public void delete(long id) {
+        String wrongEntityName = "User";
+
         int col = entityManager.createQuery(SQLRequests.DELETE_USER_BY_ID)
                 .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage("User",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_USER));
         }
     }
 
     @Override
     public User findById(long id) {
+        String wrongEntityName = "User";
+
         User user = entityManager.find(User.class, id);
         if (user == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage("User",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_USER));
         }
         return user;

@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.doAnswer;
 
 public class ShopUserServiceTest {
     private UserRepository repository;
@@ -37,9 +36,9 @@ public class ShopUserServiceTest {
         roleRepository = mock(RoleRepositoryJPA.class);
         userValidator = mock(UserValidator.class);
 
-        userService = new ShopUserService(repository,userValidator,roleRepository);
-        user = new User("aa","bb","cc","dd",null,"@mail");
-        User user2 = new User("ii","ff","gg","hh",null,"@mail");
+        userService = new ShopUserService(repository, userValidator, roleRepository);
+        user = new User("aa", "bb", "cc", "dd", null, "@mail");
+        User user2 = new User("ii", "ff", "gg", "hh", null, "@mail");
         users = new ArrayList<>();
         users.add(user);
         users.add(user2);
@@ -47,20 +46,20 @@ public class ShopUserServiceTest {
 
     @Test
     public void findAll() {
-        when(repository.findAll(anyInt(),anyInt())).thenReturn(users);
+        when(repository.findAll(anyInt(), anyInt())).thenReturn(users);
 
-        List<UserPOJO> userActual = userService.findAll(1,5);
+        List<UserPOJO> userActual = userService.findAll(1, 5);
         Assert.assertEquals(userActual.stream().map(UserPOJO::pojoToEntity).collect(Collectors.toList()), users);
     }
 
     @Test
-    public void find()  {
+    public void find() {
         Long tagId = 1l;
         Long getFirst = 1l;
         user = users.get(getFirst.intValue());
         when(repository.findById(anyInt())).thenReturn(users.get(0));
 
-        Assert.assertEquals(user, users.get(getFirst.intValue()));
+        assertEquals(user, users.get(getFirst.intValue()));
     }
 
     @Test
@@ -83,7 +82,7 @@ public class ShopUserServiceTest {
     }
 
     @Test
-    public void create(){
+    public void create() {
         Long tagId = 2L;
         Long getFirst = 0L;
 

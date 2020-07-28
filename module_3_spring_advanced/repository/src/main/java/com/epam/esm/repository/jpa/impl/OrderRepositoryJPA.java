@@ -19,19 +19,23 @@ import java.util.List;
 public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> implements OrderRepository {
     @Override
     public void delete(long id) {
+        String wrongEntityName = "Order";
+
         int col = entityManager.createQuery(SQLRequests.DELETE_ORDER_BY_ID)
                 .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage("Order",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
     @Override
     public CertificateOrder findById(long id) {
+        String wrongEntityName = "Order";
+
         CertificateOrder order = entityManager.find(CertificateOrder.class, id);
         if (order == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage("Order",
+            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
                     ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
         return order;
@@ -90,7 +94,10 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
 
     @Override
     public int getOrdersCountByOwner(long id) {
-        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_ORDER_BY_OWNER).setParameter(1, id).getSingleResult();
+        Long count = (Long) entityManager
+                .createQuery(SQLRequests.FIND_COUNT_OF_ORDER_BY_OWNER)
+                .setParameter(1, id)
+                .getSingleResult();
         return count.intValue();
     }
 }

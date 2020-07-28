@@ -11,7 +11,7 @@ import java.util.Objects;
 @NamedStoredProcedureQueries({
         @NamedStoredProcedureQuery
                 (
-                        name = "module3",
+                        name = "greatest_tag",
                         procedureName = "greater"
                 )
 })

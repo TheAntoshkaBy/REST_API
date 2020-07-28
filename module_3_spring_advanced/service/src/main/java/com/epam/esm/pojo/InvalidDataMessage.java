@@ -1,9 +1,7 @@
 package com.epam.esm.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -18,7 +16,26 @@ public class InvalidDataMessage {
         this.message = message;
     }
 
+    public InvalidDataMessage() {
+    }
+
     public InvalidDataMessage(String message) {
+        this.message = message;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
         this.message = message;
     }
 }

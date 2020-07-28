@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
@@ -85,7 +86,7 @@ public class CertificateServiceImplTest {
         when(certificateRepository.findAll(anyInt(), anyInt())).thenReturn(certificates);
         List<CertificatePOJO> certificatesActual = certificateService.findAll(1, 5);
 
-        Assert.assertEquals(certificatesActual, certificates.stream()
+        assertEquals(certificatesActual, certificates.stream()
                 .map(CertificatePOJO::new)
                 .collect(Collectors.toList()));
     }
@@ -99,7 +100,7 @@ public class CertificateServiceImplTest {
 
         CertificatePOJO certificate = certificateService.find(foundedId.intValue());
 
-        Assert.assertEquals(certificate, new CertificatePOJO(certificates.get(idCertificate.intValue())));
+        assertEquals(certificate, new CertificatePOJO(certificates.get(idCertificate.intValue())));
     }
 
     @Test
@@ -136,7 +137,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedCertificate, updateCertificate);
             certificates.set(actualId.intValue(), expectedCertificate);
             return null;
-        }).when(certificateRepository).update( any(Certificate.class),anyInt());
+        }).when(certificateRepository).update(any(Certificate.class), anyInt());
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.set(2, expectedCertificate);
@@ -223,15 +224,15 @@ public class CertificateServiceImplTest {
                 .map(CertificatePOJO::pojoToEntity)
                 .collect(Collectors.toList());
 
-        Assert.assertEquals(expectedCertificates, certificates.stream()
+        assertEquals(expectedCertificates, certificates.stream()
                 .filter(certificate -> certificate.getName().contains("ll"))
                 .collect(Collectors.toList()));
     }
 
     @Test
     public void findAllWithSortByDate() {
-        when(certificateRepository.findAllByDate(anyInt(),anyInt())).thenReturn(certificates);
-        List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate(anyInt(),anyInt())
+        when(certificateRepository.findAllByDate(anyInt(), anyInt())).thenReturn(certificates);
+        List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate(anyInt(), anyInt())
                 .stream()
                 .map(CertificatePOJO::pojoToEntity)
                 .collect(Collectors.toList());
@@ -240,7 +241,7 @@ public class CertificateServiceImplTest {
     }
 
     @Test
-    public void findComplex_requestParamsAndTags_filteredResult(){
+    public void findComplex_requestParamsAndTags_filteredResult() {
         Map<String, String> map = new HashMap<>();
         map.put("int", "1");
         Map<String, Object> mapObject = new HashMap<>();
@@ -248,15 +249,15 @@ public class CertificateServiceImplTest {
         String query = "select";
 
         when(certificateServiceRequestParameterHandler.filterAndSetParams(map)).thenReturn(mapObject);
-        when(certificateServiceRequestParameterHandler.filterAnd(map,tags.stream().map(TagPOJO::new).collect(Collectors.toList()))).thenReturn(query);
-        when(certificateRepository.findAllComplex(query,mapObject,1,5)).thenReturn(certificates);
+        when(certificateServiceRequestParameterHandler.filterAnd(map, tags.stream().map(TagPOJO::new).collect(Collectors.toList()))).thenReturn(query);
+        when(certificateRepository.findAllComplex(query, mapObject, 1, 5)).thenReturn(certificates);
         certificates.clear();
-        List<Certificate> certificatesActual = certificateService.findAllComplex(map,tags.stream().map(TagPOJO::new).collect(Collectors.toList()),1,5)
+        List<Certificate> certificatesActual = certificateService.findAllComplex(map, tags.stream().map(TagPOJO::new).collect(Collectors.toList()), 1, 5)
                 .stream()
                 .map(CertificatePOJO::pojoToEntity)
                 .collect(Collectors.toList());
 
-        Assert.assertEquals(certificates, certificatesActual);
+        assertEquals(certificates, certificatesActual);
     }
 
     @Test
@@ -265,7 +266,6 @@ public class CertificateServiceImplTest {
                 mock(CertificateServiceRequestParameterHandler.class);
 
         certificateService.setCertificateServiceRequestParameterHandler(certificateServiceRequestParameterHandler);
-
-        Assert.assertNotNull(certificateService);
+        assertNotNull(certificateService);
     }
 }

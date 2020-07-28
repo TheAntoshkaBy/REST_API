@@ -8,7 +8,6 @@ import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.repository.jpa.impl.CertificateRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.OrderRepositoryJPA;
 import com.epam.esm.service.impl.ShopOrderService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,10 +33,10 @@ public class ShopOrderServiceTest {
     public void init() {
         repository = mock(OrderRepositoryJPA.class);
         certificateRepository = mock(CertificateRepositoryJPA.class);
-        orderService = new ShopOrderService(repository,certificateRepository);
+        orderService = new ShopOrderService(repository, certificateRepository);
 
-        order = new CertificateOrder(new Date(),321.23,"dd",new Date());
-        CertificateOrder order2 = new CertificateOrder(new Date(),321.23,"dd",new Date());
+        order = new CertificateOrder(new Date(), 321.23, "dd", new Date());
+        CertificateOrder order2 = new CertificateOrder(new Date(), 321.23, "dd", new Date());
         orders = new ArrayList<>();
         orders.add(order);
         orders.add(order2);
@@ -45,20 +44,20 @@ public class ShopOrderServiceTest {
 
     @Test
     public void findAll() {
-        when(repository.findAll(anyInt(),anyInt())).thenReturn(orders);
+        when(repository.findAll(anyInt(), anyInt())).thenReturn(orders);
 
-        List<CertificateOrderPOJO> userActual = orderService.findAll(1,5);
-        Assert.assertEquals(userActual.stream().map(CertificateOrderPOJO::pojoToEntity)
+        List<CertificateOrderPOJO> userActual = orderService.findAll(1, 5);
+        assertEquals(userActual.stream().map(CertificateOrderPOJO::pojoToEntity)
                 .collect(Collectors.toList()), orders);
     }
 
     @Test
-    public void find()  {
+    public void find() {
         Long getFirst = 1l;
         order = orders.get(getFirst.intValue());
         when(repository.findById(anyInt())).thenReturn(orders.get(0));
 
-        Assert.assertEquals(order, orders.get(getFirst.intValue()));
+        assertEquals(order, orders.get(getFirst.intValue()));
     }
 
     @Test
