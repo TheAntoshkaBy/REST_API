@@ -6,7 +6,7 @@ import com.epam.esm.pojo.CertificatePOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Data;
 import org.springframework.hateoas.EntityModel;
 
 import javax.persistence.Column;
@@ -20,12 +20,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateDTO {
 
@@ -39,7 +34,7 @@ public class CertificateDTO {
 
     @NotNull
     @Size(min = 3, max = 170, message
-            = "Surname must be between 3 and 170 characters")
+            = "Description must be between 3 and 170 characters")
     private String description;
 
     @NotNull
@@ -87,11 +82,19 @@ public class CertificateDTO {
     }
 
     public EntityModel<CertificateDTO> getModel() {
+        String deleteRelName = "delete";
+        String updateRelName = "update";
+        String methodTypeDELETE = "DELETE";
+        String methodTypePUT = "PUT";
+
         model = EntityModel.of(
                 this,
-                linkTo(methodOn(CertificateController.class).findById(id)).withSelfRel(),
-                linkTo(methodOn(CertificateController.class).findById(id)).withRel("update").withType("PUT"),
-                linkTo(methodOn(CertificateController.class).findById(id)).withRel("delete").withType("DELETE")
+                linkTo(methodOn(CertificateController.class)
+                        .findById(id)).withSelfRel(),
+                linkTo(methodOn(CertificateController.class)
+                        .findById(id)).withRel(updateRelName).withType(methodTypePUT),
+                linkTo(methodOn(CertificateController.class)
+                        .findById(id)).withRel(deleteRelName).withType(methodTypeDELETE)
         );
         return model;
     }

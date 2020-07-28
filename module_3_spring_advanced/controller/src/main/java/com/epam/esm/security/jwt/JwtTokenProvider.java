@@ -23,8 +23,10 @@ import java.util.List;
 public class JwtTokenProvider {
 
     private final UserDetailsService userDetailsService;
+
     @Value("${jwt.token.secret}")
     private String secret;
+
     @Value("${jwt.token.expired}")
     private long validityInMilliseconds;
 
@@ -43,18 +45,18 @@ public class JwtTokenProvider {
     }
 
     public String createToken(String username, List<Role> roles) {
-
+        String rolesNameParameter = "roles";
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", getRoleNames(roles));
+        claims.put(rolesNameParameter, getRoleNames(roles));
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secret)//
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -68,20 +70,24 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String token = req.getHeader("auth");
-        if (token != null && token.startsWith("token_")) {
+        String headerName = "auth";
+        String prefixHeader = "token_";
+
+        String token = req.getHeader(headerName);
+        if (token != null && token.startsWith(prefixHeader)) {
             return token.substring(7);
         }
         return null;
     }
 
     public boolean validateToken(String token) {
+        String invalidToken = "JWT token is expired or invalid";
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
 
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
+            throw new JwtAuthenticationException(invalidToken);
         }
     }
 

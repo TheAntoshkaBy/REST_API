@@ -4,7 +4,6 @@ import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.exception.ControllerException;
-import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,10 @@ import java.util.stream.Collectors;
 @RequestMapping("certificates")
 public class CertificateController {
 
+    private final static String PAGE_NAME_PARAMETER = "page";
+    private final static String PAGE_SIZE_NAME_PARAMETER = "size";
+    private final static String PAGE_DEFAULT_PARAMETER = "1";
+    private final static String PAGE_SIZE_DEFAULT_PARAMETER = "5";
     private CertificateService service;
 
     @Autowired
@@ -37,17 +40,24 @@ public class CertificateController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> find(@RequestParam Map<String, String> params, @RequestBody(required = false) List<TagDTO> tags) {
+    public ResponseEntity<?> find(
+            @RequestParam Map<String, String> params,
+            @RequestBody(required = false) List<TagDTO> tags) {
         String pageParam = "page";
         String sizeParam = "size";
+        String searchRequestParameter = "search";
+        String filterRequestParameter = "filter";
+        String sortRequestParameter = "sort";
+        String complexRequestParameter = "complex";
+
         int page = getValidPaginationParam(params.get(pageParam), pageParam);
         int size = getValidPaginationParam(params.get(sizeParam), sizeParam);
 
-        String searchParameter = params.get("search");
-        String findParameter = params.get("filter");
-        String sortParameter = params.get("sort");
+        String searchParameter = params.get(searchRequestParameter);
+        String findParameter = params.get(filterRequestParameter);
+        String sortParameter = params.get(sortRequestParameter);
 
-        if (searchParameter != null && searchParameter.equals("complex")) {
+        if (searchParameter != null && searchParameter.equals(complexRequestParameter)) {
             return findComplex(params, tags, page, size);
         } else {
             if (findParameter != null || sortParameter != null)
@@ -56,8 +66,10 @@ public class CertificateController {
         }
     }
 
-    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                                     @RequestParam(value = "size", defaultValue = "5") int size) {
+    public ResponseEntity<?> findAll(@RequestParam(value = PAGE_NAME_PARAMETER,
+            defaultValue = PAGE_DEFAULT_PARAMETER) int page,
+                                     @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                                             defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
 
         CertificateList certificateList = new CertificateList(
                 service.findAll(page, size)
@@ -75,8 +87,8 @@ public class CertificateController {
     public ResponseEntity<?> findComplex(
             @RequestParam Map<String, String> params,
             @RequestBody List<TagDTO> tags,
-            @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "5") int size
+            @RequestParam(value = PAGE_NAME_PARAMETER, defaultValue = PAGE_DEFAULT_PARAMETER) int page,
+            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER, defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size
     ) {
         List<TagPOJO> tagsPojo = null;
         if (tags != null) {
@@ -108,10 +120,15 @@ public class CertificateController {
 
     }
 
-    @DeleteMapping(path = "/{id}", params = {"page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteCertificate(@PathVariable Integer id,
-                                               @RequestParam(value = "page", defaultValue = "1") int page,
-                                               @RequestParam(value = "size", defaultValue = "5") int size) {
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteCertificate(
+            @PathVariable Integer id,
+            @RequestParam(value = PAGE_NAME_PARAMETER,
+                    defaultValue = PAGE_DEFAULT_PARAMETER,
+                    required = false) int page,
+            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                    defaultValue = PAGE_SIZE_DEFAULT_PARAMETER, required = false) int size) {
+
         try {
             service.delete(id);
             return new ResponseEntity<>(
@@ -171,37 +188,34 @@ public class CertificateController {
     }
 
     int getValidPaginationParam(String param, String paramName) {
-        String invalid = "this parameter is invalid!";
+        String pageParameter = "page";
         int defaultPage = 1;
         int defaultSize = 5;
 
         if (param == null) {
-            if (paramName.equals("page"))
+            if (paramName.equals(pageParameter)) {
                 return defaultPage;
-            else
+            } else {
                 return defaultSize;
+            }
         } else {
             int paramInteger;
             try {
                 paramInteger = Integer.parseInt(param);
-            } catch (RuntimeException e) {
-                throw new ControllerException(
-                        new InvalidControllerOutputMessage(paramName, invalid)
-                );
-            }
-            if (paramInteger > 0)
-                return paramInteger;
-            else
+            } catch (NumberFormatException e) {
                 return defaultPage;
+            }
+            return paramInteger > 0 ? paramInteger : defaultPage;
         }
     }
 
-
     public ResponseEntity<?> findByFilter(Map<String, String> params,
-                                          @RequestParam(value = "page", defaultValue = "1") int page,
-                                          @RequestParam(value = "size", defaultValue = "5") int size) {
+                                          @RequestParam(value = PAGE_NAME_PARAMETER,
+                                                  defaultValue = PAGE_DEFAULT_PARAMETER) int page,
+                                          @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                                                  defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
         CertificateList certificateList = new CertificateList(
-                service.findAll(params)
+                service.findAll(params, page, size)
                         .stream()
                         .map(CertificateDTO::new)
                         .collect(Collectors.toList()),

@@ -6,7 +6,7 @@ import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.Data;
 import org.springframework.hateoas.EntityModel;
 
 import javax.validation.constraints.Null;
@@ -17,12 +17,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateOrderDTO {
 
@@ -36,7 +31,7 @@ public class CertificateOrderDTO {
     private Double coast;
 
     @Size(min = 3, max = 170, message
-            = "Surname must be between 3 and 170 characters")
+            = "Description must be between 3 and 170 characters")
     private String description;
 
     @Null
@@ -68,9 +63,13 @@ public class CertificateOrderDTO {
     }
 
     public EntityModel<CertificateOrderDTO> getModel() {
+        String deleteRelName = "delete";
+        String methodType = "DELETE";
         model = EntityModel.of(this,
                 linkTo(methodOn(OrderController.class).findOrderById(id)).withSelfRel(),
-                linkTo(methodOn(OrderController.class).deleteOrder(id, 1, 5)).withRel("delete").withType("DELETE"));
+                linkTo(methodOn(OrderController.class)
+                        .deleteOrder(id, 1, 5))
+                        .withRel(deleteRelName).withType(methodType));
         return model;
     }
 }

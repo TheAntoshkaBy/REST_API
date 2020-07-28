@@ -48,6 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(HttpMethod.GET, CERTIFICATE_ENDPOINT).permitAll()
                 .mvcMatchers(HttpMethod.POST, REGISTRATION_ENDPOINT).permitAll()
                 .mvcMatchers(HttpMethod.GET, USER_ENDPOINT).authenticated()
+                .mvcMatchers(HttpMethod.PATCH, USER_ENDPOINT).authenticated()
+                .mvcMatchers(HttpMethod.DELETE, USER_ENDPOINT).authenticated()
                 .mvcMatchers(HttpMethod.GET, TAG_ENDPOINT).authenticated()
                 .mvcMatchers(HttpMethod.GET, ORDER_ENDPOINT).authenticated()
                 .mvcMatchers(HttpMethod.PATCH, ADD_ORDER_ENDPOINT).authenticated()

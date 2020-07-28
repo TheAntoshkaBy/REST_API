@@ -19,7 +19,7 @@ public interface CertificateService {
     /**
      * This method delegates management to one of find methods.
      **/
-    List<CertificatePOJO> findAll(Map<String, String> params);
+    List<CertificatePOJO> findAll(Map<String, String> params, int page, int size);
 
     int getCertificateCount();
 
@@ -40,7 +40,7 @@ public interface CertificateService {
      *
      * @return Certificates list
      **/
-    List<CertificatePOJO> findAllCertificatesByDate();
+    List<CertificatePOJO> findAllCertificatesByDate(int page, int size);
 
     /**
      * This method finds concrete Certificate which contains
@@ -49,13 +49,13 @@ public interface CertificateService {
      * @param id Certificate Id
      * @return Certificate List
      **/
-    List<CertificatePOJO> findAllCertificatesByIdThreshold(long id);
+    List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size);
 
     /**
      * This method finds all certificates which
      * contain string in tag name from database using DAO
      **/
-    List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag);
+    List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag,  int page, int size);
 
     /**
      * This method finds all certificates

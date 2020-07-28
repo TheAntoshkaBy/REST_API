@@ -83,9 +83,12 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     @Deprecated
     @SuppressWarnings("unchecked")
-    public List<Certificate> findAllByDate() {
+    public List<Certificate> findAllByDate(int page, int size) {
 
-        return (List<Certificate>) entityManager.createQuery(SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE).getResultList();
+        return (List<Certificate>) entityManager.createQuery(SQLRequests.FIND_ALL_CERTIFICATES_BY_DATE)
+                .setFirstResult(page)
+                .setMaxResults(size)
+                .getResultList();
     }
 
     @Deprecated
@@ -129,11 +132,13 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
         buffCert.setPrice(price);
     }
 
-    @Deprecated
     @SuppressWarnings("unchecked")
-    public List<Certificate> findByTagName(String name) {
+    public List<Certificate> findByTagName(String name, int offset, int limit) {
         return entityManager.createQuery(SQLRequests.FIND_CERTIFICATE_BY_TAG_NAME)
-                .setParameter(1, name).getResultList();
+                .setParameter(1, name)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
     }
 
     public void addTag(long idCertificate, long idTag) {

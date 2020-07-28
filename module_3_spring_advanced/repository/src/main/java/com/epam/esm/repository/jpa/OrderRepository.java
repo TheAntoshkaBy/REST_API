@@ -17,6 +17,8 @@ public interface OrderRepository {
 
     List<CertificateOrder> findAllByOwner(long id, int offset, int limit);
 
+    List<CertificateOrder> findAllByOwner(long id);
+
     CertificateOrder addCertificates(CertificateOrder certificateOrder, List<Certificate> certificates, double coast);
 
     int getOrdersCount();

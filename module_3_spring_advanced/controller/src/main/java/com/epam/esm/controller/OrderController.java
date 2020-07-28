@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 @RestController()
 @RequestMapping("/orders")
 public class OrderController {
+    private final static String PAGE_NAME_PARAMETER = "page";
+    private final static String PAGE_SIZE_NAME_PARAMETER = "size";
+    private final static String PAGE_DEFAULT_PARAMETER = "1";
+    private final static String PAGE_SIZE_DEFAULT_PARAMETER = "5";
     private final OrderService service;
 
     @Autowired
@@ -23,9 +27,14 @@ public class OrderController {
         this.service = service;
     }
 
-    @GetMapping(params = {"page", "size"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1") int page,
-                                     @RequestParam(value = "size", defaultValue = "5") int size) {
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> findAll(
+            @RequestParam(value = PAGE_NAME_PARAMETER,
+                    defaultValue = PAGE_DEFAULT_PARAMETER,
+                    required = false) int page,
+            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                    defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+                    required = false) int size) {
         return new ResponseEntity<>(new OrderList(
                 service.findAll(page, size)
                         .stream()
@@ -37,10 +46,14 @@ public class OrderController {
         ), HttpStatus.OK);
     }
 
-    @DeleteMapping(params = {"page", "size"}, path = "/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id,
-                                         @RequestParam(value = "page", defaultValue = "1") int page,
-                                         @RequestParam(value = "size", defaultValue = "5") int size) {
+                                         @RequestParam(value = PAGE_NAME_PARAMETER,
+                                                 defaultValue = PAGE_DEFAULT_PARAMETER,
+                                                 required = false) int page,
+                                         @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                                                 defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+                                                 required = false) int size) {
         try {
             service.delete(id);
         } catch (ControllerException e) {
@@ -64,7 +77,7 @@ public class OrderController {
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificates(@PathVariable long id, @RequestParam List<Long> certificatesId) {
-        return new ResponseEntity<>(new CertificateOrderDTO(service.addCertificates(id, certificatesId)).getModel()
-                , HttpStatus.OK);
+        return new ResponseEntity<>(new CertificateOrderDTO(service.addCertificates(id, certificatesId))
+                .getModel(), HttpStatus.OK);
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CertificateSortBy {
-    List<CertificatePOJO> sortOurCertificates(Map<String, String> request);
+    List<CertificatePOJO> sortOurCertificates(Map<String, String> request, int page, int size);
 
     String getType();
 }

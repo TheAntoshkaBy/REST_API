@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 @RestController()
 @RequestMapping("/tags")
 public class TagController {
+    private final static String PAGE_NAME_PARAMETER = "page";
+    private final static String PAGE_SIZE_NAME_PARAMETER = "size";
+    private final static String PAGE_DEFAULT_PARAMETER = "1";
+    private final static String PAGE_SIZE_DEFAULT_PARAMETER = "5";
     private final TagService service;
 
     @Autowired
@@ -34,8 +38,13 @@ public class TagController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                     @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
+    public ResponseEntity<?> findAll(
+            @RequestParam(value = PAGE_NAME_PARAMETER,
+                    defaultValue = PAGE_DEFAULT_PARAMETER,
+                    required = false) int page,
+            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                    defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+                    required = false) int size) {
 
         return new ResponseEntity<>(new TagList(
                 service.findAll(page, size)
@@ -50,8 +59,12 @@ public class TagController {
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteTag(@PathVariable Integer id,
-                                       @RequestParam(value = "page", defaultValue = "1", required = false) int page,
-                                       @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
+                                       @RequestParam(value = PAGE_NAME_PARAMETER,
+                                               defaultValue = PAGE_DEFAULT_PARAMETER,
+                                               required = false) int page,
+                                       @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+                                               defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+                                               required = false) int size) {
         service.delete(id);
 
         return new ResponseEntity<>(new TagList(

@@ -29,15 +29,15 @@ public class CertificateServiceRequestParameterHandler {
     @Autowired
     private List<ComplexFilter> filters;
 
-    public List<CertificatePOJO> find(Map<String, String> request) {
-        return filter(request);
+    public List<CertificatePOJO> find(Map<String, String> request, int page, int size) {
+        return filter(request, page, size);
     }
 
-    public List<CertificatePOJO> filter(Map<String, String> request) {
+    public List<CertificatePOJO> filter(Map<String, String> request, int page, int size) {
         List<CertificatePOJO> result;
         try {
             if (request.get("filter") == null) {
-                result = sort(request);
+                result = sort(request,page, size);
             } else {
                 result = certificateFilterRequestParameterList.stream()
                         .filter(certificateFilter -> certificateFilter
@@ -45,7 +45,7 @@ public class CertificateServiceRequestParameterHandler {
                                 .equals(request.get("filter")))
                         .findFirst()
                         .get()
-                        .filterOutOurCertificates(request);
+                        .filterOutOurCertificates(request, page, size);
             }
         } catch (NoSuchElementException e) {
             throw new ServiceException(
@@ -56,7 +56,7 @@ public class CertificateServiceRequestParameterHandler {
         return result;
     }
 
-    public List<CertificatePOJO> sort(Map<String, String> request) {
+    public List<CertificatePOJO> sort(Map<String, String> request, int page, int size) {
         List<CertificatePOJO> result;
         try {
             result = certificateSortRequestParameterList.stream()
@@ -65,7 +65,7 @@ public class CertificateServiceRequestParameterHandler {
                             .equals(request.get("sort")))
                     .findFirst()
                     .get()
-                    .sortOurCertificates(request);
+                    .sortOurCertificates(request,page,size);
         } catch (NoSuchElementException e) {
             throw new ServiceException(
                     new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)

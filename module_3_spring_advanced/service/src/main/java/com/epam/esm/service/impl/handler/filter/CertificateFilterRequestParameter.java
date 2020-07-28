@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface CertificateFilterRequestParameter {
 
-    List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request);
+    List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request, int page, int size);
 
     String getType();
 }

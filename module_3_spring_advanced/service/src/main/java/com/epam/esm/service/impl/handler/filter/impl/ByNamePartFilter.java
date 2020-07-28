@@ -23,7 +23,7 @@ public class ByNamePartFilter implements CertificateFilterRequestParameter {
     }
 
     @Override
-    public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request) {
+    public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request, int page, int size) {
         String text = request.get("searching name");
         if (text == null)
             throw new ServiceException(

@@ -20,8 +20,8 @@ public class CertificateSortByDate implements CertificateSortBy {
     }
 
     @Override
-    public List<CertificatePOJO> sortOurCertificates(Map<String, String> request) {
-        return certificateService.findAllCertificatesByDate();
+    public List<CertificatePOJO> sortOurCertificates(Map<String, String> request, int page, int size) {
+        return certificateService.findAllCertificatesByDate(--page, size);
     }
 
     public String getType() {

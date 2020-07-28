@@ -62,8 +62,8 @@ public class ShopCertificateService implements CertificateService {
      * @return Certificate list
      */
     @Override
-    public List<CertificatePOJO> findAll(Map<String, String> params) {//3
-        return certificateServiceRequestParameterHandler.find(params);
+    public List<CertificatePOJO> findAll(Map<String, String> params,  int page, int size) {//3
+        return certificateServiceRequestParameterHandler.find(params, page, size);
     }
 
     public List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size) {//1
@@ -101,8 +101,8 @@ public class ShopCertificateService implements CertificateService {
     }
 
     @Override
-    public List<CertificatePOJO> findAllCertificatesByDate() {//4
-        return certificateRepository.findAllByDate()
+    public List<CertificatePOJO> findAllCertificatesByDate(int page, int size) {//4
+        return certificateRepository.findAllByDate(page, size)
                 .stream()
                 .map(CertificatePOJO::new)
                 .collect(Collectors.toList());
@@ -115,7 +115,7 @@ public class ShopCertificateService implements CertificateService {
 
     @Deprecated
     @Override
-    public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id) {
+    public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size) {
         return certificateRepository.findAllByIdThreshold(id)
                 .stream()
                 .map(CertificatePOJO::new)
@@ -124,9 +124,9 @@ public class ShopCertificateService implements CertificateService {
 
     @Deprecated
     @Override
-    public List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag) {//7
+    public List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size) {//7
         tagValidator.isCorrectTag(tag);
-        return certificateRepository.findByTagName(tag.getName())
+        return certificateRepository.findByTagName(tag.getName(), page, size)
                 .stream()
                 .map(CertificatePOJO::new)
                 .collect(Collectors.toList());

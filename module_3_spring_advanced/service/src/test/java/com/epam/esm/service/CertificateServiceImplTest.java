@@ -236,8 +236,8 @@ public class CertificateServiceImplTest {
 
     @Test
     public void findAllWithSortByDate() {
-        when(certificateRepository.findAllByDate()).thenReturn(certificates);
-        List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate()
+        when(certificateRepository.findAllByDate(anyInt(),anyInt())).thenReturn(certificates);
+        List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate(anyInt(),anyInt())
                 .stream()
                 .map(CertificatePOJO::pojoToEntity)
                 .collect(Collectors.toList());
@@ -267,7 +267,7 @@ public class CertificateServiceImplTest {
 
     @Test
     public void findAllWhereContainTag_Tag_CertificateWithNameEqualsExpectedTagName() {
-        when(certificateRepository.findByTagName(anyString()))
+        when(certificateRepository.findByTagName(anyString(),anyInt(),anyInt()))
                 .thenReturn(certificates.stream()
                         .filter(certificate -> certificate.getTags()
                                 .stream()
@@ -275,7 +275,7 @@ public class CertificateServiceImplTest {
                         .collect(Collectors.toList()));
 
         List<Certificate> expectedCertificates = certificateService
-                .findAllCertificatesByTag(new TagPOJO(tag)).stream()
+                .findAllCertificatesByTag(new TagPOJO(tag),anyInt(),anyInt()).stream()
                 .map(CertificatePOJO::pojoToEntity)
                 .collect(Collectors.toList());
 

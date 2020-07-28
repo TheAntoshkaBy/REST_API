@@ -51,7 +51,18 @@ public class UserPOJO {
     }
 
     public User pojoToEntity() {
+        if(this.id == null)
+            return new User(
+                    this.name,
+                    this.surname,
+                    this.login,
+                    this.password,
+                    this.roles,
+                    this.email
+            );
+        else
         return new User(
+                this.id,
                 this.name,
                 this.surname,
                 this.login,

@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.AuthenticationRequestDto;
+import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.security.jwt.JwtTokenProvider;
@@ -24,11 +25,8 @@ import java.util.Map;
 @RestController
 @RequestMapping
 public class AuthenticationController {
-
     private final AuthenticationManager authenticationManager;
-
     private final JwtTokenProvider jwtTokenProvider;
-
     private final UserService userService;
 
     @Autowired
@@ -43,6 +41,9 @@ public class AuthenticationController {
     @PostMapping(path = "/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
         String invalid = "Invalid username or password";
+        String parameterUsername = "username";
+        String parameterToken = "token";
+
         try {
             String username = requestDto.getLogin();
             authenticationManager.authenticate(
@@ -53,8 +54,8 @@ public class AuthenticationController {
             String token = jwtTokenProvider.createToken(username, user.getRoles());
 
             Map<Object, Object> response = new HashMap<>();
-            response.put("username", username);
-            response.put("token", token);
+            response.put(parameterUsername, username);
+            response.put(parameterToken, token);
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
@@ -63,11 +64,11 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/registration")
-    public ResponseEntity<?> registration(@Valid @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> registration(@Valid @RequestBody RegistrationUserDTO userDTO) {
         String invalid = "Invalid username or password";
         try {
             UserPOJO userPOJO = userService.create(userDTO.dtoToPojo());
-            return new ResponseEntity<>(new UserDTO(userPOJO).getModel(), HttpStatus.CREATED);
+            return new ResponseEntity<>(new RegistrationUserDTO(userPOJO).getModel(), HttpStatus.CREATED);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(invalid);
         }

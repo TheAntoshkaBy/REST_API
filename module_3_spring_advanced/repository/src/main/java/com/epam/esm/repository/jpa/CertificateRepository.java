@@ -23,8 +23,7 @@ public interface CertificateRepository {
 
     Certificate create(Certificate certificate);
 
-    @Deprecated
-    List<Certificate> findAllByDate();
+    List<Certificate> findAllByDate(int page, int size);
 
     @Deprecated
     List<Certificate> findAllByIdThreshold(long id);
@@ -38,7 +37,7 @@ public interface CertificateRepository {
 
     void updatePrice(long id, double price);
 
-    List<Certificate> findByTagName(String name);
+    List<Certificate> findByTagName(String name, int page, int size);
 
     void addTag(long idCertificate, long idTag);
 

@@ -20,7 +20,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class RegistrationUserDTO {
     @ToString.Exclude
     @Null
     private Long id;
@@ -52,10 +52,11 @@ public class UserDTO {
     @Null
     private List<Role> roles;
 
-    @JsonIgnore
-    private EntityModel<UserDTO> model;
 
-    public UserDTO(UserPOJO user) {
+    @JsonIgnore
+    private EntityModel<RegistrationUserDTO> model;
+
+    public RegistrationUserDTO(UserPOJO user) {
         this.id = user.getId();
         this.name = user.getName();
         this.surname = user.getSurname();
@@ -67,7 +68,6 @@ public class UserDTO {
 
     public UserPOJO dtoToPojo() {
         return new UserPOJO(
-                this.id,
                 this.name,
                 this.surname,
                 this.login,
@@ -77,7 +77,7 @@ public class UserDTO {
         );
     }
 
-    public EntityModel<UserDTO> getModel() {
+    public EntityModel<RegistrationUserDTO> getModel() {
         String deleteRelName = "delete";
         String orderRelName = "orders";
         String methodTypeDELETE = "DELETE";

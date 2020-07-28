@@ -65,6 +65,13 @@ public class ShopOrderService implements OrderService {
     }
 
     @Override
+    public List<CertificateOrderPOJO> findAllByOwner(long id) {
+        return repository.findAllByOwner(id).stream()
+                .map(CertificateOrderPOJO::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public int ordersCountByOwner(long id) {
         return repository.getOrdersCountByOwner(id);
     }

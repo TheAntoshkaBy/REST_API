@@ -20,9 +20,9 @@ public class ByIdFindCertificatesWhereIdMoreThanParameter implements Certificate
     }
 
     @Override
-    public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request) {
+    public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request, int page, int size) {
         return certificateService.findAllCertificatesByIdThreshold(
-                Long.parseLong(request.get("founded id"))
+                Long.parseLong(request.get("founded id")),  --page, size
         );
     }
 

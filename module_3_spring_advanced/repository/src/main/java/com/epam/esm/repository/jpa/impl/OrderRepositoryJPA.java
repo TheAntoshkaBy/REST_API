@@ -58,6 +58,15 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<CertificateOrder> findAllByOwner(long id) {
+        return (List<CertificateOrder>) entityManager
+                .createQuery(SQLRequests.FIND_ALL_ORDERS_BY_OWNER)
+                .setParameter(1, id)
+                .getResultList();
+    }
+
+    @Override
     public CertificateOrder create(CertificateOrder certificateOrder, User user) {
         certificateOrder.setOwner(user);
         entityManager.persist(certificateOrder);
