@@ -62,13 +62,13 @@ public class CertificateOrderDTO {
         );
     }
 
-    public EntityModel<CertificateOrderDTO> getModel() {
+    public EntityModel<CertificateOrderDTO> getModel(int page, int size) {
         String deleteRelName = "delete";
         String methodType = "DELETE";
         model = EntityModel.of(this,
                 linkTo(methodOn(OrderController.class).findOrderById(id)).withSelfRel(),
                 linkTo(methodOn(OrderController.class)
-                        .deleteOrder(id, 1, 5))
+                        .deleteOrder(id, page, size))
                         .withRel(deleteRelName).withType(methodType));
         return model;
     }

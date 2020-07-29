@@ -7,6 +7,7 @@ import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.service.support.ServiceSupporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public List<CertificateOrderPOJO> findAll(int page, int size) {
-       page = setOffset(page, size);
+        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
         List<CertificateOrder> certificateOrders = repository.findAll(--page, size);
         return certificateOrders
                 .stream()
@@ -54,8 +55,9 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id, int page, int size) {
-       page = setOffset(page, size);
-        return repository.findAllByOwner(id, --page, size).stream()
+        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
+        return repository
+                .findAllByOwner(id, --page, size).stream()
                 .map(CertificateOrderPOJO::new)
                 .collect(Collectors.toList());
     }
@@ -86,13 +88,5 @@ public class ShopOrderService implements OrderService {
     @Override
     public int getOrdersCount() {
         return repository.getOrdersCount();
-    }
-
-    public int setOffset(int page, int size){
-        if (page != 1) {
-            return size * (page - 1) + 1;
-        }else {
-            return page;
-        }
     }
 }

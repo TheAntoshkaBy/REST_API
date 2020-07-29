@@ -77,7 +77,7 @@ public class RegistrationUserDTO {
         );
     }
 
-    public EntityModel<RegistrationUserDTO> getModel() {
+    public EntityModel<RegistrationUserDTO> getModel(int page, int size) {
         String deleteRelName = "delete";
         String orderRelName = "orders";
         String methodTypeDELETE = "DELETE";
@@ -87,9 +87,9 @@ public class RegistrationUserDTO {
                 linkTo(methodOn(UserController.class)
                         .findUserById(id)).withSelfRel(),
                 linkTo(methodOn(UserController.class)
-                        .delete(id, 1, 5)).withRel(deleteRelName).withType(methodTypeDELETE),
+                        .delete(id, page, size)).withRel(deleteRelName).withType(methodTypeDELETE),
                 linkTo(methodOn(UserController.class)
-                        .findOrders(id, 1, 5)).withRel(orderRelName).withType(methodTypeGET));
+                        .findOrders(id, page, size)).withRel(orderRelName).withType(methodTypeGET));
         return model;
     }
 }

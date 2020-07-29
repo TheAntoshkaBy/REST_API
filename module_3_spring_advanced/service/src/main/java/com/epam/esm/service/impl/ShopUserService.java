@@ -5,6 +5,7 @@ import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.repository.jpa.RoleRepository;
 import com.epam.esm.repository.jpa.UserRepository;
 import com.epam.esm.service.UserService;
+import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,7 +29,7 @@ public class ShopUserService implements UserService {
 
     @Override
     public List<UserPOJO> findAll(int page, int size) {
-        page = setOffset(page, size);
+        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
 
         List<User> userPOJOS = repository.findAll(--page, size);
         return userPOJOS
@@ -67,13 +68,5 @@ public class ShopUserService implements UserService {
     @Override
     public int getUsersCount() {
         return repository.getUsersCount();
-    }
-
-    public int setOffset(int page, int size){
-        if (page != 1) {
-            return size * (page - 1) + 1;
-        }else {
-            return page;
-        }
     }
 }

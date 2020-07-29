@@ -48,12 +48,14 @@ public class UserController {
             @Valid @RequestBody CertificateOrderDTO order,
             HttpServletRequest request) {
         checkUserRulesById(request, id);
+        int startPage = 1;
+        int startSize = 5;
 
         try {
             return new ResponseEntity<>(new CertificateOrderDTO(
                     orderService.create(
                             order.dtoToPojo(),
-                            new UserDTO(service.find(id)).dtoToPojo())).getModel(),
+                            new UserDTO(service.find(id)).dtoToPojo())).getModel(startPage,startSize),
                     HttpStatus.CREATED);
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
@@ -79,7 +81,10 @@ public class UserController {
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findUserById(@PathVariable long id) {
-        return new ResponseEntity<>(new UserDTO(service.find(id)).getModel(), HttpStatus.OK);
+        int startPage = 1;
+        int startSize = 5;
+
+        return new ResponseEntity<>(new UserDTO(service.find(id)).getModel(startPage,startSize), HttpStatus.OK);
     }
 
     @GetMapping(path = "/orders/tags", params = "search by", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -148,12 +153,14 @@ public class UserController {
             HttpServletRequest request) {
         checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         checkUserRulesById(request, userId);
+        int startPage = 1;
+        int startSize = 5;
 
         return new ResponseEntity<>(new CertificateOrderDTO(
                 orderService
                         .addCertificates(id, certificatesId)
         )
-                .getModel(), HttpStatus.OK);
+                .getModel(startPage,startSize), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")

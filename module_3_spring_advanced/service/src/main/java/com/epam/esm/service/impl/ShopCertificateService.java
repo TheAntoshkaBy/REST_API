@@ -6,6 +6,7 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.TagValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ShopCertificateService implements CertificateService {
@@ -59,14 +59,14 @@ public class ShopCertificateService implements CertificateService {
     }
 
     public List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
-        page = setOffset(page, size);
+        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
         Map<String, Object> parametrizedRequest = certificateServiceRequestParameterHandler
                 .filterAndSetParams(request);
         String query = certificateServiceRequestParameterHandler.filterAnd(request, tags);
-        return certificateRepository.findAllComplex(query, parametrizedRequest, --page, size)
-                .stream()
-                .map(CertificatePOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.certificateEntityToCertificatePOJO(
+                certificateRepository
+                        .findAllComplex(query, parametrizedRequest, --page, size)
+        );
     }
 
     public int getCountComplex(Map<String, String> request, List<TagPOJO> tags) {
@@ -78,11 +78,9 @@ public class ShopCertificateService implements CertificateService {
 
     @Override
     public List<CertificatePOJO> findAll(int page, int size) {
-        page = setOffset(page, size);
-        return certificateRepository.findAll(--page, size)
-                .stream()
-                .map(CertificatePOJO::new)
-                .collect(Collectors.toList());
+        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
+        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository.findAll(--page, size)
+        );
     }
 
     @Override
@@ -92,10 +90,8 @@ public class ShopCertificateService implements CertificateService {
 
     @Override
     public List<CertificatePOJO> findAllCertificatesByDate(int page, int size) {
-        return certificateRepository.findAllByDate(page, size)
-                .stream()
-                .map(CertificatePOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository
+                .findAllByDate(page, size));
     }
 
     @Override
@@ -106,20 +102,17 @@ public class ShopCertificateService implements CertificateService {
     @Deprecated
     @Override
     public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size) {
-        return certificateRepository.findAllByIdThreshold(id)
-                .stream()
-                .map(CertificatePOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository.findAllByIdThreshold(id));
+
     }
 
     @Deprecated
     @Override
     public List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size) {
         tagValidator.isCorrectTag(tag);
-        return certificateRepository.findByTagName(tag.getName(), page, size)
-                .stream()
-                .map(CertificatePOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.certificateEntityToCertificatePOJO(
+                certificateRepository.findByTagName(tag.getName(), page, size)
+        );
     }
 
     @Override
@@ -164,17 +157,8 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public List<CertificatePOJO> findByAllCertificatesByNamePart(String text) {
         text += '%';
-        return certificateRepository.findAllByNamePart(text)
-                .stream()
-                .map(CertificatePOJO::new)
-                .collect(Collectors.toList());
-    }
-
-    public int setOffset(int page, int size){
-        if (page != 1) {
-         return size * (page - 1) + 1;
-        }else {
-            return page;
-        }
+        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository
+                .findAllByNamePart(text)
+        );
     }
 }

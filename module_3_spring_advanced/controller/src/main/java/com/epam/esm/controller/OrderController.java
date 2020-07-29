@@ -72,12 +72,18 @@ public class OrderController {
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findOrderById(@PathVariable long id) {
-        return new ResponseEntity<>(new CertificateOrderDTO(service.find(id)).getModel(), HttpStatus.OK);
+        int startPage = 1;
+        int startSize = 5;
+
+        return new ResponseEntity<>(new CertificateOrderDTO(service.find(id)).getModel(startPage,startSize), HttpStatus.OK);
     }
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificates(@PathVariable long id, @RequestParam List<Long> certificatesId) {
+        int startPage = 1;
+        int startSize = 5;
+
         return new ResponseEntity<>(new CertificateOrderDTO(service.addCertificates(id, certificatesId))
-                .getModel(), HttpStatus.OK);
+                .getModel(startPage,startSize), HttpStatus.OK);
     }
 }
