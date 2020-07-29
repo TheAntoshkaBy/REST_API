@@ -65,18 +65,6 @@ public class UserDTO {
         this.email = user.getEmail();
     }
 
-    public UserPOJO dtoToPojo() {
-        return new UserPOJO(
-                this.id,
-                this.name,
-                this.surname,
-                this.login,
-                this.password,
-                this.roles,
-                this.email
-        );
-    }
-
     public EntityModel<UserDTO> getModel(int page, int size) {
         String deleteRelName = "delete";
         String orderRelName = "orders";

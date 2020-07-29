@@ -36,10 +36,6 @@ public class TagDTO {
         this.id = tag.getId();
     }
 
-    public TagPOJO dtoToPOJO() {
-        return new TagPOJO(this.id, this.name);
-    }
-
     public EntityModel<TagDTO> getModel() {
         String deleteRelName = "delete";
         String methodTypeDELETE = "DELETE";

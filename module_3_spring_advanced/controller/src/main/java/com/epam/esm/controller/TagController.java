@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.TagList;
 import com.epam.esm.service.TagService;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping("/tags")
@@ -36,7 +36,9 @@ public class TagController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTag(@RequestBody @Valid TagDTO tag) {
 
-        return new ResponseEntity<>(new TagDTO(service.create(tag.dtoToPOJO())).getModel(), HttpStatus.CREATED);
+        return new ResponseEntity<>(new TagDTO(
+                service.create(ControllerSupporter.tagDtoToTagPOJO(tag))
+        ).getModel(), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,10 +56,7 @@ public class TagController {
                     required = false) int size) {
 
         return new ResponseEntity<>(new TagList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(TagDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.tagPojoListToTagDtoList(service.findAll(page, size)),
                 service.getTagCount(),
                 page,
                 size
@@ -75,10 +74,7 @@ public class TagController {
         service.delete(id);
 
         return new ResponseEntity<>(new TagList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(TagDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.tagPojoListToTagDtoList(service.findAll(page, size)),
                 service.getTagCount(),
                 page,
                 size

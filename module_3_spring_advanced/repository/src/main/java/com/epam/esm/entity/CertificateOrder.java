@@ -40,8 +40,8 @@ public class CertificateOrder {
     private String description;
 
 
-    @Column(name = "coast")
-    private Double coast;
+    @Column(name = "cost")
+    private Double cost;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -57,9 +57,9 @@ public class CertificateOrder {
     )
     private List<Certificate> certificates;
 
-    public CertificateOrder(Date endTime, double coast, String description, Date createTime) {
+    public CertificateOrder(Date endTime, double cost, String description, Date createTime) {
         this.endTime = endTime;
-        this.coast = coast;
+        this.cost = cost;
         this.description = description;
         this.createTime = createTime;
     }

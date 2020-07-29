@@ -10,6 +10,7 @@ import com.epam.esm.repository.jpa.impl.CertificateRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.TagRepositoryJPA;
 import com.epam.esm.service.impl.ShopCertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
+import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.TagValidator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -202,7 +203,7 @@ public class CertificateServiceImplTest {
             assertEquals(expectedId, tagId);
             certificates.get(0).getTags().remove(tags.get(3));
             return null;
-        }).when(certificateRepository).deleteTag(anyInt(), anyInt());
+        }).when(certificateRepository).deleteTag(anyInt(), any(Tag.class));
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.get(0).getTags().remove(tags.get(actual.intValue()));
@@ -221,7 +222,7 @@ public class CertificateServiceImplTest {
 
         List<Certificate> expectedCertificates = certificateService.findByAllCertificatesByNamePart("ll")
                 .stream()
-                .map(CertificatePOJO::pojoToEntity)
+                .map(ServiceSupporter::convertCertificatePojoToCertificate)
                 .collect(Collectors.toList());
 
         assertEquals(expectedCertificates, certificates.stream()
@@ -234,7 +235,7 @@ public class CertificateServiceImplTest {
         when(certificateRepository.findAllByDate(anyInt(), anyInt())).thenReturn(certificates);
         List<Certificate> certificatesActual = certificateService.findAllCertificatesByDate(anyInt(), anyInt())
                 .stream()
-                .map(CertificatePOJO::pojoToEntity)
+                .map(ServiceSupporter::convertCertificatePojoToCertificate)
                 .collect(Collectors.toList());
 
         Assert.assertEquals(certificates, certificatesActual);
@@ -254,7 +255,7 @@ public class CertificateServiceImplTest {
         certificates.clear();
         List<Certificate> certificatesActual = certificateService.findAllComplex(map, tags.stream().map(TagPOJO::new).collect(Collectors.toList()), 1, 5)
                 .stream()
-                .map(CertificatePOJO::pojoToEntity)
+                .map(ServiceSupporter::convertCertificatePojoToCertificate)
                 .collect(Collectors.toList());
 
         assertEquals(certificates, certificatesActual);

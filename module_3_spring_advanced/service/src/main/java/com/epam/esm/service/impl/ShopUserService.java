@@ -29,7 +29,7 @@ public class ShopUserService implements UserService {
 
     @Override
     public List<UserPOJO> findAll(int page, int size) {
-        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
+        page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
 
         List<User> userPOJOS = repository.findAll(--page, size);
         return userPOJOS
@@ -56,7 +56,7 @@ public class ShopUserService implements UserService {
         String actualPassword = user.getPassword();
         user.setPassword(bCryptPasswordEncoder.encode(actualPassword));
         userValidator.isCorrectUser(user);
-        return new UserPOJO(repository.createWithRole(user.pojoToEntity(),
+        return new UserPOJO(repository.createWithRole(ServiceSupporter.convertUserPojoToUserEntity(user),
                 roleRepository.findByRoleName(nameRoleUser)));
     }
 

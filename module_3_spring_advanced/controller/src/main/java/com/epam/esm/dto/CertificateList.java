@@ -19,13 +19,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class CertificateList {
 
     @JsonIgnore
-    private final String nextPageModelParam = "next";
+    private final static String NEXT_PAGE_MODEL_PARAM = "next";
 
     @JsonIgnore
-    private final String previousPageModelParam = "previous";
+    private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
 
     @JsonIgnore
-    private final String currentPageModelParam = "current";
+    private final static String CURRENT_PAGE_MODEL_PARAM = "current";
 
     private CollectionModel<EntityModel<CertificateDTO>> certificates;
 
@@ -45,17 +45,17 @@ public class CertificateList {
             int nextPage = page + 1;
             params.put("page", String.valueOf(nextPage));
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .find(params, null)).withRel(nextPageModelParam));
+                    .find(params, null)).withRel(NEXT_PAGE_MODEL_PARAM));
         }
 
         this.certificates.add(linkTo(methodOn(CertificateController.class)
-                .find(params, null)).withRel(currentPageModelParam));
+                .find(params, null)).withRel(CURRENT_PAGE_MODEL_PARAM));
 
         if (page != 1) {
             int prevPage = page - 1;
             params.put("page", String.valueOf(prevPage));
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .find(params, null)).withRel(previousPageModelParam));
+                    .find(params, null)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
         }
     }
 
@@ -73,16 +73,16 @@ public class CertificateList {
         if (certificatesCount > page * size) {
             int nextPage = page + 1;
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .findAll(nextPage, size)).withRel(nextPageModelParam));
+                    .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
         }
 
         this.certificates.add(linkTo(methodOn(CertificateController.class)
-                .findAll(page, size)).withRel(currentPageModelParam));
+                .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
 
         if (page != 1) {
             int prevPage = page - 1;
             this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .findAll(prevPage, size)).withRel(previousPageModelParam));
+                    .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
         }
     }
 }

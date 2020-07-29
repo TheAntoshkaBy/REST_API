@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.hateoas.EntityModel;
 
 import javax.persistence.Column;
@@ -22,6 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@PropertySource("classpath:validationMessages.properties")
 public class CertificateDTO {
 
     @Null
@@ -70,15 +73,6 @@ public class CertificateDTO {
         this.modification = certificate.getModification();
         this.durationDays = certificate.getDurationDays();
         this.tags = certificate.getTags();
-    }
-
-    public CertificatePOJO dtoToPOJO() {
-        return new CertificatePOJO(
-                this.name,
-                this.description,
-                this.price,
-                this.durationDays
-        );
     }
 
     public EntityModel<CertificateDTO> getModel() {

@@ -7,6 +7,7 @@ import com.epam.esm.repository.jpa.UserRepository;
 import com.epam.esm.repository.jpa.impl.RoleRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.UserRepositoryJPA;
 import com.epam.esm.service.impl.ShopUserService;
+import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.UserValidator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,7 +50,10 @@ public class ShopUserServiceTest {
         when(repository.findAll(anyInt(), anyInt())).thenReturn(users);
 
         List<UserPOJO> userActual = userService.findAll(1, 5);
-        Assert.assertEquals(userActual.stream().map(UserPOJO::pojoToEntity).collect(Collectors.toList()), users);
+        Assert.assertEquals(
+                userActual
+                .stream().map(ServiceSupporter::convertUserPojoToUserEntity)
+                .collect(Collectors.toList()), users);
     }
 
     @Test

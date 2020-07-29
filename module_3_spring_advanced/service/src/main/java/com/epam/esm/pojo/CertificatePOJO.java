@@ -73,23 +73,4 @@ public class CertificatePOJO {
     public int hashCode() {
         return Objects.hash(name, description, price, durationDays, tags);
     }
-
-    public Certificate pojoToEntity() {
-        if(this.id == null){
-            return new Certificate(
-                    this.name,
-                    this.description,
-                    this.price,
-                    this.durationDays
-            );
-        }else {
-            return new Certificate(
-                    this.id,
-                    this.name,
-                    this.description,
-                    this.price,
-                    this.durationDays
-            );
-        }
-    }
 }

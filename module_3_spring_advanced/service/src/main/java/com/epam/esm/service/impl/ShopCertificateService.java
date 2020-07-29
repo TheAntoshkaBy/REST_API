@@ -1,6 +1,12 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.ServiceException;
+import com.epam.esm.exception.constant.EntityNameConstant;
+import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.CertificatePOJO;
+import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.TagRepository;
@@ -14,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ShopCertificateService implements CertificateService {
@@ -59,11 +66,11 @@ public class ShopCertificateService implements CertificateService {
     }
 
     public List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
-        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
+        page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
         Map<String, Object> parametrizedRequest = certificateServiceRequestParameterHandler
                 .filterAndSetParams(request);
         String query = certificateServiceRequestParameterHandler.filterAnd(request, tags);
-        return ServiceSupporter.certificateEntityToCertificatePOJO(
+        return ServiceSupporter.convertCertificateEntityToCertificatePOJO(
                 certificateRepository
                         .findAllComplex(query, parametrizedRequest, --page, size)
         );
@@ -78,8 +85,10 @@ public class ShopCertificateService implements CertificateService {
 
     @Override
     public List<CertificatePOJO> findAll(int page, int size) {
-        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
-        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository.findAll(--page, size)
+        page = ServiceSupporter
+                .convertPaginationPageToDbOffsetParameter(page, size);
+        return ServiceSupporter
+                .convertCertificateEntityToCertificatePOJO(certificateRepository.findAll(--page, size)
         );
     }
 
@@ -90,7 +99,7 @@ public class ShopCertificateService implements CertificateService {
 
     @Override
     public List<CertificatePOJO> findAllCertificatesByDate(int page, int size) {
-        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository
+        return ServiceSupporter.convertCertificateEntityToCertificatePOJO(certificateRepository
                 .findAllByDate(page, size));
     }
 
@@ -102,7 +111,8 @@ public class ShopCertificateService implements CertificateService {
     @Deprecated
     @Override
     public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size) {
-        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository.findAllByIdThreshold(id));
+        return ServiceSupporter
+                .convertCertificateEntityToCertificatePOJO(certificateRepository.findAllByIdThreshold(id));
 
     }
 
@@ -110,7 +120,7 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size) {
         tagValidator.isCorrectTag(tag);
-        return ServiceSupporter.certificateEntityToCertificatePOJO(
+        return ServiceSupporter.convertCertificateEntityToCertificatePOJO(
                 certificateRepository.findByTagName(tag.getName(), page, size)
         );
     }
@@ -123,7 +133,7 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public void update(long id, CertificatePOJO certificate) {
         certificate.setModification(new Date());
-        certificateRepository.update(certificate.pojoToEntity(), id);
+        certificateRepository.update(ServiceSupporter.convertCertificatePojoToCertificate(certificate), id);
     }
 
     @Override
@@ -134,13 +144,14 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public CertificatePOJO create(CertificatePOJO certificate) {
         certificate.setCreationDate(new Date());
-        return new CertificatePOJO(certificateRepository.create(certificate.pojoToEntity()));
+        return new CertificatePOJO(certificateRepository
+                .create(ServiceSupporter.convertCertificatePojoToCertificate(certificate)));
     }
 
     @Override
     public void addTag(long id, TagPOJO tag) {
         tagValidator.isCorrectTag(tag);
-        certificateRepository.addTag(id, tagRepository.create(tag.pojoToEntity()).getId());
+        certificateRepository.addTag(id, tagRepository.create(ServiceSupporter.convertTagPojoToTag(tag)).getId());
     }
 
     @Override
@@ -150,14 +161,30 @@ public class ShopCertificateService implements CertificateService {
 
     @Override
     public void deleteTag(long idCertificate, long idTag) {
-        certificateRepository.deleteTag(idCertificate, idTag);
+        Certificate buffCertificate = certificateRepository.findById(idCertificate);
+
+        if (buffCertificate == null) {
+            throw new ServiceException(new InvalidDataMessage(EntityNameConstant.CERTIFICATE,
+                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+        }
+
+        Optional<Tag> buffTag = buffCertificate
+                .getTags()
+                .stream()
+                .filter(tag -> tag.getId() == idTag).findFirst();
+        if(buffTag.isPresent()){
+            certificateRepository.deleteTag(idCertificate, buffTag.get());
+        }else {
+            throw new ServiceException(new InvalidDataMessage(EntityNameConstant.CERTIFICATE,
+                    ErrorTextMessageConstants.NOT_FOUND_TAG));
+        }
     }
 
     @Deprecated
     @Override
     public List<CertificatePOJO> findByAllCertificatesByNamePart(String text) {
         text += '%';
-        return ServiceSupporter.certificateEntityToCertificatePOJO(certificateRepository
+        return ServiceSupporter.convertCertificateEntityToCertificatePOJO(certificateRepository
                 .findAllByNamePart(text)
         );
     }

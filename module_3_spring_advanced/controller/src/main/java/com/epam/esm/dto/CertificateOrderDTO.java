@@ -28,7 +28,7 @@ public class CertificateOrderDTO {
     @Null
     private Date endTime;
     @Null
-    private Double coast;
+    private Double cost;
 
     @Size(min = 3, max = 170, message
             = "Description must be between 3 and 170 characters")
@@ -47,7 +47,7 @@ public class CertificateOrderDTO {
 
     public CertificateOrderDTO(CertificateOrderPOJO certificateOrderPOJO) {
         this.id = certificateOrderPOJO.getId();
-        this.coast = certificateOrderPOJO.getCoast();
+        this.cost = certificateOrderPOJO.getCost();
         this.owner = new UserDTO(certificateOrderPOJO.getOwner());
         this.endTime = certificateOrderPOJO.getEndDate();
         this.certificates = certificateOrderPOJO.getCertificates();
@@ -55,16 +55,10 @@ public class CertificateOrderDTO {
         this.createdTime = certificateOrderPOJO.getCreatedDate();
     }
 
-    public CertificateOrderPOJO dtoToPojo() {
-        return new CertificateOrderPOJO(
-                this.endTime,
-                this.description
-        );
-    }
-
     public EntityModel<CertificateOrderDTO> getModel(int page, int size) {
         String deleteRelName = "delete";
         String methodType = "DELETE";
+
         model = EntityModel.of(this,
                 linkTo(methodOn(OrderController.class).findOrderById(id)).withSelfRel(),
                 linkTo(methodOn(OrderController.class)

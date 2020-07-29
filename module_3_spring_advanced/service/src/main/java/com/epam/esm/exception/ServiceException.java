@@ -8,14 +8,12 @@ import java.util.List;
 public class ServiceException extends RuntimeException {
     private final static String MESSAGE = "Service exception";
     private List<InvalidDataMessage> messages;
-    private InvalidDataMessage message;
 
     public ServiceException(List<InvalidDataMessage> messages) {
         this.messages = messages;
     }
 
     public ServiceException(InvalidDataMessage message) {
-        this.message = message;
         messages = new ArrayList<>();
         messages.add(message);
     }

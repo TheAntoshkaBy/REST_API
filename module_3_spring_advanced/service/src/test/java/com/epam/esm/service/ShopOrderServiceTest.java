@@ -8,6 +8,7 @@ import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.repository.jpa.impl.CertificateRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.OrderRepositoryJPA;
 import com.epam.esm.service.impl.ShopOrderService;
+import com.epam.esm.service.support.ServiceSupporter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,8 +47,8 @@ public class ShopOrderServiceTest {
     public void findAll() {
         when(repository.findAll(anyInt(), anyInt())).thenReturn(orders);
 
-        List<CertificateOrderPOJO> userActual = orderService.findAll(1, 5);
-        assertEquals(userActual.stream().map(CertificateOrderPOJO::pojoToEntity)
+        List<CertificateOrderPOJO> userActual = orderService.findAll(anyInt(), anyInt());
+        assertEquals(userActual.stream().map(ServiceSupporter::convertOrderPojoToOrder)
                 .collect(Collectors.toList()), orders);
     }
 

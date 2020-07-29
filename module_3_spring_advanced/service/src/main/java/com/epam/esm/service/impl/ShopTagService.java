@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ShopTagService implements TagService {
@@ -23,9 +22,9 @@ public class ShopTagService implements TagService {
 
     @Override
     public List<TagPOJO> findAll(int page, int size) {
-        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
+        page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
 
-        return ServiceSupporter.tagEntityToTagPOJO(tagRepository
+        return ServiceSupporter.convertTagEntityToTagPOJO(tagRepository
                 .findAll(--page, size));
     }
 
@@ -47,7 +46,7 @@ public class ShopTagService implements TagService {
     @Override
     public TagPOJO create(TagPOJO tag) {
         tagValidator.isCorrectTag(tag);
-        return new TagPOJO(tagRepository.create(tag.pojoToEntity()));
+        return new TagPOJO(tagRepository.create(ServiceSupporter.convertTagPojoToTag(tag)));
     }
 
     @Override

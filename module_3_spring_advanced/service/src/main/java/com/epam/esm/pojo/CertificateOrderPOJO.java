@@ -15,7 +15,7 @@ import java.util.List;
 public class CertificateOrderPOJO {
     private Long id;
     private Date endDate;
-    private Double coast;
+    private Double cost;
     private String description;
     private Date createdDate;
 
@@ -25,7 +25,7 @@ public class CertificateOrderPOJO {
 
     public CertificateOrderPOJO(CertificateOrder certificateOrder) {
         this.id = certificateOrder.getId();
-        this.coast = certificateOrder.getCoast();
+        this.cost = certificateOrder.getCost();
 
         if (certificateOrder.getOwner() != null) {
             this.owner = new UserPOJO(
@@ -49,14 +49,5 @@ public class CertificateOrderPOJO {
     public CertificateOrderPOJO(Date endDate, String description) {
         this.endDate = endDate;
         this.description = description;
-    }
-
-    public CertificateOrder pojoToEntity() {
-        return new CertificateOrder(
-                this.endDate,
-                this.coast,
-                this.description,
-                this.createdDate
-        );
     }
 }

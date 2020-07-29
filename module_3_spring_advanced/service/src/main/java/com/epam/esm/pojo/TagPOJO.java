@@ -26,8 +26,4 @@ public class TagPOJO {
     public int hashCode() {
         return Objects.hash(name);
     }
-
-    public Tag pojoToEntity() {
-        return new Tag(this.id, this.name);
-    }
 }

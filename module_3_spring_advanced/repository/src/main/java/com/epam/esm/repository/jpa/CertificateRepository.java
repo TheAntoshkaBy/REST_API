@@ -1,6 +1,7 @@
 package com.epam.esm.repository.jpa;
 
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Tag;
 
 import java.util.List;
 import java.util.Map;
@@ -41,5 +42,5 @@ public interface CertificateRepository {
 
     void addTag(long idCertificate, long idTag);
 
-    void deleteTag(long idCertificate, long idTag);
+    void deleteTag(long idCertificate, Tag tag);
 }

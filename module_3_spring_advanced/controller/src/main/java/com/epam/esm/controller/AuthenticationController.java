@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.AuthenticationRequestDto;
 import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping
-public class AuthenticationController {
+public class    AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
@@ -67,7 +68,7 @@ public class AuthenticationController {
     public ResponseEntity<?> registration(@Valid @RequestBody RegistrationUserDTO userDTO) {
         String invalid = "Invalid username or password";
         try {
-            UserPOJO userPOJO = userService.create(userDTO.dtoToPojo());
+            UserPOJO userPOJO = userService.create(ControllerSupporter.userRegistrationDtoToUserPojo(userDTO));
             return new ResponseEntity<>(new RegistrationUserDTO(userPOJO).getModel(), HttpStatus.CREATED);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(invalid);

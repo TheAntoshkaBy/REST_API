@@ -1,6 +1,7 @@
 package com.epam.esm.service.validator;
 
 import com.epam.esm.exception.ServiceException;
+import com.epam.esm.exception.ServiceValidationException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.TagPOJO;
@@ -25,7 +26,7 @@ public class TagValidator {
         invalidDataMessageList = new ArrayList<>();
         checkNameUnique(tag.getName());
         if (!invalidDataMessageList.isEmpty()) {
-            throw new ServiceException(invalidDataMessageList);
+            throw new ServiceValidationException(invalidDataMessageList);
         }
     }
 

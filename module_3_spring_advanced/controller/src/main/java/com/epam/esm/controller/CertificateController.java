@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.TagDTO;
@@ -43,24 +44,24 @@ public class CertificateController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificate(@RequestBody @Valid CertificateDTO certificateDTO) {
-        service.create(certificateDTO.dtoToPOJO());
-        return new ResponseEntity<>(new CertificateDTO(service.create(certificateDTO.dtoToPOJO())).getModel(),
-                HttpStatus.CREATED);
+        service.create(ControllerSupporter.certificateDtoToCertificatePOJO(certificateDTO));
+        return new ResponseEntity<>(new CertificateDTO(
+                service.create(
+                        ControllerSupporter.certificateDtoToCertificatePOJO(certificateDTO))
+        ).getModel(), HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> find(
             @RequestParam Map<String, String> params,
             @RequestBody(required = false) List<TagDTO> tags) {
-        String pageParam = "page";
-        String sizeParam = "size";
         String searchRequestParameter = "search";
         String filterRequestParameter = "filter";
         String sortRequestParameter = "sort";
         String complexRequestParameter = "complex";
 
-        int page = getValidPaginationParam(params.get(pageParam), pageParam);
-        int size = getValidPaginationParam(params.get(sizeParam), sizeParam);
+        int page = getValidPaginationParam(params.get(PAGE_NAME_PARAMETER), PAGE_NAME_PARAMETER);
+        int size = getValidPaginationParam(params.get(PAGE_SIZE_NAME_PARAMETER), PAGE_SIZE_NAME_PARAMETER);
 
         String searchParameter = params.get(searchRequestParameter);
         String findParameter = params.get(filterRequestParameter);
@@ -82,10 +83,7 @@ public class CertificateController {
                                              defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
 
         CertificateList certificateList = new CertificateList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(CertificateDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.certificatePojoListToCertificateDtoList(service.findAll(page, size)),
                 service.getCertificateCount(),
                 page,
                 size
@@ -104,17 +102,15 @@ public class CertificateController {
         if (tags != null) {
             tagsPojo = tags
                     .stream()
-                    .map(TagDTO::dtoToPOJO)
+                    .map(ControllerSupporter::tagDtoToTagPOJO)
                     .collect(Collectors.toList());
         }
 
         return new ResponseEntity<>(new CertificateList(
-                service.findAllComplex(params, tagsPojo,
-                        page,
-                        size)
-                        .stream()
-                        .map(CertificateDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter
+                        .certificatePojoListToCertificateDtoList(
+                                service.findAllComplex(params, tagsPojo, page, size)
+                        ),
                 service.getCountComplex(params, tagsPojo),
                 params,
                 page,
@@ -127,7 +123,6 @@ public class CertificateController {
 
         return new ResponseEntity<>(
                 new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
-
     }
 
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -143,14 +138,10 @@ public class CertificateController {
             service.delete(id);
             return new ResponseEntity<>(
                     new CertificateList(
-                            service.findAll(page, size)
-                                    .stream()
-                                    .map(CertificateDTO::new)
-                                    .collect(Collectors.toList()),
+                            ControllerSupporter.certificatePojoListToCertificateDtoList(service.findAll(page, size)),
                             service.getCertificateCount(),
                             page,
                             size
-
                     ), HttpStatus.OK);
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
@@ -161,7 +152,7 @@ public class CertificateController {
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateCertificate
             (@RequestBody @Valid CertificateDTO certificate, @PathVariable int id) {
-        service.update(id, certificate.dtoToPOJO());
+        service.update(id, ControllerSupporter.certificateDtoToCertificatePOJO(certificate));
         return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
@@ -176,7 +167,7 @@ public class CertificateController {
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
-        service.addTag(id, tag.dtoToPOJO());
+        service.addTag(id, ControllerSupporter.tagDtoToTagPOJO(tag));
 
         return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.CREATED);
     }
@@ -209,13 +200,12 @@ public class CertificateController {
                 return defaultSize;
             }
         } else {
-            int paramInteger;
             try {
-                paramInteger = Integer.parseInt(param);
+                int paramInteger = Integer.parseInt(param);
+                return paramInteger > 0 ? paramInteger : defaultPage;
             } catch (NumberFormatException e) {
                 return defaultPage;
             }
-            return paramInteger > 0 ? paramInteger : defaultPage;
         }
     }
 
@@ -225,10 +215,8 @@ public class CertificateController {
                                           @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                                                   defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
         CertificateList certificateList = new CertificateList(
-                service.findAll(params, page, size)
-                        .stream()
-                        .map(CertificateDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.certificatePojoListToCertificateDtoList(
+                service.findAll(params, page, size)),
                 service.getCertificateCount(),
                 page,
                 size

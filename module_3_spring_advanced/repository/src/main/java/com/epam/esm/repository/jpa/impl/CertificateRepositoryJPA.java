@@ -4,6 +4,7 @@ import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.RepositoryException;
+import com.epam.esm.exception.constant.EntityNameConstant;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.CertificateRepository;
@@ -15,7 +16,6 @@ import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Transactional
 @Repository
@@ -23,12 +23,11 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     @Override
     public void delete(long id) {
-        String wrongEntityName = "Certificate";
 
         int col = entityManager.createQuery(SQLRequests.DELETE_CERTIFICATE)
                 .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
+            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.CERTIFICATE,
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
@@ -154,18 +153,9 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
         buffCertificate.getTags().add(buffTag);
     }
 
-    public void deleteTag(long idCertificate, long idTag) {
+    public void deleteTag(long idCertificate, Tag buffTag) {
         Certificate buffCertificate = entityManager.find(Certificate.class, idCertificate);
-        if (buffCertificate == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage(Certificate.class.toString(),
-                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
-        }
-
-        Optional<Tag> buffTag = buffCertificate
-                .getTags()
-                .stream()
-                .filter(tag -> tag.getId() == idTag).findFirst();
-        buffTag.ifPresent(tag -> buffCertificate.getTags().remove(tag));
+        buffCertificate.getTags().remove(buffTag);
     }
 
     @Override

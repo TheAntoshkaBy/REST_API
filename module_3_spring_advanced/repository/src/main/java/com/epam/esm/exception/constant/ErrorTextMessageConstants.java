@@ -17,4 +17,5 @@ public class ErrorTextMessageConstants {
     public static final String SORT_TYPE_NOT_EXIST = "This sorting method is not provided by our program.";
     public static final String EMPTY_DATA = "Data is empty!";
     public static final String TAG_DUPLICATE_NAME = "Duplicate tag name, please input new name";
+    public static final String ROLE_NOT_SUPPORTED_OPERATION = "This operation in Role entity not supported!";
 }

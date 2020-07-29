@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
 import com.epam.esm.dto.TagDTO;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping("/users")
@@ -65,8 +65,10 @@ public class UserController {
         try {
             return new ResponseEntity<>(new CertificateOrderDTO(
                     orderService.create(
-                            order.dtoToPojo(),
-                            new UserDTO(service.find(id)).dtoToPojo())).getModel(startPage,startSize),
+                            ControllerSupporter.orderDtoToOrderPojo(order),
+                            ControllerSupporter
+                                    .userDtoToUserPojo(new UserDTO(service.find(id)))))
+                    .getModel(startPage,startSize),
                     HttpStatus.CREATED);
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
@@ -80,10 +82,7 @@ public class UserController {
             @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                     defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
         return new ResponseEntity<>(new UserList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(UserDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.userPojoListToUserDtoList(service.findAll(page, size)),
                 service.getUsersCount(),
                 page,
                 size
@@ -110,10 +109,8 @@ public class UserController {
                                         @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                                                 defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
 
-        List<CertificateOrderDTO> orders = orderService.findAllByOwner(id, page, size)
-                .stream()
-                .map(CertificateOrderDTO::new)
-                .collect(Collectors.toList());
+        List<CertificateOrderDTO> orders = ControllerSupporter
+                .orderPojoListToOrderDtoList(orderService.findAllByOwner(id, page, size));
 
         return new ResponseEntity<>(new OrderList(
                 orders,
@@ -140,10 +137,8 @@ public class UserController {
         List<CertificateOrderDTO> orders;
         try {
             orderService.delete(id);
-            orders = orderService.findAllByOwner(userId, page, size)
-                    .stream()
-                    .map(CertificateOrderDTO::new)
-                    .collect(Collectors.toList());
+            orders = ControllerSupporter
+                    .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId, page, size));
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -180,7 +175,7 @@ public class UserController {
                                             defaultValue = PAGE_DEFAULT_PARAMETER,
                                             required = false) int page,
                                     @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                                            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+                                             defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
                                             required = false) int size) {
         try {
             service.delete(id);
@@ -189,10 +184,7 @@ public class UserController {
         }
 
         return new ResponseEntity<>(new UserList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(UserDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.userPojoListToUserDtoList(service.findAll(page, size)),
                 service.getUsersCount(),
                 page,
                 size
@@ -211,10 +203,9 @@ public class UserController {
     }
 
     boolean isThisOrderBelowCurrentUser(long userId, long orderId) {
-        List<CertificateOrderDTO> orders = orderService.findAllByOwner(userId)
-                .stream()
-                .map(CertificateOrderDTO::new)
-                .collect(Collectors.toList());
+        List<CertificateOrderDTO> orders =
+                ControllerSupporter
+                        .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId));
         return orders.stream().anyMatch(certificateOrderDTO -> certificateOrderDTO.getId() == orderId);
     }
 

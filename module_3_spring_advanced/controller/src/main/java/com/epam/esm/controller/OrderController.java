@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
 import com.epam.esm.exception.ControllerException;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController()
 @RequestMapping("/orders")
@@ -42,10 +42,7 @@ public class OrderController {
                     defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
                     required = false) int size) {
         return new ResponseEntity<>(new OrderList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(CertificateOrderDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.orderPojoListToOrderDtoList(service.findAll(page, size)),
                 service.getOrdersCount(),
                 page,
                 size
@@ -66,10 +63,7 @@ public class OrderController {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(new OrderList(
-                service.findAll(page, size)
-                        .stream()
-                        .map(CertificateOrderDTO::new)
-                        .collect(Collectors.toList()),
+                ControllerSupporter.orderPojoListToOrderDtoList(service.findAll(page, size)),
                 service.getOrdersCount(),
                 page,
                 size

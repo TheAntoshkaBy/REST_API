@@ -5,6 +5,7 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.RepositoryException;
+import com.epam.esm.exception.constant.EntityNameConstant;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.OrderRepository;
@@ -19,23 +20,21 @@ import java.util.List;
 public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> implements OrderRepository {
     @Override
     public void delete(long id) {
-        String wrongEntityName = "Order";
 
         int col = entityManager.createQuery(SQLRequests.DELETE_ORDER_BY_ID)
                 .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
+            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.ORDER,
                     ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
     @Override
     public CertificateOrder findById(long id) {
-        String wrongEntityName = "Order";
 
         CertificateOrder order = entityManager.find(CertificateOrder.class, id);
         if (order == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
+            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.ORDER,
                     ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
         return order;
@@ -80,9 +79,9 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     @Override
     public CertificateOrder addCertificates(CertificateOrder certificateOrder,
                                             List<Certificate> certificates,
-                                            double coast) {
+                                            double cost) {
         certificateOrder.setCertificates(certificates);
-        certificateOrder.setCoast(coast);
+        certificateOrder.setCost(cost);
         return certificateOrder;
     }
 

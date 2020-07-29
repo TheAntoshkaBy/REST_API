@@ -28,9 +28,9 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public List<CertificateOrderPOJO> findAll(int page, int size) {
-        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
+        page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
         List<CertificateOrder> certificateOrders = repository.findAll(--page, size);
-        return ServiceSupporter.orderEntityToOrderCertificatePOJO(certificateOrders);
+        return ServiceSupporter.convertOrderEntityToOrderCertificatePOJO(certificateOrders);
     }
 
     @Override
@@ -45,21 +45,25 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO) {
-        order.setCoast(0.0);
+        order.setCost(0.0);
         order.setCreatedDate(new Date());
-        return new CertificateOrderPOJO(repository.create(order.pojoToEntity(), userPOJO.pojoToEntity()));
+        return new CertificateOrderPOJO(
+                repository.create(
+                        ServiceSupporter.convertOrderPojoToOrder(order),
+                        ServiceSupporter.convertUserPojoToUserEntity(userPOJO))
+        );
     }
 
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id, int page, int size) {
-        page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
-        return ServiceSupporter.orderEntityToOrderCertificatePOJO(
+        page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
+        return ServiceSupporter.convertOrderEntityToOrderCertificatePOJO(
                 repository.findAllByOwner(id, --page, size));
     }
 
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id) {
-        return ServiceSupporter.orderEntityToOrderCertificatePOJO(repository.findAllByOwner(id));
+        return ServiceSupporter.convertOrderEntityToOrderCertificatePOJO(repository.findAllByOwner(id));
     }
 
     @Override
