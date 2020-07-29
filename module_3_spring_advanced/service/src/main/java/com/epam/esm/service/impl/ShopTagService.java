@@ -25,11 +25,8 @@ public class ShopTagService implements TagService {
     public List<TagPOJO> findAll(int page, int size) {
         page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
 
-        return tagRepository
-                .findAll(--page, size)
-                .stream()
-                .map(TagPOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.tagEntityToTagPOJO(tagRepository
+                .findAll(--page, size));
     }
 
     @Override

@@ -30,10 +30,7 @@ public class ShopOrderService implements OrderService {
     public List<CertificateOrderPOJO> findAll(int page, int size) {
         page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
         List<CertificateOrder> certificateOrders = repository.findAll(--page, size);
-        return certificateOrders
-                .stream()
-                .map(CertificateOrderPOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.orderEntityToOrderCertificatePOJO(certificateOrders);
     }
 
     @Override
@@ -56,17 +53,13 @@ public class ShopOrderService implements OrderService {
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id, int page, int size) {
         page = ServiceSupporter.setCurrentOffsetFromPageToDb(page, size);
-        return repository
-                .findAllByOwner(id, --page, size).stream()
-                .map(CertificateOrderPOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.orderEntityToOrderCertificatePOJO(
+                repository.findAllByOwner(id, --page, size));
     }
 
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id) {
-        return repository.findAllByOwner(id).stream()
-                .map(CertificateOrderPOJO::new)
-                .collect(Collectors.toList());
+        return ServiceSupporter.orderEntityToOrderCertificatePOJO(repository.findAllByOwner(id));
     }
 
     @Override

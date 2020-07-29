@@ -1,7 +1,6 @@
 package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Tag;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

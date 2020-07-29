@@ -8,7 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,7 +81,7 @@ public class OrderController {
         int startPage = 1;
         int startSize = 5;
 
-        return new ResponseEntity<>(new CertificateOrderDTO(service.find(id)).getModel(startPage,startSize), HttpStatus.OK);
+        return new ResponseEntity<>(new CertificateOrderDTO(service.find(id)).getModel(startPage, startSize), HttpStatus.OK);
     }
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,6 +90,6 @@ public class OrderController {
         int startSize = 5;
 
         return new ResponseEntity<>(new CertificateOrderDTO(service.addCertificates(id, certificatesId))
-                .getModel(startPage,startSize), HttpStatus.OK);
+                .getModel(startPage, startSize), HttpStatus.OK);
     }
 }
