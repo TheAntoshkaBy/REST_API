@@ -4,6 +4,7 @@ import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.TagDTO;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.ControllerException;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
@@ -67,32 +68,31 @@ public class CertificateController {
         String findParameter = params.get(filterRequestParameter);
         String sortParameter = params.get(sortRequestParameter);
 
-        if (searchParameter != null && searchParameter.equals(complexRequestParameter)) {
+        if (complexRequestParameter.equals(searchParameter)) {
             return findComplex(params, tags, page, size);
         } else {
             if (findParameter != null || sortParameter != null) {
                 return findByFilter(params, page, size);
             }
-            return findAll(page, size);
+            return findAll(params,page, size);
         }
     }
 
-    public ResponseEntity<?> findAll(@RequestParam(value = PAGE_NAME_PARAMETER,
-            defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-                                     @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                                             defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
+    private ResponseEntity<?> findAll(
+            @RequestParam Map<String, String> params,
+            @RequestParam(value = PAGE_NAME_PARAMETER, defaultValue = PAGE_DEFAULT_PARAMETER) int page,
+            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER, defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
 
-        CertificateList certificateList = new CertificateList(
-                ControllerSupporter.certificatePojoListToCertificateDtoList(service.findAll(page, size)),
-                service.getCertificateCount(),
-                page,
-                size
-        );
+        List<CertificateDTO> certificatesDTO = ControllerSupporter
+                .certificatePojoListToCertificateDtoList(service.findAll(page, size));
+        int resultCount = service.getCertificateCount();
+        CertificateList certificateList = new CertificateList
+                .CertificateListBuilder(certificatesDTO,params,resultCount,page,size).build();
         return new ResponseEntity<>(certificateList, HttpStatus.OK);
 
     }
 
-    public ResponseEntity<?> findComplex(
+    private ResponseEntity<?> findComplex(
             @RequestParam Map<String, String> params,
             @RequestBody List<TagDTO> tags,
             @RequestParam(value = PAGE_NAME_PARAMETER, defaultValue = PAGE_DEFAULT_PARAMETER) int page,
@@ -105,17 +105,16 @@ public class CertificateController {
                     .map(ControllerSupporter::tagDtoToTagPOJO)
                     .collect(Collectors.toList());
         }
+        List<CertificateDTO> certificatesDTO = ControllerSupporter
+                .certificatePojoListToCertificateDtoList(
+                        service.findAllComplex(params, tagsPojo, page, size)
+                );
+        int resultCount = service.getCountComplex(params, tagsPojo);
 
-        return new ResponseEntity<>(new CertificateList(
-                ControllerSupporter
-                        .certificatePojoListToCertificateDtoList(
-                                service.findAllComplex(params, tagsPojo, page, size)
-                        ),
-                service.getCountComplex(params, tagsPojo),
-                params,
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new CertificateList
+                        .CertificateListBuilder(certificatesDTO,params,resultCount, page, size)
+                        .tags(tags).build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,22 +126,11 @@ public class CertificateController {
 
     @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteCertificate(
-            @PathVariable Integer id,
-            @RequestParam(value = PAGE_NAME_PARAMETER,
-                    defaultValue = PAGE_DEFAULT_PARAMETER,
-                    required = false) int page,
-            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                    defaultValue = PAGE_SIZE_DEFAULT_PARAMETER, required = false) int size) {
+            @PathVariable Integer id) {
 
         try {
             service.delete(id);
-            return new ResponseEntity<>(
-                    new CertificateList(
-                            ControllerSupporter.certificatePojoListToCertificateDtoList(service.findAll(page, size)),
-                            service.getCertificateCount(),
-                            page,
-                            size
-                    ), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -214,13 +202,14 @@ public class CertificateController {
                                                   defaultValue = PAGE_DEFAULT_PARAMETER) int page,
                                           @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                                                   defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
-        CertificateList certificateList = new CertificateList(
-                ControllerSupporter.certificatePojoListToCertificateDtoList(
-                service.findAll(params, page, size)),
-                service.getCertificateCount(),
-                page,
-                size
-        );
+
+        List<CertificateDTO> certificatesDTO = ControllerSupporter
+                .certificatePojoListToCertificateDtoList(
+                        service.findAll(params, page, size));
+        int resultCount = service.getCertificateCount();
+
+        CertificateList certificateList = new CertificateList
+                .CertificateListBuilder(certificatesDTO,params,resultCount,page,size).build();
         return new ResponseEntity<>(certificateList, HttpStatus.OK);
     }
 }
