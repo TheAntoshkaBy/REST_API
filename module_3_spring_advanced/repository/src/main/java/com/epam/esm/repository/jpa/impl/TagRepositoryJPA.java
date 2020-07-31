@@ -8,13 +8,12 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.ShopJPARepository;
 import com.epam.esm.repository.jpa.TagRepository;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.NoResultException;
-import javax.persistence.StoredProcedureQuery;
 import java.math.BigInteger;
 import java.util.List;
+import javax.persistence.NoResultException;
+import javax.persistence.StoredProcedureQuery;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Repository
@@ -24,10 +23,10 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
     public void delete(long id) {
 
         int col = entityManager.createQuery(SQLRequests.DELETE_TAG_BY_ID)
-                .setParameter(1, id).executeUpdate();
+            .setParameter(1, id).executeUpdate();
         if (col == 0) {
             throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.TAG,
-                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+                ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
@@ -37,7 +36,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
 
         try {
             tag = (Tag) entityManager.createQuery(SQLRequests.FIND_TAG_BY_NAME)
-                    .setParameter(1, name).getSingleResult();
+                .setParameter(1, name).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -50,7 +49,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         Tag tag = entityManager.find(Tag.class, id);
         if (tag == null) {
             throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.TAG,
-                    ErrorTextMessageConstants.NOT_FOUND_TAG));
+                ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
         return tag;
     }
@@ -60,7 +59,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         String functionName = "greatest_tag";
 
         StoredProcedureQuery findByName = entityManager
-                .createNamedStoredProcedureQuery(functionName);
+            .createNamedStoredProcedureQuery(functionName);
         BigInteger o = (BigInteger) findByName.getSingleResult();
         return o.longValue();
     }
@@ -68,8 +67,8 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
     @Override
     public int getTagCount() {
         Long count = (Long) entityManager
-                .createQuery(SQLRequests.FIND_COUNT_OF_TAG)
-                .getSingleResult();
+            .createQuery(SQLRequests.FIND_COUNT_OF_TAG)
+            .getSingleResult();
         return count.intValue();
     }
 
@@ -77,8 +76,8 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
     @SuppressWarnings("unchecked")
     public List<Tag> findAll(int offset, int limit) {
         return entityManager.createQuery(SQLRequests.FIND_ALL_TAGS)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList();
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
     }
 }

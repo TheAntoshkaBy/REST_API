@@ -10,22 +10,23 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.repository.jpa.ShopJPARepository;
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
 @Repository
-public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> implements OrderRepository {
+public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> implements
+    OrderRepository {
+
     @Override
     public void delete(long id) {
 
         int col = entityManager.createQuery(SQLRequests.DELETE_ORDER_BY_ID)
-                .setParameter(1, id).executeUpdate();
+            .setParameter(1, id).executeUpdate();
         if (col == 0) {
             throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.ORDER,
-                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+                ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
@@ -35,7 +36,7 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
         CertificateOrder order = entityManager.find(CertificateOrder.class, id);
         if (order == null) {
             throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.ORDER,
-                    ErrorTextMessageConstants.NOT_FOUND_ORDER));
+                ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
         return order;
     }
@@ -44,29 +45,29 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     @SuppressWarnings("unchecked")
     public List<CertificateOrder> findAll(int offset, int limit) {
         return (List<CertificateOrder>) entityManager
-                .createQuery(SQLRequests.FIND_ALL_ORDERS_WITH_LIMIT_OFFSET)
-                .setFirstResult(offset)
-                .setMaxResults(limit)
-                .getResultList();
+            .createQuery(SQLRequests.FIND_ALL_ORDERS_WITH_LIMIT_OFFSET)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<CertificateOrder> findAllByOwner(long id, int offset, int limit) {
         return (List<CertificateOrder>) entityManager
-                .createQuery(SQLRequests.FIND_ALL_ORDERS_BY_OWNER)
-                .setParameter(1, id)
-                .setFirstResult(offset)
-                .setMaxResults(limit).getResultList();
+            .createQuery(SQLRequests.FIND_ALL_ORDERS_BY_OWNER)
+            .setParameter(1, id)
+            .setFirstResult(offset)
+            .setMaxResults(limit).getResultList();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<CertificateOrder> findAllByOwner(long id) {
         return (List<CertificateOrder>) entityManager
-                .createQuery(SQLRequests.FIND_ALL_ORDERS_BY_OWNER)
-                .setParameter(1, id)
-                .getResultList();
+            .createQuery(SQLRequests.FIND_ALL_ORDERS_BY_OWNER)
+            .setParameter(1, id)
+            .getResultList();
     }
 
     @Override
@@ -78,8 +79,8 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
 
     @Override
     public CertificateOrder addCertificates(CertificateOrder certificateOrder,
-                                            List<Certificate> certificates,
-                                            double cost) {
+        List<Certificate> certificates,
+        double cost) {
         certificateOrder.setCertificates(certificates);
         certificateOrder.setCost(cost);
         return certificateOrder;
@@ -87,16 +88,17 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
 
     @Override
     public int getOrdersCount() {
-        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_ORDER).getSingleResult();
+        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_ORDER)
+            .getSingleResult();
         return count.intValue();
     }
 
     @Override
     public int getOrdersCountByOwner(long id) {
         Long count = (Long) entityManager
-                .createQuery(SQLRequests.FIND_COUNT_OF_ORDER_BY_OWNER)
-                .setParameter(1, id)
-                .getSingleResult();
+            .createQuery(SQLRequests.FIND_COUNT_OF_ORDER_BY_OWNER)
+            .setParameter(1, id)
+            .getSingleResult();
         return count.intValue();
     }
 }

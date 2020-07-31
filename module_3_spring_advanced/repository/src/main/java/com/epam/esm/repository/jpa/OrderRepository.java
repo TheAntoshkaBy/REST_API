@@ -3,10 +3,10 @@ package com.epam.esm.repository.jpa;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.entity.User;
-
 import java.util.List;
 
 public interface OrderRepository {
+
     void delete(long id);
 
     CertificateOrder findById(long id);
@@ -19,7 +19,8 @@ public interface OrderRepository {
 
     List<CertificateOrder> findAllByOwner(long id);
 
-    CertificateOrder addCertificates(CertificateOrder certificateOrder, List<Certificate> certificates, double coast);
+    CertificateOrder addCertificates(CertificateOrder certificateOrder,
+        List<Certificate> certificates, double coast);
 
     int getOrdersCount();
 

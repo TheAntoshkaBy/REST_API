@@ -1,14 +1,14 @@
 package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Tag;
+import java.util.Objects;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 public class TagPOJO {
+
     private Long id;
     private String name;
 

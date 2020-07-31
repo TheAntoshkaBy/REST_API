@@ -2,10 +2,10 @@ package com.epam.esm.service;
 
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.pojo.UserPOJO;
-
 import java.util.List;
 
 public interface OrderService {
+
     /**
      * This method finds all orders from database using DAO
      **/
@@ -34,8 +34,7 @@ public interface OrderService {
     CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO);
 
     /**
-     * This method finds all orders from database using DAO
-     * which belong concrete user
+     * This method finds all orders from database using DAO which belong concrete user
      **/
     List<CertificateOrderPOJO> findAllByOwner(long id, int offset, int limit);
 

@@ -6,7 +6,6 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.validator.TagValidator;
-
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +17,8 @@ public interface CertificateService {
     /**
      * This method delegates management to one of find methods.
      **/
-    Map<List<CertificatePOJO>, Integer> findAll(Map<String, String> params, List<TagPOJO> tags, int page, int size);
+    Map<List<CertificatePOJO>, Integer> findAll(Map<String, String> params, List<TagPOJO> tags,
+        int page, int size);
 
     int getCertificateCount();
 
@@ -27,7 +27,8 @@ public interface CertificateService {
     /**
      * This method finds all certificates from database using DAO
      **/
-    List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size);
+    List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page,
+        int size);
 
     int getCountComplex(Map<String, String> request, List<TagPOJO> tags);
 
@@ -41,8 +42,7 @@ public interface CertificateService {
     List<CertificatePOJO> findAllCertificatesByDate(int page, int size);
 
     /**
-     * This method finds concrete Certificate which contains
-     * id more than transmitted id using DAO
+     * This method finds concrete Certificate which contains id more than transmitted id using DAO
      *
      * @param id Certificate Id
      * @return Certificate List
@@ -50,14 +50,12 @@ public interface CertificateService {
     List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size);
 
     /**
-     * This method finds all certificates which
-     * contain string in tag name from database using DAO
+     * This method finds all certificates which contain string in tag name from database using DAO
      **/
-    List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag,  int page, int size);
+    List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size);
 
     /**
-     * This method finds all certificates
-     * which contain string in name from database using DAO
+     * This method finds all certificates which contain string in name from database using DAO
      **/
     List<CertificatePOJO> findByAllCertificatesByNamePart(String text);
 
@@ -70,8 +68,7 @@ public interface CertificateService {
     CertificatePOJO find(long id);
 
     /**
-     * This method delete concrete Certificate by
-     * transmitted id using DAO
+     * This method delete concrete Certificate by transmitted id using DAO
      *
      * @param id certificate id which will be delete
      **/
@@ -101,8 +98,7 @@ public interface CertificateService {
     CertificatePOJO create(CertificatePOJO certificate);
 
     /**
-     * This method add new tag by transmitted data
-     * to certificate with transmitted id using DAO
+     * This method add new tag by transmitted data to certificate with transmitted id using DAO
      *
      * @param id  certificate id which will be edit
      * @param tag edit data
@@ -110,8 +106,8 @@ public interface CertificateService {
     void addTag(long id, TagPOJO tag);
 
     /**
-     * This method add tag by transmitted tag id
-     * to certificate with transmitted certificate id using DAO
+     * This method add tag by transmitted tag id to certificate with transmitted certificate id
+     * using DAO
      *
      * @param idCertificate certificate id which will be edit
      * @param idTag         tag id which we will be add to certificate
@@ -124,7 +120,7 @@ public interface CertificateService {
     void deleteTag(long idCertificate, long idTag);
 
     void setCertificateServiceRequestParameterHandler
-            (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
+        (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
 
     void setCertificateRepository(CertificateRepository certificateRepository);
 

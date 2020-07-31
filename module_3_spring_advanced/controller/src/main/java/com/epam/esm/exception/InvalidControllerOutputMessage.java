@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class InvalidControllerOutputMessage {
+
     private String parameter;
     private String message;
 

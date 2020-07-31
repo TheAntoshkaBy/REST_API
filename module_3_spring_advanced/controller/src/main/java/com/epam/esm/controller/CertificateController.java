@@ -7,6 +7,10 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -23,11 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("certificates")
 public class CertificateController {
@@ -41,98 +40,114 @@ public class CertificateController {
         this.service = service;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addCertificate(@RequestBody @Valid CertificateDTO certificateDTO) {
-        service.create(ControllerSupporter.certificateDtoToCertificatePOJO(certificateDTO));
+    @PostMapping(
+        consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addCertificate(
+        @RequestBody @Valid CertificateDTO certificateDTO) {
+        service.create(ControllerSupporter
+            .certificateDtoToCertificatePOJO(certificateDTO));
         return new ResponseEntity<>(new CertificateDTO(
-                service.create(
-                        ControllerSupporter.certificateDtoToCertificatePOJO(certificateDTO))
+            service.create(
+                ControllerSupporter
+                    .certificateDtoToCertificatePOJO(certificateDTO))
         ).getModel(), HttpStatus.CREATED);
     }
 
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(
+        consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CertificateList> find(
-            @RequestParam Map<String, String> params,
-            @RequestBody(required = false) List<TagDTO> tags) {
+        @RequestParam Map<String, String> params,
+        @RequestBody(required = false) List<TagDTO> tags) {
         int page = ControllerSupporter
-                .getValidPaginationParam(params.get(PAGE_NAME_PARAMETER), PAGE_NAME_PARAMETER);
+            .getValidPaginationParam(params.get(PAGE_NAME_PARAMETER),
+                PAGE_NAME_PARAMETER);
         int size = ControllerSupporter
-                .getValidPaginationParam(params.get(PAGE_SIZE_NAME_PARAMETER), PAGE_SIZE_NAME_PARAMETER);
+            .getValidPaginationParam(params.get(PAGE_SIZE_NAME_PARAMETER),
+                PAGE_SIZE_NAME_PARAMETER);
 
         List<TagPOJO> tagsPojo = null;
         if (tags != null) {
             tagsPojo = tags
-                    .stream()
-                    .map(ControllerSupporter::tagDtoToTagPOJO)
-                    .collect(Collectors.toList());
+                .stream()
+                .map(ControllerSupporter::tagDtoToTagPOJO)
+                .collect(Collectors.toList());
         }
 
-        Map<List<CertificatePOJO>, Integer> certificatesMap = service.findAll(params, tagsPojo, page, size);
+        Map<List<CertificatePOJO>, Integer> certificatesMap = service
+            .findAll(params, tagsPojo, page, size);
 
-        CertificateList certificateList = ControllerSupporter.formationCertificateList(
+        CertificateList certificateList = ControllerSupporter
+            .formationCertificateList(
                 certificatesMap,
                 page,
                 size,
                 params
-        );
+            );
 
         return new ResponseEntity<>(certificateList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateDTO>> findById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<CertificateDTO>> findById(
+        @PathVariable long id) {
 
         return new ResponseEntity<>(
-                new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)//fixme что возвращать
-    public ResponseEntity<?> deleteCertificate(
-            @PathVariable Integer id) {
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteCertificate(@PathVariable Integer id) {
         service.delete(id);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(path = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+        consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> updateCertificate
-            (@RequestBody @Valid CertificateDTO certificate, @PathVariable int id) {
-        service.update(id, ControllerSupporter.certificateDtoToCertificatePOJO(certificate));
+        (@RequestBody @Valid CertificateDTO certificate, @PathVariable int id) {
+        service.update(id,
+            ControllerSupporter.certificateDtoToCertificatePOJO(certificate));
 
-        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(
+            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{id}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateDTO>> updateCertificatePrice
-            (@RequestParam double price, @PathVariable long id) {
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EntityModel<CertificateDTO>> updateCertificatePrice(
+        @RequestParam double price, @PathVariable long id) {
         service.updatePrice(id, price);
 
-        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(
+            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(@PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
+        @PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
         service.addTag(id, ControllerSupporter.tagDtoToTagPOJO(tag));
 
-        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+            new CertificateDTO(service.find(id)).getModel(),
+            HttpStatus.CREATED);
     }
 
     @PostMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate
-            (@PathVariable Integer id, @PathVariable Integer idTag) {
+    public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
+        @PathVariable Integer id, @PathVariable Integer idTag) {
         service.addTag(id, idTag);
 
-        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(
+            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateDTO>> deleteTagToCertificate
-            (@PathVariable Integer id, @PathVariable Integer idTag) {
+    public ResponseEntity<Void> deleteTagToCertificate(//fixme
+        @PathVariable Integer id, @PathVariable Integer idTag) {
         service.deleteTag(id, idTag);
 
-        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

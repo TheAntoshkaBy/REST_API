@@ -1,27 +1,25 @@
 package com.epam.esm.dto;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.hateoas.EntityModel;
-
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.hateoas.EntityModel;
 
 @Data
 @NoArgsConstructor
@@ -33,13 +31,11 @@ public class CertificateDTO {
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 70, message
-            = "Name must be between 2 and 70 characters")
+    @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
     private String name;
 
     @NotNull
-    @Size(min = 3, max = 170, message
-            = "Description must be between 3 and 170 characters")
+    @Size(min = 3, max = 170, message = "Description must be between 3 and 170 characters")
     private String description;
 
     @NotNull
@@ -83,15 +79,16 @@ public class CertificateDTO {
         String methodTypeDELETE = "DELETE";
         String methodTypePUT = "PUT";
 
-        model = EntityModel.of(
+        model =
+            EntityModel.of(
                 this,
-                linkTo(methodOn(CertificateController.class)
-                        .findById(id)).withSelfRel(),
-                linkTo(methodOn(CertificateController.class)
-                        .findById(id)).withRel(updateRelName).withType(methodTypePUT),
-                linkTo(methodOn(CertificateController.class)
-                        .findById(id)).withRel(deleteRelName).withType(methodTypeDELETE)
-        );
+                linkTo(methodOn(CertificateController.class).findById(id)).withSelfRel(),
+                linkTo(methodOn(CertificateController.class).findById(id))
+                    .withRel(updateRelName)
+                    .withType(methodTypePUT),
+                linkTo(methodOn(CertificateController.class).findById(id))
+                    .withRel(deleteRelName)
+                    .withType(methodTypeDELETE));
         return model;
     }
 }

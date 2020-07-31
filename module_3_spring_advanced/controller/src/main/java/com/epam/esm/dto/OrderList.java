@@ -55,7 +55,8 @@ public class OrderList {
 
         public OrderList build() {
             OrderList orderList = new OrderList();
-            CollectionModel<EntityModel<CertificateOrderDTO>> ordersListModel = buildModelWithPagination();
+            CollectionModel<EntityModel<CertificateOrderDTO>>
+                ordersListModel = buildModelWithPagination();
             orderList.setOrders(ordersListModel);
             return orderList;
         }

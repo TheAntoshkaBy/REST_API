@@ -1,10 +1,10 @@
 package com.epam.esm.service;
 
 import com.epam.esm.pojo.UserPOJO;
-
 import java.util.List;
 
 public interface UserService {
+
     /**
      * This method finds all users from database using DAO
      **/

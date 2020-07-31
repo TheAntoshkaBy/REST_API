@@ -1,23 +1,23 @@
 package com.epam.esm.dto;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.controller.UserController;
 import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.pojo.UserPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Data;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserList {
+
     @JsonIgnore
     private final static String NEXT_PAGE_MODEL_PARAM = "next";
     @JsonIgnore
@@ -30,11 +30,12 @@ public class UserList {
     }
 
     public static class UserListBuilder {
+
         private final static String NEXT_PAGE_MODEL_PARAM = "next";
         private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
         private final static String CURRENT_PAGE_MODEL_PARAM = "current";
+        private final List<UserPOJO> usersPOJO;
         private List<UserDTO> userDTO;
-        private List<UserPOJO> usersPOJO;
         private int userCount = 0;
         private int page = 1;
         private int size = 5;
@@ -44,17 +45,17 @@ public class UserList {
             this.usersPOJO = users;
         }
 
-        public UserListBuilder page(int page){
+        public UserListBuilder page(int page) {
             this.page = page;
             return this;
         }
 
-        public UserListBuilder size(int size){
+        public UserListBuilder size(int size) {
             this.size = size;
             return this;
         }
 
-        public UserListBuilder resultCount(int resultCount){
+        public UserListBuilder resultCount(int resultCount) {
             this.userCount = resultCount;
             return this;
         }
@@ -70,25 +71,25 @@ public class UserList {
             this.userDTO = ControllerSupporter.userPojoListToUserDtoList(this.usersPOJO);
 
             this.users = CollectionModel.of(
-                    userDTO
-                            .stream()
-                            .map(UserDTO::getModel)
-                            .collect(Collectors.toList())
+                userDTO
+                    .stream()
+                    .map(UserDTO::getModel)
+                    .collect(Collectors.toList())
             );
 
             if (userCount > page * size) {
                 int nextPage = page + 1;
                 this.users.add(linkTo(methodOn(UserController.class)
-                        .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
+                    .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
             }
 
             this.users.add(linkTo(methodOn(UserController.class)
-                    .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
+                .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
 
             if (page != 1) {
                 int prevPage = page - 1;
                 this.users.add(linkTo(methodOn(UserController.class)
-                        .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+                    .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
             }
 
             return this.users;

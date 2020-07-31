@@ -1,12 +1,11 @@
 package com.epam.esm.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
 
 @Getter
 @Setter
@@ -21,13 +20,13 @@ public class JwtUser implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     public JwtUser(
-            Long id,
-            String login,
-            String name,
-            String surname,
-            String email,
-            String password,
-            Collection<? extends GrantedAuthority> authorities
+        Long id,
+        String login,
+        String name,
+        String surname,
+        String email,
+        String password,
+        Collection<? extends GrantedAuthority> authorities
     ) {
         this.id = id;
         this.login = login;

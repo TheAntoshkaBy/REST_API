@@ -1,10 +1,10 @@
 package com.epam.esm.exception;
 
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
-
 import java.util.List;
 
-public class NotSupportedOperationException extends RepositoryException{
+public class NotSupportedOperationException extends RepositoryException {
+
     public NotSupportedOperationException(List<InvalidDataOutputMessage> messages) {
         super(messages);
     }

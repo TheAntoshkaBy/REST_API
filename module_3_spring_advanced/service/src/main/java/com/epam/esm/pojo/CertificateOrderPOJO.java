@@ -2,17 +2,17 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
+import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateOrderPOJO {
+
     private Long id;
     private Date endDate;
     private Double cost;
@@ -29,13 +29,13 @@ public class CertificateOrderPOJO {
 
         if (certificateOrder.getOwner() != null) {
             this.owner = new UserPOJO(
-                    certificateOrder.getOwner().getId(),
-                    certificateOrder.getOwner().getName(),
-                    certificateOrder.getOwner().getSurname(),
-                    certificateOrder.getOwner().getLogin(),
-                    certificateOrder.getOwner().getPassword(),
-                    certificateOrder.getOwner().getRoles(),
-                    certificateOrder.getOwner().getEmail()
+                certificateOrder.getOwner().getId(),
+                certificateOrder.getOwner().getName(),
+                certificateOrder.getOwner().getSurname(),
+                certificateOrder.getOwner().getLogin(),
+                certificateOrder.getOwner().getPassword(),
+                certificateOrder.getOwner().getRoles(),
+                certificateOrder.getOwner().getEmail()
             );
         } else {
             this.owner = null;

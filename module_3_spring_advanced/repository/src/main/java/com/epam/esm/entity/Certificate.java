@@ -1,9 +1,9 @@
 package com.epam.esm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,25 +17,24 @@ import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity(name = "certificate")
 @Table(name = "certificate")
 @NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery(
-                name = "findByNameProcedure",
-                procedureName = "return_t_certificate3",
-                resultClasses = {Certificate.class},
-                parameters = {
-                        @StoredProcedureParameter
-                                (
-                                        name = "text",
-                                        type = String.class
-                                )
-                })
+    @NamedStoredProcedureQuery(
+        name = "findByNameProcedure",
+        procedureName = "return_t_certificate3",
+        resultClasses = {Certificate.class},
+        parameters = {
+            @StoredProcedureParameter
+                (
+                    name = "text",
+                    type = String.class
+                )
+        })
 })
 @Data
 @NoArgsConstructor
@@ -66,18 +65,18 @@ public class Certificate implements Serializable {
     private Date modification;
 
     @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
+        CascadeType.PERSIST,
+        CascadeType.MERGE
     })
     @JoinTable(
-            name = "c_t",
-            joinColumns = @JoinColumn(name = "certificate_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+        name = "c_t",
+        joinColumns = @JoinColumn(name = "certificate_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
 
     public Certificate(Long id, String name, String description, Double price,
-                       Date creationDate, Date modification, Integer durationDays) {
+        Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -88,7 +87,7 @@ public class Certificate implements Serializable {
     }
 
     public Certificate(String name, String description, Double price,
-                       Integer durationDays) {
+        Integer durationDays) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -96,7 +95,7 @@ public class Certificate implements Serializable {
     }
 
     public Certificate(Long id, String name, String description, Double price,
-                       Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
+        Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -106,7 +105,8 @@ public class Certificate implements Serializable {
         this.durationDays = durationDays;
     }
 
-    public Certificate(Long id, String name, String description, Double price, Integer durationDays) {
+    public Certificate(Long id, String name, String description, Double price,
+        Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;

@@ -4,14 +4,15 @@ import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
+import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
-
 @Component
-public class ByIdFindCertificatesWhereIdMoreThanParameter implements CertificateFilterRequestParameter {
+public class ByIdFindCertificatesWhereIdMoreThanParameter implements
+    CertificateFilterRequestParameter {
+
     private static final String FILTER_TYPE = "greater than";
     private CertificateService certificateService;
 
@@ -22,18 +23,18 @@ public class ByIdFindCertificatesWhereIdMoreThanParameter implements Certificate
 
     @Override
     public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request,
-                                                          List<TagPOJO> tags,
-                                                          int page,
-                                                          int size) {
+        List<TagPOJO> tags,
+        int page,
+        int size) {
         return certificateService.findAllCertificatesByIdThreshold(
-                Long.parseLong(request.get("founded id")), --page, size
+            Long.parseLong(request.get("founded id")), --page, size
         );
     }
 
     @Override
     public int getCountFoundPOJO(Map<String, String> request, List<TagPOJO> tags) {
         return certificateService.findByAllCertificatesByIdThresholdCount(
-                Long.parseLong(request.get("founded id"))
+            Long.parseLong(request.get("founded id"))
         );
     }
 

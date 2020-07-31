@@ -8,20 +8,21 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.support.ServiceSupporter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ShopOrderService implements OrderService {
+
     private final OrderRepository repository;
     private final CertificateRepository certificateRepository;
 
     @Autowired
-    public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository) {
+    public ShopOrderService(OrderRepository repository,
+        CertificateRepository certificateRepository) {
         this.repository = repository;
         this.certificateRepository = certificateRepository;
     }
@@ -48,9 +49,9 @@ public class ShopOrderService implements OrderService {
         order.setCost(0.0);
         order.setCreatedDate(new Date());
         return new CertificateOrderPOJO(
-                repository.create(
-                        ServiceSupporter.convertOrderPojoToOrder(order),
-                        ServiceSupporter.convertUserPojoToUserEntity(userPOJO))
+            repository.create(
+                ServiceSupporter.convertOrderPojoToOrder(order),
+                ServiceSupporter.convertUserPojoToUserEntity(userPOJO))
         );
     }
 
@@ -58,12 +59,13 @@ public class ShopOrderService implements OrderService {
     public List<CertificateOrderPOJO> findAllByOwner(long id, int page, int size) {
         page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
         return ServiceSupporter.convertOrderEntityToOrderCertificatePOJO(
-                repository.findAllByOwner(id, --page, size));
+            repository.findAllByOwner(id, --page, size));
     }
 
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id) {
-        return ServiceSupporter.convertOrderEntityToOrderCertificatePOJO(repository.findAllByOwner(id));
+        return ServiceSupporter
+            .convertOrderEntityToOrderCertificatePOJO(repository.findAllByOwner(id));
     }
 
     @Override
@@ -75,11 +77,12 @@ public class ShopOrderService implements OrderService {
     public CertificateOrderPOJO addCertificates(long orderId, List<Long> certificatesId) {
         CertificateOrder certificateOrder = repository.findById(orderId);
         List<Certificate> certificates = certificatesId
-                .stream()
-                .map(certificateRepository::findById)
-                .collect(Collectors.toList());
+            .stream()
+            .map(certificateRepository::findById)
+            .collect(Collectors.toList());
         double summaryPrice = certificates.stream().mapToDouble(Certificate::getPrice).sum();
-        return new CertificateOrderPOJO(repository.addCertificates(certificateOrder, certificates, summaryPrice));
+        return new CertificateOrderPOJO(
+            repository.addCertificates(certificateOrder, certificates, summaryPrice));
     }
 
     @Override

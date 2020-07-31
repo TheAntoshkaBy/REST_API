@@ -1,9 +1,6 @@
 package com.epam.esm.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -45,11 +44,12 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
     private List<Role> roles;
 
-    public User(String name, String surname, String login, String password, List<Role> roles, String email) {
+    public User(String name, String surname, String login, String password, List<Role> roles,
+        String email) {
         this.name = name;
         this.surname = surname;
         this.login = login;
@@ -58,7 +58,8 @@ public class User {
         this.email = email;
     }
 
-    public User(long id, String name, String surname, String login, String password, List<Role> roles, String email) {
+    public User(long id, String name, String surname, String login, String password,
+        List<Role> roles, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;

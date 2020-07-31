@@ -12,6 +12,9 @@ import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,13 +28,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.List;
-
 @RestController()
 @RequestMapping("/users")
 public class UserController {
+
     private final static String PAGE_NAME_PARAMETER = "page";
     private final static String PAGE_SIZE_NAME_PARAMETER = "size";
     private final static String PAGE_DEFAULT_PARAMETER = "1";
@@ -43,10 +43,10 @@ public class UserController {
 
     @Autowired
     public UserController(
-            UserService service,
-            OrderService orderService,
-            TagService tagService,
-            JwtTokenProvider jwtTokenProvider) {
+        UserService service,
+        OrderService orderService,
+        TagService tagService,
+        JwtTokenProvider jwtTokenProvider) {
         this.service = service;
         this.orderService = orderService;
         this.tagService = tagService;
@@ -55,21 +55,21 @@ public class UserController {
 
     @PatchMapping(path = "{id}/orders", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addOrder(
-            @PathVariable long id,
-            @Valid @RequestBody CertificateOrderDTO order,
-            HttpServletRequest request) {
+        @PathVariable long id,
+        @Valid @RequestBody CertificateOrderDTO order,
+        HttpServletRequest request) {
         checkUserRulesById(request, id);
         int startPage = 1;
         int startSize = 5;
 
         try {
             return new ResponseEntity<>(new CertificateOrderDTO(
-                    orderService.create(
-                            ControllerSupporter.orderDtoToOrderPojo(order),
-                            ControllerSupporter
-                                    .userDtoToUserPojo(new UserDTO(service.find(id)))))
-                    .getModel(startPage,startSize),
-                    HttpStatus.CREATED);
+                orderService.create(
+                    ControllerSupporter.orderDtoToOrderPojo(order),
+                    ControllerSupporter
+                        .userDtoToUserPojo(new UserDTO(service.find(id)))))
+                .getModel(startPage, startSize),
+                HttpStatus.CREATED);
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
@@ -77,15 +77,15 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAll(
-            @RequestParam(value = PAGE_NAME_PARAMETER,
-                    defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                    defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
+        @RequestParam(value = PAGE_NAME_PARAMETER,
+            defaultValue = PAGE_DEFAULT_PARAMETER) int page,
+        @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
         return new ResponseEntity<>(
-                new UserList.UserListBuilder(service.findAll(page, size))
-                        .resultCount(service.getUsersCount())
-                        .page(page).size(size)
-                        .build(), HttpStatus.OK);
+            new UserList.UserListBuilder(service.findAll(page, size))
+                .resultCount(service.getUsersCount())
+                .page(page).size(size)
+                .build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -93,7 +93,8 @@ public class UserController {
         int startPage = 1;
         int startSize = 5;
 
-        return new ResponseEntity<>(new UserDTO(service.find(id)).getModel(startPage,startSize), HttpStatus.OK);
+        return new ResponseEntity<>(new UserDTO(service.find(id)).getModel(startPage, startSize),
+            HttpStatus.OK);
     }
 
     @GetMapping(path = "/orders/tags", params = "search by", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -103,63 +104,56 @@ public class UserController {
 
     @GetMapping(path = "/{id}/orders", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findOrders(@PathVariable long id,
-                                        @RequestParam(value = PAGE_NAME_PARAMETER,
-                                                defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-                                        @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                                                defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
+        @RequestParam(value = PAGE_NAME_PARAMETER,
+            defaultValue = PAGE_DEFAULT_PARAMETER) int page,
+        @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
+            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
 
         return new ResponseEntity<>(
-                new OrderList.OrderListBuilder(orderService.findAllByOwner(id, page, size))
-                        .resultCount(orderService.ordersCountByOwner(id))
-                        .page(page)
-                        .size(size)
-                        .build(), HttpStatus.OK);
+            new OrderList.OrderListBuilder(orderService.findAllByOwner(id, page, size))
+                .resultCount(orderService.ordersCountByOwner(id))
+                .page(page)
+                .size(size)
+                .build(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{userId}/orders/{id}")
-    public ResponseEntity<?> deleteOrder(
-            @PathVariable Long id,
-            @PathVariable Long userId,
-            HttpServletRequest request) {
+    public ResponseEntity<Void> deleteOrder(
+        @PathVariable Long id,
+        @PathVariable Long userId,
+        HttpServletRequest request) {
         checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         checkUserRulesById(request, userId);
 
-        List<CertificateOrderDTO> orders;
-        try {
-            orderService.delete(id);
-        } catch (ControllerException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+        orderService.delete(id);
 
-        return new ResponseEntity<>(HttpStatus.OK);//fixme
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping(path = "{userId}/orders/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addCertificates(
-            @PathVariable long userId,
-            @PathVariable long id,
-            @RequestParam List<Long> certificatesId,
-            HttpServletRequest request) {
+        @PathVariable long userId,
+        @PathVariable long id,
+        @RequestParam List<Long> certificatesId,
+        HttpServletRequest request) {
         checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         checkUserRulesById(request, userId);
         int startPage = 1;
         int startSize = 5;
 
         return new ResponseEntity<>(new CertificateOrderDTO(
-                orderService
-                        .addCertificates(id, certificatesId)
+            orderService
+                .addCertificates(id, certificatesId)
         )
-                .getModel(startPage,startSize), HttpStatus.OK);
+            .getModel(startPage, startSize), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            service.delete(id);
-        } catch (ControllerException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);//fixme
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        service.delete(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     private void checkIsCurrentUserHaveRulesForEditThisOrder(long userId, long orderId) {
@@ -168,16 +162,17 @@ public class UserController {
 
         if (!isThisOrderBelowCurrentUser(userId, orderId)) {
             throw new ControllerException(
-                    new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
+                new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
             );
         }
     }
 
     private boolean isThisOrderBelowCurrentUser(long userId, long orderId) {
         List<CertificateOrderDTO> orders =
-                ControllerSupporter
-                        .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId));
-        return orders.stream().anyMatch(certificateOrderDTO -> certificateOrderDTO.getId() == orderId);
+            ControllerSupporter
+                .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId));
+        return orders.stream()
+            .anyMatch(certificateOrderDTO -> certificateOrderDTO.getId() == orderId);
     }
 
     private void checkUserRulesById(HttpServletRequest req, long actionUserId) {
@@ -189,9 +184,9 @@ public class UserController {
         UserDTO userDTO = new UserDTO(service.findByLogin(username));
 
         if (userDTO.getId() != actionUserId && userDTO.getRoles().stream()
-                .noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            .noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             throw new ControllerException(
-                    new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
+                new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
             );
         }
     }

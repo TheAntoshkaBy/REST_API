@@ -1,21 +1,20 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.exception.ServiceException;
 import com.epam.esm.exception.ServiceValidationException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.repository.jpa.TagRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class TagValidator {
-    private List<InvalidDataMessage> invalidDataMessageList;
+
     private final TagRepository tagRepository;
+    private List<InvalidDataMessage> invalidDataMessageList;
 
     @Autowired
     public TagValidator(TagRepository tagRepository) {
@@ -35,7 +34,7 @@ public class TagValidator {
 
         if (tagRepository.findByName(name) != null) {
             invalidDataMessageList.add(new InvalidDataMessage(field,
-                    ErrorTextMessageConstants.TAG_NAME_FIELD_IS_EXIST));
+                ErrorTextMessageConstants.TAG_NAME_FIELD_IS_EXIST));
         }
     }
 }

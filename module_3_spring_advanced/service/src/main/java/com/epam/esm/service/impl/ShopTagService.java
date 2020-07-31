@@ -5,13 +5,13 @@ import com.epam.esm.repository.jpa.impl.TagRepositoryJPA;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.TagValidator;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ShopTagService implements TagService {
+
     private final TagRepositoryJPA tagRepository;
     private TagValidator tagValidator;
 
@@ -25,7 +25,7 @@ public class ShopTagService implements TagService {
         page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
 
         return ServiceSupporter.convertTagEntityToTagPOJO(tagRepository
-                .findAll(--page, size));
+            .findAll(--page, size));
     }
 
     @Override

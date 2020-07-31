@@ -1,7 +1,7 @@
 package com.epam.esm.entity;
 
-import lombok.Data;
-
+import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,17 +10,16 @@ import javax.persistence.Id;
 import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.Objects;
+import lombok.Data;
 
 @Entity(name = "tag")
 @Table(name = "tag")
 @NamedStoredProcedureQueries({
-        @NamedStoredProcedureQuery
-                (
-                        name = "greatest_tag",
-                        procedureName = "greater"
-                )
+    @NamedStoredProcedureQuery
+        (
+            name = "greatest_tag",
+            procedureName = "greater"
+        )
 })
 @Data
 public class Tag implements Serializable {

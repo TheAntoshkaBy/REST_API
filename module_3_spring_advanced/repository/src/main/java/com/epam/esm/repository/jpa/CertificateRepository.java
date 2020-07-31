@@ -2,11 +2,11 @@ package com.epam.esm.repository.jpa;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-
 import java.util.List;
 import java.util.Map;
 
 public interface CertificateRepository {
+
     void delete(long id);
 
     Certificate findById(long id);
@@ -18,7 +18,8 @@ public interface CertificateRepository {
 
     List<Certificate> findAll(int offset, int limit);
 
-    List<Certificate> findAllComplex(String query, Map<String, Object> params, int offset, int limit);
+    List<Certificate> findAllComplex(String query, Map<String, Object> params, int offset,
+        int limit);
 
     int findCountComplex(String query, Map<String, Object> params);
 

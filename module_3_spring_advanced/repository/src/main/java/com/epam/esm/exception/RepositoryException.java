@@ -1,11 +1,11 @@
 package com.epam.esm.exception;
 
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryException extends RuntimeException {
+
     private final static String MESSAGE = "Repository exception";
     private List<InvalidDataOutputMessage> messages;
     private InvalidDataOutputMessage message;

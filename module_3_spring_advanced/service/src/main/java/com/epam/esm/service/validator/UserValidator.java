@@ -1,19 +1,18 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.exception.ServiceException;
 import com.epam.esm.exception.ServiceValidationException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.repository.jpa.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class UserValidator {
+
     private final UserRepository repository;
 
     @Autowired
@@ -26,7 +25,7 @@ public class UserValidator {
 
         if (repository.findByLogin(login) != null) {
             invalidDataMessageList.add(new InvalidDataMessage(field,
-                    ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
+                ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
         }
     }
 
@@ -35,7 +34,7 @@ public class UserValidator {
 
         if (repository.findByEmail(email) != null) {
             invalidDataMessageList.add(new InvalidDataMessage(field,
-                    ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
+                ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
         }
     }
 

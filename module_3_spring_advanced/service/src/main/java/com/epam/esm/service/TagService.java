@@ -2,7 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.validator.TagValidator;
-
 import java.util.List;
 
 /**
@@ -28,8 +27,8 @@ public interface TagService {
     TagPOJO findMostWidelyUsedTag();
 
     /**
-     * This method delete tag by transmitted tag id
-     * to certificate with transmitted certificate id using DAO
+     * This method delete tag by transmitted tag id to certificate with transmitted certificate id
+     * using DAO
      *
      * @param id certificate id which will be edit
      **/

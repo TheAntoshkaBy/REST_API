@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Component
 public class InvalidDataMessage {
+
     private String field;
     private String message;
 

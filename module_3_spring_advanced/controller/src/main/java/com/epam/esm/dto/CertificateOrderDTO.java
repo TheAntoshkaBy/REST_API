@@ -1,22 +1,21 @@
 package com.epam.esm.dto;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.Date;
+import java.util.List;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.EntityModel;
-
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Data
 @NoArgsConstructor
@@ -29,11 +28,11 @@ public class CertificateOrderDTO {
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     @Null
     private Date endTime;
+
     @Null
     private Double cost;
 
-    @Size(min = 3, max = 170, message
-            = "Description must be between 3 and 170 characters")
+    @Size(min = 3, max = 170, message = "Description must be between 3 and 170 characters")
     private String description;
 
     @Null
@@ -61,11 +60,13 @@ public class CertificateOrderDTO {
         String deleteRelName = "delete";
         String methodType = "DELETE";
 
-        model = EntityModel.of(this,
+        model =
+            EntityModel.of(
+                this,
                 linkTo(methodOn(OrderController.class).findOrderById(id)).withSelfRel(),
-                linkTo(methodOn(OrderController.class)
-                        .deleteOrder(id, page, size))
-                        .withRel(deleteRelName).withType(methodType));
+                linkTo(methodOn(OrderController.class).deleteOrder(id, page, size))
+                    .withRel(deleteRelName)
+                    .withType(methodType));
         return model;
     }
 }

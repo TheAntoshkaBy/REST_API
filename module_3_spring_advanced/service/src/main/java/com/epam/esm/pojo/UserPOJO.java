@@ -2,16 +2,16 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPOJO {
+
     private Long id;
 
     private String name;
@@ -31,7 +31,8 @@ public class UserPOJO {
         this.roles = user.getRoles();
     }
 
-    public UserPOJO(String name, String surname, String login, String password, List<Role> roles, String email) {
+    public UserPOJO(String name, String surname, String login, String password, List<Role> roles,
+        String email) {
         this.name = name;
         this.surname = surname;
         this.login = login;
@@ -41,13 +42,13 @@ public class UserPOJO {
     }
 
     public UserPOJO(
-            long id,
-            String name,
-            String surname,
-            String login,
-            String password,
-            List<Role> roles,
-            String email) {
+        long id,
+        String name,
+        String surname,
+        String login,
+        String password,
+        List<Role> roles,
+        String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;

@@ -7,6 +7,9 @@ import com.epam.esm.dto.UserDTO;
 import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.UserService;
+import java.util.HashMap;
+import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,21 +22,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping
-public class    AuthenticationController {
+public class AuthenticationController {
+
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager,
-                                    JwtTokenProvider jwtTokenProvider,
-                                    UserService userService) {
+        JwtTokenProvider jwtTokenProvider,
+        UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
@@ -48,7 +48,7 @@ public class    AuthenticationController {
         try {
             String username = requestDto.getLogin();
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(username, requestDto.getPassword())
+                new UsernamePasswordAuthenticationToken(username, requestDto.getPassword())
             );
             UserDTO user = new UserDTO(userService.findByLogin(username));
 
@@ -68,8 +68,10 @@ public class    AuthenticationController {
     public ResponseEntity<?> registration(@Valid @RequestBody RegistrationUserDTO userDTO) {
         String invalid = "Invalid username or password";
         try {
-            UserPOJO userPOJO = userService.create(ControllerSupporter.userRegistrationDtoToUserPojo(userDTO));
-            return new ResponseEntity<>(new RegistrationUserDTO(userPOJO).getModel(), HttpStatus.CREATED);
+            UserPOJO userPOJO = userService
+                .create(ControllerSupporter.userRegistrationDtoToUserPojo(userDTO));
+            return new ResponseEntity<>(new RegistrationUserDTO(userPOJO).getModel(),
+                HttpStatus.CREATED);
         } catch (AuthenticationException e) {
             throw new BadCredentialsException(invalid);
         }

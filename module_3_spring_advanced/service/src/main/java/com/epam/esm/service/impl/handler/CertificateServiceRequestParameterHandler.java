@@ -9,13 +9,12 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.and.ComplexFilter;
 import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
 import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CertificateServiceRequestParameterHandler {
@@ -29,11 +28,13 @@ public class CertificateServiceRequestParameterHandler {
     @Autowired
     private List<ComplexFilter> filters;
 
-    public Map<List<CertificatePOJO>, Integer> find(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
+    public Map<List<CertificatePOJO>, Integer> find(
+        Map<String, String> request, List<TagPOJO> tags, int page, int size) {
         return filter(request, tags, page, size);
     }
 
-    private Map<List<CertificatePOJO>, Integer> filter(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
+    private Map<List<CertificatePOJO>, Integer> filter(
+        Map<String, String> request, List<TagPOJO> tags, int page, int size) {
         List<CertificatePOJO> resultList;
         int resultCount = 0;
         Map<List<CertificatePOJO>, Integer> result = new HashMap<>();
@@ -42,21 +43,23 @@ public class CertificateServiceRequestParameterHandler {
                 resultList = sort(request, page, size);
                 resultCount = certificateService.getCertificateCount();
             } else {
-                CertificateFilterRequestParameter resultFilter = certificateFilterRequestParameterList.stream()
+                CertificateFilterRequestParameter resultFilter =
+                    certificateFilterRequestParameterList
+                        .stream()
                         .filter(certificateFilter -> certificateFilter
-                                .getType()
-                                .equals(request.get("filter")))
+                            .getType()
+                            .equals(request.get("filter")))
                         .findFirst()
                         .get();
-                        resultList = resultFilter.filterOutOurCertificates(request, tags, page, size);
-                        resultCount = resultFilter.getCountFoundPOJO(request,tags);
+                resultList = resultFilter.filterOutOurCertificates(request, tags, page, size);
+                resultCount = resultFilter.getCountFoundPOJO(request, tags);
             }
         } catch (NoSuchElementException e) {
             throw new ServiceException(
-                    new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
+                new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
             );
         }
-        result.put(resultList,resultCount);
+        result.put(resultList, resultCount);
         return result;
     }
 
@@ -67,16 +70,16 @@ public class CertificateServiceRequestParameterHandler {
                 result = certificateService.findAll(page, size);
             } else {
                 result = certificateSortRequestParameterList.stream()
-                        .filter(certificateFilter -> certificateFilter
-                                .getType()
-                                .equals(request.get("sort")))
-                        .findFirst()
-                        .get()
-                        .sortOurCertificates(request, page, size);
+                    .filter(certificateFilter -> certificateFilter
+                        .getType()
+                        .equals(request.get("sort")))
+                    .findFirst()
+                    .get()
+                    .sortOurCertificates(request, page, size);
             }
         } catch (NoSuchElementException e) {
             throw new ServiceException(
-                    new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)
+                new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)
             );
         }
         return result;
@@ -91,7 +94,7 @@ public class CertificateServiceRequestParameterHandler {
                     returnedParams.put(complexFilter.getType(), complexFilter.setType(param));
                 } catch (RuntimeException e) {
                     throw new ServiceException(
-                            new InvalidDataMessage(complexFilter.getType(), "Invalid parameter data!")
+                        new InvalidDataMessage(complexFilter.getType(), "Invalid parameter data!")
                     );
                 }
 
@@ -130,8 +133,8 @@ public class CertificateServiceRequestParameterHandler {
             result.append(buffResult);
         } else {
             result = new
-                    StringBuilder("select c from certificate c " +
-                    "join c.tags t where ");
+                StringBuilder("select c from certificate c " +
+                "join c.tags t where ");
             appender(parameters, tags, result);
             result.append("') group by c.id");
         }
@@ -151,8 +154,8 @@ public class CertificateServiceRequestParameterHandler {
             result.append(buffResult);
         } else {
             result = new
-                    StringBuilder("select COUNT(c) from certificate c " +
-                    "join c.tags t where ");
+                StringBuilder("select COUNT(c) from certificate c " +
+                "join c.tags t where ");
             appender(parameters, tags, result);
             result.append("')");
 
@@ -160,13 +163,15 @@ public class CertificateServiceRequestParameterHandler {
         return result.toString();
     }
 
-    private void appender(Map<String, String> parameters, List<TagPOJO> tags, StringBuilder result) {
+    private void appender(Map<String, String> parameters, List<TagPOJO> tags,
+        StringBuilder result) {
         StringBuilder buffResult = buildQuery(parameters);
         result.append(buffResult);
-        if (!buffResult.toString().isEmpty())
+        if (!buffResult.toString().isEmpty()) {
             result.append(" and t.name IN ('");
-        else
+        } else {
             result.append(" t.name IN ('");
+        }
 
         for (int i = 0; i < tags.size() - 1; i++) {
             result.append(tags.get(i).getName());

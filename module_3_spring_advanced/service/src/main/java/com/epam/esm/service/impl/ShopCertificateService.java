@@ -14,13 +14,12 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.TagValidator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class ShopCertificateService implements CertificateService {
@@ -46,7 +45,7 @@ public class ShopCertificateService implements CertificateService {
     @Autowired
     @Override
     public void setCertificateServiceRequestParameterHandler
-            (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
+        (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
         this.certificateServiceRequestParameterHandler = certificateServiceRequestParameterHandler;
     }
 
@@ -56,29 +55,31 @@ public class ShopCertificateService implements CertificateService {
     }
 
     /**
-     * @param params Request params for choice
-     *               selection of certificate display type
+     * @param params Request params for choice selection of certificate display type
      * @return Certificate list
      */
     @Override
-    public Map<List<CertificatePOJO>, Integer> findAll(Map<String, String> params,  List<TagPOJO> tags, int page, int size) {
+    public Map<List<CertificatePOJO>, Integer> findAll(
+        Map<String, String> params, List<TagPOJO> tags, int page, int size
+    ) {
         return certificateServiceRequestParameterHandler.find(params, tags, page, size);
     }
 
-    public List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
+    public List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags,
+        int page, int size) {
         page = ServiceSupporter.convertPaginationPageToDbOffsetParameter(page, size);
         Map<String, Object> parametrizedRequest = certificateServiceRequestParameterHandler
-                .filterAndSetParams(request);
+            .filterAndSetParams(request);
         String query = certificateServiceRequestParameterHandler.filterAnd(request, tags);
         return ServiceSupporter.convertCertificateEntityToCertificatePOJO(
-                certificateRepository
-                        .findAllComplex(query, parametrizedRequest, --page, size)
+            certificateRepository
+                .findAllComplex(query, parametrizedRequest, --page, size)
         );
     }
 
     public int getCountComplex(Map<String, String> request, List<TagPOJO> tags) {
         Map<String, Object> parametrizedRequest = certificateServiceRequestParameterHandler
-                .filterAndSetParams(request);
+            .filterAndSetParams(request);
         String query = certificateServiceRequestParameterHandler.filterAndGetCount(request, tags);
         return certificateRepository.findCountComplex(query, parametrizedRequest);
     }
@@ -91,10 +92,10 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public List<CertificatePOJO> findAll(int page, int size) {
         page = ServiceSupporter
-                .convertPaginationPageToDbOffsetParameter(page, size);
+            .convertPaginationPageToDbOffsetParameter(page, size);
         return ServiceSupporter
-                .convertCertificateEntityToCertificatePOJO(certificateRepository.findAll(--page, size)
-        );
+            .convertCertificateEntityToCertificatePOJO(certificateRepository.findAll(--page, size)
+            );
     }
 
     @Override
@@ -105,7 +106,7 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public List<CertificatePOJO> findAllCertificatesByDate(int page, int size) {
         return ServiceSupporter.convertCertificateEntityToCertificatePOJO(certificateRepository
-                .findAllByDate(page, size));
+            .findAllByDate(page, size));
     }
 
     @Override
@@ -117,7 +118,8 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size) {
         return ServiceSupporter
-                .convertCertificateEntityToCertificatePOJO(certificateRepository.findAllByIdThreshold(id, --page, size));
+            .convertCertificateEntityToCertificatePOJO(
+                certificateRepository.findAllByIdThreshold(id, --page, size));
     }
 
     @Deprecated
@@ -125,7 +127,7 @@ public class ShopCertificateService implements CertificateService {
     public List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size) {
         tagValidator.isCorrectTag(tag);
         return ServiceSupporter.convertCertificateEntityToCertificatePOJO(
-                certificateRepository.findByTagName(tag.getName(), page, size)
+            certificateRepository.findByTagName(tag.getName(), page, size)
         );
     }
 
@@ -137,7 +139,8 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public void update(long id, CertificatePOJO certificate) {
         certificate.setModification(new Date());
-        certificateRepository.update(ServiceSupporter.convertCertificatePojoToCertificate(certificate), id);
+        certificateRepository
+            .update(ServiceSupporter.convertCertificatePojoToCertificate(certificate), id);
     }
 
     @Override
@@ -149,13 +152,14 @@ public class ShopCertificateService implements CertificateService {
     public CertificatePOJO create(CertificatePOJO certificate) {
         certificate.setCreationDate(new Date());
         return new CertificatePOJO(certificateRepository
-                .create(ServiceSupporter.convertCertificatePojoToCertificate(certificate)));
+            .create(ServiceSupporter.convertCertificatePojoToCertificate(certificate)));
     }
 
     @Override
     public void addTag(long id, TagPOJO tag) {
         tagValidator.isCorrectTag(tag);
-        certificateRepository.addTag(id, tagRepository.create(ServiceSupporter.convertTagPojoToTag(tag)).getId());
+        certificateRepository
+            .addTag(id, tagRepository.create(ServiceSupporter.convertTagPojoToTag(tag)).getId());
     }
 
     @Override
@@ -169,18 +173,18 @@ public class ShopCertificateService implements CertificateService {
 
         if (buffCertificate == null) {
             throw new ServiceException(new InvalidDataMessage(EntityNameConstant.CERTIFICATE,
-                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+                ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
         Optional<Tag> buffTag = buffCertificate
-                .getTags()
-                .stream()
-                .filter(tag -> tag.getId() == idTag).findFirst();
-        if(buffTag.isPresent()){
+            .getTags()
+            .stream()
+            .filter(tag -> tag.getId() == idTag).findFirst();
+        if (buffTag.isPresent()) {
             certificateRepository.deleteTag(idCertificate, buffTag.get());
-        }else {
+        } else {
             throw new ServiceException(new InvalidDataMessage(EntityNameConstant.CERTIFICATE,
-                    ErrorTextMessageConstants.NOT_FOUND_TAG));
+                ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
     }
 
@@ -188,7 +192,7 @@ public class ShopCertificateService implements CertificateService {
     public List<CertificatePOJO> findByAllCertificatesByNamePart(String text) {
         text += '%';
         return ServiceSupporter.convertCertificateEntityToCertificatePOJO(certificateRepository
-                .findAllByNamePart(text)
+            .findAllByNamePart(text)
         );
     }
 }

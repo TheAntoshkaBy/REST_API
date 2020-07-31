@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class InvalidDataOutputMessage {
+
     private String entity;
     private String message;
 
