@@ -2,6 +2,7 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +18,7 @@ public class CertificatePOJO {
     private Long id;
     private String name;
     private String description;
-    private Double price;
+    private BigDecimal price;
     private Integer durationDays;
     private List<Tag> tags;
     private Date creationDate;
@@ -26,7 +27,7 @@ public class CertificatePOJO {
     public CertificatePOJO(Long id,
         String name,
         String description,
-        Double price,
+        BigDecimal price,
         Date creationDate,
         Date modification,
         Integer durationDays) {
@@ -39,7 +40,7 @@ public class CertificatePOJO {
         this.modification = modification;
     }
 
-    public CertificatePOJO(String name, String description, Double price, Integer durationDays) {
+    public CertificatePOJO(String name, String description, BigDecimal price, Integer durationDays) {
         this.name = name;
         this.description = description;
         this.price = price;

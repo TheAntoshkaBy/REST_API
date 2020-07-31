@@ -9,6 +9,7 @@ import com.epam.esm.repository.jpa.impl.CertificateRepositoryJPA;
 import com.epam.esm.repository.jpa.impl.OrderRepositoryJPA;
 import com.epam.esm.service.impl.ShopOrderService;
 import com.epam.esm.service.support.ServiceSupporter;
+import java.math.BigDecimal;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,8 +37,8 @@ public class ShopOrderServiceTest {
         certificateRepository = mock(CertificateRepositoryJPA.class);
         orderService = new ShopOrderService(repository, certificateRepository);
 
-        order = new CertificateOrder(new Date(), 321.23, "dd", new Date());
-        CertificateOrder order2 = new CertificateOrder(new Date(), 321.23, "dd", new Date());
+        order = new CertificateOrder(new Date(), BigDecimal.valueOf(321.23), "dd", new Date());
+        CertificateOrder order2 = new CertificateOrder(new Date(), BigDecimal.valueOf(321.23), "dd", new Date());
         orders = new ArrayList<>();
         orders.add(order);
         orders.add(order2);

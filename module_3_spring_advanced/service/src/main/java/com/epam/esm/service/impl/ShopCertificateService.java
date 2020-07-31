@@ -14,6 +14,7 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.TagValidator;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +145,7 @@ public class ShopCertificateService implements CertificateService {
     }
 
     @Override
-    public void updatePrice(long id, double price) {
+    public void updatePrice(long id, BigDecimal price) {
         certificateRepository.updatePrice(id, price);
     }
 
@@ -190,9 +191,10 @@ public class ShopCertificateService implements CertificateService {
 
     @Override
     public List<CertificatePOJO> findByAllCertificatesByNamePart(String text) {
-        text += '%';
+        String foundedText = "%";
+        foundedText+=text+="%";
         return ServiceSupporter.convertCertificateEntityToCertificatePOJO(certificateRepository
-            .findAllByNamePart(text)
+            .findAllByNamePart(foundedText)
         );
     }
 }

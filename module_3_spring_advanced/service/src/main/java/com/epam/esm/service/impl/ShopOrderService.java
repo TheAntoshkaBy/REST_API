@@ -8,6 +8,7 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.support.ServiceSupporter;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO) {
-        order.setCost(0.0);
+        order.setCost(new BigDecimal(0));
         order.setCreatedDate(new Date());
         return new CertificateOrderPOJO(
             repository.create(
@@ -80,7 +81,10 @@ public class ShopOrderService implements OrderService {
             .stream()
             .map(certificateRepository::findById)
             .collect(Collectors.toList());
-        double summaryPrice = certificates.stream().mapToDouble(Certificate::getPrice).sum();
+        BigDecimal summaryPrice = BigDecimal.valueOf(0);
+        for (Certificate certificate : certificates) {
+            summaryPrice = summaryPrice.add(certificate.getPrice());
+        }
         return new CertificateOrderPOJO(
             repository.addCertificates(certificateOrder, certificates, summaryPrice));
     }

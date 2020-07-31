@@ -12,6 +12,7 @@ import com.epam.esm.service.impl.ShopCertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.support.ServiceSupporter;
 import com.epam.esm.service.validator.TagValidator;
+import java.math.BigDecimal;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +67,7 @@ public class CertificateServiceImplTest {
 
     @Before
     public void initCertificateTestData() {
-        final double price = 34.54;
+        final BigDecimal price = BigDecimal.valueOf(321.23);
         long idCertificate = 10;
         int duration = 10;
 

@@ -6,6 +6,7 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.TagRepository;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.validator.TagValidator;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public interface CertificateService {
      * @param id    certificate id which will be edit
      * @param price edit data
      **/
-    void updatePrice(long id, double price);
+    void updatePrice(long id, BigDecimal price);
 
     /**
      * This method add new Certificate using DAO

@@ -9,6 +9,7 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.ShopJPARepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
@@ -146,7 +147,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
     }
 
     @Override
-    public void updatePrice(long id, double price) {
+    public void updatePrice(long id, BigDecimal price) {
         Certificate buffCert = entityManager.find(Certificate.class, id);
         buffCert.setPrice(price);
     }

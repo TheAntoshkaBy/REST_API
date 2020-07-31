@@ -3,6 +3,7 @@ package com.epam.esm.repository.jpa;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.entity.User;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderRepository {
@@ -20,7 +21,7 @@ public interface OrderRepository {
     List<CertificateOrder> findAllByOwner(long id);
 
     CertificateOrder addCertificates(CertificateOrder certificateOrder,
-        List<Certificate> certificates, double coast);
+        List<Certificate> certificates, BigDecimal coast);
 
     int getOrdersCount();
 

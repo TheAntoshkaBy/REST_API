@@ -9,6 +9,7 @@ import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.Null;
@@ -30,7 +31,7 @@ public class CertificateOrderDTO {
     private Date endTime;
 
     @Null
-    private Double cost;
+    private BigDecimal cost;
 
     @Size(min = 3, max = 170, message = "Description must be between 3 and 170 characters")
     private String description;

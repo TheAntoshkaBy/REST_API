@@ -1,6 +1,7 @@
 package com.epam.esm.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +54,7 @@ public class Certificate implements Serializable {
     private String description;
 
     @Column(name = "price")
-    private Double price;
+    private BigDecimal price;
 
     @Column(name = "duration_days")
     private Integer durationDays;
@@ -75,7 +76,7 @@ public class Certificate implements Serializable {
     )
     private List<Tag> tags = new ArrayList<>();
 
-    public Certificate(Long id, String name, String description, Double price,
+    public Certificate(Long id, String name, String description, BigDecimal price,
         Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
         this.name = name;
@@ -86,7 +87,7 @@ public class Certificate implements Serializable {
         this.durationDays = durationDays;
     }
 
-    public Certificate(String name, String description, Double price,
+    public Certificate(String name, String description, BigDecimal price,
         Integer durationDays) {
         this.name = name;
         this.description = description;
@@ -94,7 +95,7 @@ public class Certificate implements Serializable {
         this.durationDays = durationDays;
     }
 
-    public Certificate(Long id, String name, String description, Double price,
+    public Certificate(Long id, String name, String description, BigDecimal price,
         Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
         this.id = id;
         this.name = name;
@@ -105,7 +106,7 @@ public class Certificate implements Serializable {
         this.durationDays = durationDays;
     }
 
-    public Certificate(Long id, String name, String description, Double price,
+    public Certificate(Long id, String name, String description, BigDecimal price,
         Integer durationDays) {
         this.id = id;
         this.name = name;

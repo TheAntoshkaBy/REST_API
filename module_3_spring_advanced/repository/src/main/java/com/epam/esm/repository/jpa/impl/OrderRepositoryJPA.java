@@ -10,6 +10,7 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.repository.jpa.ShopJPARepository;
+import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +81,7 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     @Override
     public CertificateOrder addCertificates(CertificateOrder certificateOrder,
         List<Certificate> certificates,
-        double cost) {
+        BigDecimal cost) {
         certificateOrder.setCertificates(certificates);
         certificateOrder.setCost(cost);
         return certificateOrder;

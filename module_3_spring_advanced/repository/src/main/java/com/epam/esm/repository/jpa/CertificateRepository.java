@@ -2,6 +2,7 @@ package com.epam.esm.repository.jpa;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public interface CertificateRepository {
 
     void update(Certificate certificate, long id);
 
-    void updatePrice(long id, double price);
+    void updatePrice(long id, BigDecimal price);
 
     List<Certificate> findByTagName(String name, int page, int size);
 

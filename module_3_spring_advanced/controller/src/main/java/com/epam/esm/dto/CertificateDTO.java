@@ -9,6 +9,7 @@ import com.epam.esm.pojo.CertificatePOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -40,7 +41,7 @@ public class CertificateDTO {
 
     @NotNull
     @PositiveOrZero
-    private Double price;
+    private BigDecimal price;
 
     @NotNull
     @PositiveOrZero

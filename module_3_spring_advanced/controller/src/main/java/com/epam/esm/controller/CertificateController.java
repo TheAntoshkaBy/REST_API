@@ -7,6 +7,7 @@ import com.epam.esm.dto.TagDTO;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -116,7 +117,7 @@ public class CertificateController {
     @PatchMapping(path = "/{id}",
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> updateCertificatePrice(
-        @RequestParam double price, @PathVariable long id) {
+        @RequestParam BigDecimal price, @PathVariable long id) {
         service.updatePrice(id, price);
 
         return new ResponseEntity<>(

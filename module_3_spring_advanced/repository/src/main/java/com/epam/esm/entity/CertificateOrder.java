@@ -1,5 +1,6 @@
 package com.epam.esm.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -40,7 +41,7 @@ public class CertificateOrder {
 
 
     @Column(name = "cost")
-    private Double cost;
+    private BigDecimal cost;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -56,7 +57,7 @@ public class CertificateOrder {
     )
     private List<Certificate> certificates;
 
-    public CertificateOrder(Date endTime, double cost, String description, Date createTime) {
+    public CertificateOrder(Date endTime, BigDecimal cost, String description, Date createTime) {
         this.endTime = endTime;
         this.cost = cost;
         this.description = description;

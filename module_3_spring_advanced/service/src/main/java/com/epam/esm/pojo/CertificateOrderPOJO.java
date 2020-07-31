@@ -2,6 +2,7 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class CertificateOrderPOJO {
 
     private Long id;
     private Date endDate;
-    private Double cost;
+    private BigDecimal cost;
     private String description;
     private Date createdDate;
 
