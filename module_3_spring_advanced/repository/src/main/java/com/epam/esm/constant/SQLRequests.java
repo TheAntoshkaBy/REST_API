@@ -12,6 +12,9 @@ public class SQLRequests {
     public static final String FIND_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER =
             "SELECT c FROM certificate c WHERE id > ?1";
 
+    public static final String FIND_COUNT_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER =
+            "SELECT count(c) FROM certificate c WHERE id > ?1";
+
     public static final String FIND_CERTIFICATE_BY_TAG_NAME =
             "SELECT c " +
                     "FROM certificate c " +

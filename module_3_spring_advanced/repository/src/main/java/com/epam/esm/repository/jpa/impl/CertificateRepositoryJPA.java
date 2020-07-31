@@ -94,12 +94,20 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
                 .getResultList();
     }
 
-    @Deprecated
     @SuppressWarnings("unchecked")
-    public List<Certificate> findAllByIdThreshold(long id) {
+    public List<Certificate> findAllByIdThreshold(long id, int page, int size) {
         return entityManager.createQuery(SQLRequests.FIND_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER)
                 .setParameter(1, id)
+                .setFirstResult(page)
+                .setMaxResults(size)
                 .getResultList();
+    }
+
+    public int findCountAllByIdThreshold(long id) {
+        Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_ALL_CERTIFICATES_WHERE_ID_MORE_THAN_PARAMETER)
+                .setParameter(1, id)
+                .getSingleResult();
+        return count.intValue();
     }
 
     @Deprecated

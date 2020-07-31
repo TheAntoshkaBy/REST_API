@@ -1,9 +1,9 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.controller.CertificateController;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
@@ -28,20 +28,15 @@ public class CertificateList {
         private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
         private final static String CURRENT_PAGE_MODEL_PARAM = "current";
         private List<CertificateDTO> certificatesDTO;
-        private int certificatesCount;
-        private int page;
-        private int size;
+        private int certificatesCount = 0;
+        private int page = 1;
+        private int size = 5;
         private Map<String, String> params;
         private CollectionModel<EntityModel<CertificateDTO>> certificates;
         private List<TagDTO> tags;
 
-        public CertificateListBuilder(List<CertificateDTO> certificates,
-                                      Map<String, String> params, int certificatesCount, int page, int size) {
-            this.certificatesCount = certificatesCount;
+        public CertificateListBuilder(List<CertificateDTO> certificates) {
             this.certificatesDTO = certificates;
-            this.params = params;
-            this.page = page;
-            this.size = size;
         }
 
         public CertificateListBuilder tags(List<TagDTO> tags) {
@@ -49,35 +44,58 @@ public class CertificateList {
             return this;
         }
 
+        public CertificateListBuilder page(int page){
+            this.page = page;
+            return this;
+        }
+
+        public CertificateListBuilder size(int size){
+            this.size = size;
+            return this;
+        }
+
+        public CertificateListBuilder resultCount(int resultCount){
+            this.certificatesCount = resultCount;
+            return this;
+        }
+
+        public CertificateListBuilder parameters(Map<String, String> params){
+            this.params = params;
+            return this;
+        }
+
         public CertificateList build() {
             CertificateList certificateList = new CertificateList();
-            CollectionModel<EntityModel<CertificateDTO>> certificateListModel = buildModel();
+            CollectionModel<EntityModel<CertificateDTO>> certificateListModel = buildModelWithPagination();
             certificateList.setCertificates(certificateListModel);
             return certificateList;
         }
 
-        private CollectionModel<EntityModel<CertificateDTO>> buildModel() {
+        private CollectionModel<EntityModel<CertificateDTO>> buildModelWithPagination() {
             this.certificates = CollectionModel.of(
                     certificatesDTO
                             .stream()
                             .map(CertificateDTO::getModel)
                             .collect(Collectors.toList())
             );
-            if (certificatesCount > page * size) {
-                int nextPage = page + 1;
-                params.put("page", String.valueOf(nextPage));
-                this.certificates.add(linkTo(methodOn(CertificateController.class)
-                        .find(params, this.tags)).withRel(NEXT_PAGE_MODEL_PARAM));
-            }
 
-            this.certificates.add(linkTo(methodOn(CertificateController.class)
-                    .find(params, this.tags)).withRel(CURRENT_PAGE_MODEL_PARAM));
+            if(certificatesCount != 0 && params != null){
+                if (certificatesCount > page * size) {
+                    int nextPage = page + 1;
+                    params.put("page", String.valueOf(nextPage));
+                    this.certificates.add(linkTo(methodOn(CertificateController.class)
+                            .find(params, this.tags)).withRel(NEXT_PAGE_MODEL_PARAM));
+                }
 
-            if (page != 1) {
-                int prevPage = page - 1;
-                params.put("page", String.valueOf(prevPage));
                 this.certificates.add(linkTo(methodOn(CertificateController.class)
-                        .find(params, this.tags)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+                        .find(params, this.tags)).withRel(CURRENT_PAGE_MODEL_PARAM));
+
+                if (page != 1) {
+                    int prevPage = page - 1;
+                    params.put("page", String.valueOf(prevPage));
+                    this.certificates.add(linkTo(methodOn(CertificateController.class)
+                            .find(params, this.tags)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+                }
             }
             return this.certificates;
         }

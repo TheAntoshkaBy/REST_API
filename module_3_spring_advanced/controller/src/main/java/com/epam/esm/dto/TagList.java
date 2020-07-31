@@ -1,9 +1,12 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.controller.TagController;
+import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.pojo.TagPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
@@ -28,27 +31,72 @@ public class TagList {
 
     private CollectionModel<EntityModel<TagDTO>> tags;
 
-    public TagList(List<TagDTO> tagList, int tagCount, int page, int size) {
-        this.tags = CollectionModel.of(
-                tagList
-                        .stream()
-                        .map(TagDTO::getModel)
-                        .collect(Collectors.toList())
-        );
+    private TagList() {
+    }
 
-        if (tagCount > page * size) {
-            int nextPage = page + 1;
-            this.tags.add(linkTo(methodOn(TagController.class)
-                    .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
+    public static class TagListBuilder {
+        private final static String NEXT_PAGE_MODEL_PARAM = "next";
+        private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
+        private final static String CURRENT_PAGE_MODEL_PARAM = "current";
+        private List<TagDTO> tagsDTO;
+        private List<TagPOJO> tagsPOJO;
+        private int tagsCount = 0;
+        private int page = 1;
+        private int size = 5;
+        private CollectionModel<EntityModel<TagDTO>> tags;
+
+        public TagListBuilder(List<TagPOJO> tags) {
+            this.tagsPOJO = tags;
         }
 
-        this.tags.add(linkTo(methodOn(TagController.class)
-                .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
+        public TagListBuilder page(int page){
+            this.page = page;
+            return this;
+        }
 
-        if (page != 1) {
-            int prevPage = page - 1;
+        public TagListBuilder size(int size){
+            this.size = size;
+            return this;
+        }
+
+        public TagListBuilder resultCount(int resultCount){
+            this.tagsCount = resultCount;
+            return this;
+        }
+
+        public TagList build() {
+            TagList tagList = new TagList();
+            CollectionModel<EntityModel<TagDTO>> tagsListModel = buildModelWithPagination();
+            tagList.setTags(tagsListModel);
+            return tagList;
+        }
+
+        private CollectionModel<EntityModel<TagDTO>> buildModelWithPagination() {
+            this.tagsDTO = ControllerSupporter.tagPojoListToTagDtoList(this.tagsPOJO);
+
+            this.tags = CollectionModel.of(
+                    this.tagsDTO
+                            .stream()
+                            .map(TagDTO::getModel)
+                            .collect(Collectors.toList())
+            );
+
+            if (this.tagsCount > page * size) {
+                int nextPage = page + 1;
+                this.tags.add(linkTo(methodOn(TagController.class)
+                        .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
+            }
+
             this.tags.add(linkTo(methodOn(TagController.class)
-                    .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+                    .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
+
+            if (page != 1) {
+                int prevPage = page - 1;
+                this.tags.add(linkTo(methodOn(TagController.class)
+                        .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+            }
+
+            return this.tags;
         }
     }
 }

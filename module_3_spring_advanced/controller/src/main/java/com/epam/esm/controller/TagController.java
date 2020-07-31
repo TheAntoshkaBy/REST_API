@@ -55,12 +55,11 @@ public class TagController {
                     defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
                     required = false) int size) {
 
-        return new ResponseEntity<>(new TagList(
-                ControllerSupporter.tagPojoListToTagDtoList(service.findAll(page, size)),
-                service.getTagCount(),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new TagList.TagListBuilder(service.findAll(page, size))
+                        .resultCount(service.getTagCount())
+                        .page(page).size(size)
+                        .build(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -73,11 +72,9 @@ public class TagController {
                                                required = false) int size) {
         service.delete(id);
 
-        return new ResponseEntity<>(new TagList(
-                ControllerSupporter.tagPojoListToTagDtoList(service.findAll(page, size)),
-                service.getTagCount(),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>( new TagList.TagListBuilder(service.findAll(page, size))
+                .resultCount(service.getTagCount())
+                .page(page).size(size)
+                .build(), HttpStatus.OK);
     }
 }

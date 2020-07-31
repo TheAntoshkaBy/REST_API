@@ -29,43 +29,51 @@ public class CertificateServiceRequestParameterHandler {
     @Autowired
     private List<ComplexFilter> filters;
 
-    public List<CertificatePOJO> find(Map<String, String> request, int page, int size) {
-        return filter(request, page, size);
+    public Map<List<CertificatePOJO>, Integer> find(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
+        return filter(request, tags, page, size);
     }
 
-    public List<CertificatePOJO> filter(Map<String, String> request, int page, int size) {
-        List<CertificatePOJO> result;
+    private Map<List<CertificatePOJO>, Integer> filter(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
+        List<CertificatePOJO> resultList;
+        int resultCount = 0;
+        Map<List<CertificatePOJO>, Integer> result = new HashMap<>();
         try {
             if (request.get("filter") == null) {
-                result = sort(request, page, size);
+                resultList = sort(request, page, size);
+                resultCount = certificateService.getCertificateCount();
             } else {
-                result = certificateFilterRequestParameterList.stream()
+                CertificateFilterRequestParameter resultFilter = certificateFilterRequestParameterList.stream()
                         .filter(certificateFilter -> certificateFilter
                                 .getType()
                                 .equals(request.get("filter")))
                         .findFirst()
-                        .get()
-                        .filterOutOurCertificates(request, page, size);
+                        .get();
+                        resultList = resultFilter.filterOutOurCertificates(request, tags, page, size);
+                        resultCount = resultFilter.getCountFoundPOJO(request,tags);
             }
         } catch (NoSuchElementException e) {
             throw new ServiceException(
                     new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
             );
         }
-
+        result.put(resultList,resultCount);
         return result;
     }
 
-    public List<CertificatePOJO> sort(Map<String, String> request, int page, int size) {
+    private List<CertificatePOJO> sort(Map<String, String> request, int page, int size) {
         List<CertificatePOJO> result;
         try {
-            result = certificateSortRequestParameterList.stream()
-                    .filter(certificateFilter -> certificateFilter
-                            .getType()
-                            .equals(request.get("sort")))
-                    .findFirst()
-                    .get()
-                    .sortOurCertificates(request, page, size);
+            if (request.get("sort") == null) {
+                result = certificateService.findAll(page, size);
+            } else {
+                result = certificateSortRequestParameterList.stream()
+                        .filter(certificateFilter -> certificateFilter
+                                .getType()
+                                .equals(request.get("sort")))
+                        .findFirst()
+                        .get()
+                        .sortOurCertificates(request, page, size);
+            }
         } catch (NoSuchElementException e) {
             throw new ServiceException(
                     new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)

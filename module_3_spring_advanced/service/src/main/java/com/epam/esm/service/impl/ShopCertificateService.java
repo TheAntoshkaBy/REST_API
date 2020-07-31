@@ -61,8 +61,8 @@ public class ShopCertificateService implements CertificateService {
      * @return Certificate list
      */
     @Override
-    public List<CertificatePOJO> findAll(Map<String, String> params,  int page, int size) {
-        return certificateServiceRequestParameterHandler.find(params, page, size);
+    public Map<List<CertificatePOJO>, Integer> findAll(Map<String, String> params,  List<TagPOJO> tags, int page, int size) {
+        return certificateServiceRequestParameterHandler.find(params, tags, page, size);
     }
 
     public List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page, int size) {
@@ -81,6 +81,11 @@ public class ShopCertificateService implements CertificateService {
                 .filterAndSetParams(request);
         String query = certificateServiceRequestParameterHandler.filterAndGetCount(request, tags);
         return certificateRepository.findCountComplex(query, parametrizedRequest);
+    }
+
+    @Override
+    public int findByAllCertificatesByIdThresholdCount(long id) {
+        return certificateRepository.findCountAllByIdThreshold(id);
     }
 
     @Override
@@ -112,8 +117,7 @@ public class ShopCertificateService implements CertificateService {
     @Override
     public List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size) {
         return ServiceSupporter
-                .convertCertificateEntityToCertificatePOJO(certificateRepository.findAllByIdThreshold(id));
-
+                .convertCertificateEntityToCertificatePOJO(certificateRepository.findAllByIdThreshold(id, --page, size));
     }
 
     @Deprecated
@@ -180,7 +184,6 @@ public class ShopCertificateService implements CertificateService {
         }
     }
 
-    @Deprecated
     @Override
     public List<CertificatePOJO> findByAllCertificatesByNamePart(String text) {
         text += '%';

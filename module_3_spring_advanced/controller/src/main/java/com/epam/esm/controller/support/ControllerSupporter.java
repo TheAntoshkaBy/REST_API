@@ -1,16 +1,19 @@
 package com.epam.esm.controller.support;
 
 import com.epam.esm.dto.CertificateDTO;
+import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.pojo.UserPOJO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ControllerSupporter {
@@ -83,5 +86,41 @@ public class ControllerSupporter {
                 user.getRoles(),
                 user.getEmail()
         );
+    }
+
+    public static CertificateList formationCertificateList(
+            Map<List<CertificatePOJO>, Integer> certificatesMap,
+            int page,
+            int size,
+            Map<String,String> params){
+        List<CertificatePOJO> certificates = certificatesMap
+                .entrySet()
+                .iterator()
+                .next()
+                .getKey();
+        int resultCount = certificatesMap.get(certificates);
+        List<CertificateDTO> certificatesDTO = ControllerSupporter
+                .certificatePojoListToCertificateDtoList(certificates);
+
+        return new CertificateList
+                .CertificateListBuilder(certificatesDTO)
+                .page(page)
+                .size(size)
+                .parameters(params)
+                .resultCount(resultCount)
+                .build();
+    }
+
+    public static int getValidPaginationParam(String page, String paramName) {
+        int defaultPage = 1;
+        int defaultSize = 5;
+
+        int defaultReturn = paramName.equals("page") ? defaultSize : defaultPage;
+        try {
+            int paramInteger = Integer.parseInt(page);
+            return paramInteger > 0 ? paramInteger : defaultReturn;
+        } catch (NumberFormatException e) {
+            return defaultReturn;
+        }
     }
 }

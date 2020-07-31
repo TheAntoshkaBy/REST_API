@@ -4,11 +4,11 @@ import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.TagDTO;
-import com.epam.esm.entity.Certificate;
-import com.epam.esm.exception.ControllerException;
+import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +34,6 @@ public class CertificateController {
 
     private final static String PAGE_NAME_PARAMETER = "page";
     private final static String PAGE_SIZE_NAME_PARAMETER = "size";
-    private final static String PAGE_DEFAULT_PARAMETER = "1";
-    private final static String PAGE_SIZE_DEFAULT_PARAMETER = "5";
     private CertificateService service;
 
     @Autowired
@@ -52,52 +50,15 @@ public class CertificateController {
         ).getModel(), HttpStatus.CREATED);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> find(
+    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CertificateList> find(
             @RequestParam Map<String, String> params,
             @RequestBody(required = false) List<TagDTO> tags) {
-        String searchRequestParameter = "search";
-        String filterRequestParameter = "filter";
-        String sortRequestParameter = "sort";
-        String complexRequestParameter = "complex";
+        int page = ControllerSupporter
+                .getValidPaginationParam(params.get(PAGE_NAME_PARAMETER), PAGE_NAME_PARAMETER);
+        int size = ControllerSupporter
+                .getValidPaginationParam(params.get(PAGE_SIZE_NAME_PARAMETER), PAGE_SIZE_NAME_PARAMETER);
 
-        int page = getValidPaginationParam(params.get(PAGE_NAME_PARAMETER), PAGE_NAME_PARAMETER);
-        int size = getValidPaginationParam(params.get(PAGE_SIZE_NAME_PARAMETER), PAGE_SIZE_NAME_PARAMETER);
-
-        String searchParameter = params.get(searchRequestParameter);
-        String findParameter = params.get(filterRequestParameter);
-        String sortParameter = params.get(sortRequestParameter);
-
-        if (complexRequestParameter.equals(searchParameter)) {
-            return findComplex(params, tags, page, size);
-        } else {
-            if (findParameter != null || sortParameter != null) {
-                return findByFilter(params, page, size);
-            }
-            return findAll(params,page, size);
-        }
-    }
-
-    private ResponseEntity<?> findAll(
-            @RequestParam Map<String, String> params,
-            @RequestParam(value = PAGE_NAME_PARAMETER, defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER, defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
-
-        List<CertificateDTO> certificatesDTO = ControllerSupporter
-                .certificatePojoListToCertificateDtoList(service.findAll(page, size));
-        int resultCount = service.getCertificateCount();
-        CertificateList certificateList = new CertificateList
-                .CertificateListBuilder(certificatesDTO,params,resultCount,page,size).build();
-        return new ResponseEntity<>(certificateList, HttpStatus.OK);
-
-    }
-
-    private ResponseEntity<?> findComplex(
-            @RequestParam Map<String, String> params,
-            @RequestBody List<TagDTO> tags,
-            @RequestParam(value = PAGE_NAME_PARAMETER, defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER, defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size
-    ) {
         List<TagPOJO> tagsPojo = null;
         if (tags != null) {
             tagsPojo = tags
@@ -105,63 +66,62 @@ public class CertificateController {
                     .map(ControllerSupporter::tagDtoToTagPOJO)
                     .collect(Collectors.toList());
         }
-        List<CertificateDTO> certificatesDTO = ControllerSupporter
-                .certificatePojoListToCertificateDtoList(
-                        service.findAllComplex(params, tagsPojo, page, size)
-                );
-        int resultCount = service.getCountComplex(params, tagsPojo);
 
-        return new ResponseEntity<>(
-                new CertificateList
-                        .CertificateListBuilder(certificatesDTO,params,resultCount, page, size)
-                        .tags(tags).build(), HttpStatus.OK);
+        Map<List<CertificatePOJO>, Integer> certificatesMap = service.findAll(params, tagsPojo, page, size);
+
+        CertificateList certificateList = ControllerSupporter.formationCertificateList(
+                certificatesMap,
+                page,
+                size,
+                params
+        );
+
+        return new ResponseEntity<>(certificateList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<CertificateDTO>> findById(@PathVariable long id) {
 
         return new ResponseEntity<>(
                 new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)//fixme что возвращать
     public ResponseEntity<?> deleteCertificate(
             @PathVariable Integer id) {
+        service.delete(id);
 
-        try {
-            service.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ControllerException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateCertificate
+    public ResponseEntity<EntityModel<CertificateDTO>> updateCertificate
             (@RequestBody @Valid CertificateDTO certificate, @PathVariable int id) {
         service.update(id, ControllerSupporter.certificateDtoToCertificatePOJO(certificate));
+
         return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateCertificatePrice
+    public ResponseEntity<EntityModel<CertificateDTO>> updateCertificatePrice
             (@RequestParam double price, @PathVariable long id) {
         service.updatePrice(id, price);
+
         return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTagToCertificate(@PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
+    public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(@PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
         service.addTag(id, ControllerSupporter.tagDtoToTagPOJO(tag));
 
         return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTagToCertificate
+    public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate
             (@PathVariable Integer id, @PathVariable Integer idTag) {
         service.addTag(id, idTag);
 
@@ -169,47 +129,10 @@ public class CertificateController {
     }
 
     @DeleteMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> deleteTagToCertificate
+    public ResponseEntity<EntityModel<CertificateDTO>> deleteTagToCertificate
             (@PathVariable Integer id, @PathVariable Integer idTag) {
         service.deleteTag(id, idTag);
 
         return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
-    }
-
-    int getValidPaginationParam(String param, String paramName) {
-        String pageParameter = "page";
-        int defaultPage = 1;
-        int defaultSize = 5;
-
-        if (param == null) {
-            if (paramName.equals(pageParameter)) {
-                return defaultPage;
-            } else {
-                return defaultSize;
-            }
-        } else {
-            try {
-                int paramInteger = Integer.parseInt(param);
-                return paramInteger > 0 ? paramInteger : defaultPage;
-            } catch (NumberFormatException e) {
-                return defaultPage;
-            }
-        }
-    }
-
-    public ResponseEntity<?> findByFilter(Map<String, String> params,
-                                          @RequestParam(value = PAGE_NAME_PARAMETER,
-                                                  defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-                                          @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                                                  defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
-
-        List<CertificateDTO> certificatesDTO = ControllerSupporter
-                .certificatePojoListToCertificateDtoList(
-                        service.findAll(params, page, size));
-        int resultCount = service.getCertificateCount();
-
-        CertificateList certificateList = new CertificateList
-                .CertificateListBuilder(certificatesDTO,params,resultCount,page,size).build();
-        return new ResponseEntity<>(certificateList, HttpStatus.OK);
     }
 }

@@ -1,6 +1,8 @@
 package com.epam.esm.dto;
 
 import com.epam.esm.controller.UserController;
+import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.pojo.UserPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -24,27 +26,72 @@ public class UserList {
     private final static String CURRENT_PAGE_MODEL_PARAM = "current";
     private CollectionModel<EntityModel<UserDTO>> users;
 
-    public UserList(List<UserDTO> usersDTO, int tagCount, int page, int size) {
-        this.users = CollectionModel.of(
-                usersDTO
-                        .stream()
-                        .map(UserDTO::getModel)
-                        .collect(Collectors.toList())
-        );
+    private UserList() {
+    }
 
-        if (tagCount > page * size) {
-            int nextPage = page + 1;
-            this.users.add(linkTo(methodOn(UserController.class)
-                    .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
+    public static class UserListBuilder {
+        private final static String NEXT_PAGE_MODEL_PARAM = "next";
+        private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
+        private final static String CURRENT_PAGE_MODEL_PARAM = "current";
+        private List<UserDTO> userDTO;
+        private List<UserPOJO> usersPOJO;
+        private int userCount = 0;
+        private int page = 1;
+        private int size = 5;
+        private CollectionModel<EntityModel<UserDTO>> users;
+
+        public UserListBuilder(List<UserPOJO> users) {
+            this.usersPOJO = users;
         }
 
-        this.users.add(linkTo(methodOn(UserController.class)
-                .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
+        public UserListBuilder page(int page){
+            this.page = page;
+            return this;
+        }
 
-        if (page != 1) {
-            int prevPage = page - 1;
+        public UserListBuilder size(int size){
+            this.size = size;
+            return this;
+        }
+
+        public UserListBuilder resultCount(int resultCount){
+            this.userCount = resultCount;
+            return this;
+        }
+
+        public UserList build() {
+            UserList userList = new UserList();
+            CollectionModel<EntityModel<UserDTO>> usersListModel = buildModelWithPagination();
+            userList.setUsers(usersListModel);
+            return userList;
+        }
+
+        private CollectionModel<EntityModel<UserDTO>> buildModelWithPagination() {
+            this.userDTO = ControllerSupporter.userPojoListToUserDtoList(this.usersPOJO);
+
+            this.users = CollectionModel.of(
+                    userDTO
+                            .stream()
+                            .map(UserDTO::getModel)
+                            .collect(Collectors.toList())
+            );
+
+            if (userCount > page * size) {
+                int nextPage = page + 1;
+                this.users.add(linkTo(methodOn(UserController.class)
+                        .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
+            }
+
             this.users.add(linkTo(methodOn(UserController.class)
-                    .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+                    .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
+
+            if (page != 1) {
+                int prevPage = page - 1;
+                this.users.add(linkTo(methodOn(UserController.class)
+                        .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+            }
+
+            return this.users;
         }
     }
 }

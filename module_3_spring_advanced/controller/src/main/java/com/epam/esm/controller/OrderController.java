@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
 import com.epam.esm.exception.ControllerException;
@@ -41,12 +40,10 @@ public class OrderController {
             @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                     defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
                     required = false) int size) {
-        return new ResponseEntity<>(new OrderList(
-                ControllerSupporter.orderPojoListToOrderDtoList(service.findAll(page, size)),
-                service.getOrdersCount(),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new OrderList.OrderListBuilder(service.findAll(page, size))
+                .page(page).size(size)
+                .resultCount(service.getOrdersCount()), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -62,12 +59,10 @@ public class OrderController {
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new OrderList(
-                ControllerSupporter.orderPojoListToOrderDtoList(service.findAll(page, size)),
-                service.getOrdersCount(),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new OrderList.OrderListBuilder(service.findAll(page, size))
+                        .page(page).size(size)
+                        .resultCount(service.getOrdersCount()), HttpStatus.OK);
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +70,9 @@ public class OrderController {
         int startPage = 1;
         int startSize = 5;
 
-        return new ResponseEntity<>(new CertificateOrderDTO(service.find(id)).getModel(startPage, startSize), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new CertificateOrderDTO(service.find(id)).getModel(startPage, startSize), HttpStatus.OK
+        );
     }
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)

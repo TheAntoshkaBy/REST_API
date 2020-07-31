@@ -18,7 +18,7 @@ public interface CertificateService {
     /**
      * This method delegates management to one of find methods.
      **/
-    List<CertificatePOJO> findAll(Map<String, String> params, int page, int size);
+    Map<List<CertificatePOJO>, Integer> findAll(Map<String, String> params, List<TagPOJO> tags, int page, int size);
 
     int getCertificateCount();
 
@@ -31,8 +31,7 @@ public interface CertificateService {
 
     int getCountComplex(Map<String, String> request, List<TagPOJO> tags);
 
-    //List<CertificatePOJO> findAllByTags(List<TagPOJO> tagsPOJO, int page, int size);
-
+    int findByAllCertificatesByIdThresholdCount(long id);
 
     /**
      * This method finds all certificates from database and sorted them using DAO

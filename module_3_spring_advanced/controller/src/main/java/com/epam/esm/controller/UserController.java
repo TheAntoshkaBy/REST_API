@@ -81,12 +81,11 @@ public class UserController {
                     defaultValue = PAGE_DEFAULT_PARAMETER) int page,
             @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                     defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
-        return new ResponseEntity<>(new UserList(
-                ControllerSupporter.userPojoListToUserDtoList(service.findAll(page, size)),
-                service.getUsersCount(),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new UserList.UserListBuilder(service.findAll(page, size))
+                        .resultCount(service.getUsersCount())
+                        .page(page).size(size)
+                        .build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -109,27 +108,18 @@ public class UserController {
                                         @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
                                                 defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
 
-        List<CertificateOrderDTO> orders = ControllerSupporter
-                .orderPojoListToOrderDtoList(orderService.findAllByOwner(id, page, size));
-
-        return new ResponseEntity<>(new OrderList(
-                orders,
-                orderService.ordersCountByOwner(id),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new OrderList.OrderListBuilder(orderService.findAllByOwner(id, page, size))
+                        .resultCount(orderService.ordersCountByOwner(id))
+                        .page(page)
+                        .size(size)
+                        .build(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{userId}/orders/{id}")
     public ResponseEntity<?> deleteOrder(
             @PathVariable Long id,
             @PathVariable Long userId,
-            @RequestParam(value = PAGE_NAME_PARAMETER,
-                    defaultValue = PAGE_DEFAULT_PARAMETER,
-                    required = false) int page,
-            @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                    defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
-                    required = false) int size,
             HttpServletRequest request) {
         checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         checkUserRulesById(request, userId);
@@ -137,18 +127,11 @@ public class UserController {
         List<CertificateOrderDTO> orders;
         try {
             orderService.delete(id);
-            orders = ControllerSupporter
-                    .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId, page, size));
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(new OrderList(
-                orders,
-                orderService.ordersCountByOwner(userId),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);//fixme
     }
 
     @PatchMapping(path = "{userId}/orders/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -170,28 +153,16 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id,
-                                    @RequestParam(value = PAGE_NAME_PARAMETER,
-                                            defaultValue = PAGE_DEFAULT_PARAMETER,
-                                            required = false) int page,
-                                    @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-                                             defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
-                                            required = false) int size) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             service.delete(id);
         } catch (ControllerException e) {
             return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(new UserList(
-                ControllerSupporter.userPojoListToUserDtoList(service.findAll(page, size)),
-                service.getUsersCount(),
-                page,
-                size
-        ), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);//fixme
     }
 
-    void checkIsCurrentUserHaveRulesForEditThisOrder(long userId, long orderId) {
+    private void checkIsCurrentUserHaveRulesForEditThisOrder(long userId, long orderId) {
         String exceptionMessageParameter = "user id";
         String exceptionMessage = "You don't have access with action for current order";
 
@@ -202,7 +173,7 @@ public class UserController {
         }
     }
 
-    boolean isThisOrderBelowCurrentUser(long userId, long orderId) {
+    private boolean isThisOrderBelowCurrentUser(long userId, long orderId) {
         List<CertificateOrderDTO> orders =
                 ControllerSupporter
                         .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId));

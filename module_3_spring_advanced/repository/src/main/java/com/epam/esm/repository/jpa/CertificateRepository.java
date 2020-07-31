@@ -22,12 +22,14 @@ public interface CertificateRepository {
 
     int findCountComplex(String query, Map<String, Object> params);
 
+    int findCountAllByIdThreshold(long id);
+
     Certificate create(Certificate certificate);
 
     List<Certificate> findAllByDate(int page, int size);
 
     @Deprecated
-    List<Certificate> findAllByIdThreshold(long id);
+    List<Certificate> findAllByIdThreshold(long id, int page, int size);
 
     @Deprecated
     List<Certificate> findAllByNamePart(String namePart);
