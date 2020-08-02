@@ -1,11 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.TagSupporter;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.TagList;
 import com.epam.esm.service.TagService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,20 +35,20 @@ public class TagController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addTag(@RequestBody @Valid TagDTO tag) {
+    public ResponseEntity<EntityModel<TagDTO>> addTag(@RequestBody @Valid TagDTO tag) {
 
         return new ResponseEntity<>(new TagDTO(
-            service.create(ControllerSupporter.tagDtoToTagPOJO(tag))
+            service.create(TagSupporter.tagDtoToTagPOJO(tag))
         ).getModel(), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findTag(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<TagDTO>> findTag(@PathVariable Long id) {
         return new ResponseEntity<>(new TagDTO(service.find(id)).getModel(), HttpStatus.OK);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll(
+    public ResponseEntity<TagList> findAll(
         @RequestParam(value = PAGE_NAME_PARAMETER,
             defaultValue = PAGE_DEFAULT_PARAMETER,
             required = false) int page,

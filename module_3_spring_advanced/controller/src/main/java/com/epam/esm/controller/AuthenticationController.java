@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.UserSupporter;
 import com.epam.esm.dto.AuthenticationRequestDto;
 import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,7 +41,8 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<Map<Object, Object>> login(
+        @RequestBody AuthenticationRequestDto requestDto) {
         String invalid = "Invalid username or password";
         String parameterUsername = "username";
         String parameterToken = "token";
@@ -65,11 +67,13 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "/registration")
-    public ResponseEntity<?> registration(@Valid @RequestBody RegistrationUserDTO userDTO) {
+    public ResponseEntity<EntityModel<RegistrationUserDTO>> registration(
+        @Valid @RequestBody RegistrationUserDTO userDTO) {
         String invalid = "Invalid username or password";
+
         try {
             UserPOJO userPOJO = userService
-                .create(ControllerSupporter.userRegistrationDtoToUserPojo(userDTO));
+                .create(UserSupporter.userRegistrationDtoToUserPojo(userDTO));
             return new ResponseEntity<>(new RegistrationUserDTO(userPOJO).getModel(),
                 HttpStatus.CREATED);
         } catch (AuthenticationException e) {

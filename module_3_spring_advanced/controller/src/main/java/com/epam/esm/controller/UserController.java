@@ -1,13 +1,12 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.OrderSupporter;
+import com.epam.esm.controller.support.UserSupporter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.UserList;
-import com.epam.esm.exception.ControllerException;
-import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.TagService;
@@ -16,6 +15,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -54,29 +54,23 @@ public class UserController {
     }
 
     @PatchMapping(path = "{id}/orders", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addOrder(
+    public ResponseEntity<EntityModel<CertificateOrderDTO>> addOrder(
         @PathVariable long id,
         @Valid @RequestBody CertificateOrderDTO order,
         HttpServletRequest request) {
-        checkUserRulesById(request, id);
-        int startPage = 1;
-        int startSize = 5;
+        UserSupporter.checkUserRulesById(request, id);
 
-        try {
-            return new ResponseEntity<>(new CertificateOrderDTO(
-                orderService.create(
-                    ControllerSupporter.orderDtoToOrderPojo(order),
-                    ControllerSupporter
-                        .userDtoToUserPojo(new UserDTO(service.find(id)))))
-                .getModel(startPage, startSize),
-                HttpStatus.CREATED);
-        } catch (ControllerException e) {
-            return new ResponseEntity<>(e.getMessages(), HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(new CertificateOrderDTO(
+            orderService.create(
+                OrderSupporter.orderDtoToOrderPojo(order),
+                UserSupporter
+                    .userDtoToUserPojo(new UserDTO(service.find(id)))))
+            .getModel(),
+            HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll(
+    public ResponseEntity<UserList> findAll(
         @RequestParam(value = PAGE_NAME_PARAMETER,
             defaultValue = PAGE_DEFAULT_PARAMETER) int page,
         @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
@@ -89,7 +83,7 @@ public class UserController {
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findUserById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<UserDTO>> findUserById(@PathVariable long id) {
         int startPage = 1;
         int startSize = 5;
 
@@ -97,13 +91,15 @@ public class UserController {
             HttpStatus.OK);
     }
 
-    @GetMapping(path = "/orders/tags", params = "search by", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findMostWidelyUsedTagByMostActiveUser() {
+    @GetMapping(path = "/orders/tags",
+        params = "search by",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TagDTO> findMostWidelyUsedTagByMostActiveUser() {
         return new ResponseEntity<>(new TagDTO(tagService.findMostWidelyUsedTag()), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}/orders", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findOrders(@PathVariable long id,
+    public ResponseEntity<OrderList> findOrders(@PathVariable long id,
         @RequestParam(value = PAGE_NAME_PARAMETER,
             defaultValue = PAGE_DEFAULT_PARAMETER) int page,
         @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
@@ -122,8 +118,8 @@ public class UserController {
         @PathVariable Long id,
         @PathVariable Long userId,
         HttpServletRequest request) {
-        checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
-        checkUserRulesById(request, userId);
+        UserSupporter.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
+        UserSupporter.checkUserRulesById(request, userId);
 
         orderService.delete(id);
 
@@ -131,21 +127,19 @@ public class UserController {
     }
 
     @PatchMapping(path = "{userId}/orders/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addCertificates(
+    public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
         @PathVariable long userId,
         @PathVariable long id,
         @RequestParam List<Long> certificatesId,
         HttpServletRequest request) {
-        checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
-        checkUserRulesById(request, userId);
-        int startPage = 1;
-        int startSize = 5;
+        UserSupporter.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
+        UserSupporter.checkUserRulesById(request, userId);
 
         return new ResponseEntity<>(new CertificateOrderDTO(
             orderService
                 .addCertificates(id, certificatesId)
         )
-            .getModel(startPage, startSize), HttpStatus.OK);
+            .getModel(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -154,40 +148,5 @@ public class UserController {
         service.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    private void checkIsCurrentUserHaveRulesForEditThisOrder(long userId, long orderId) {
-        String exceptionMessageParameter = "user id";
-        String exceptionMessage = "You don't have access with action for current order";
-
-        if (!isThisOrderBelowCurrentUser(userId, orderId)) {
-            throw new ControllerException(
-                new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
-            );
-        }
-    }
-
-    private boolean isThisOrderBelowCurrentUser(long userId, long orderId) {
-        List<CertificateOrderDTO> orders =
-            ControllerSupporter
-                .orderPojoListToOrderDtoList(orderService.findAllByOwner(userId));
-        return orders.stream()
-            .anyMatch(certificateOrderDTO -> certificateOrderDTO.getId() == orderId);
-    }
-
-    private void checkUserRulesById(HttpServletRequest req, long actionUserId) {
-        String exceptionMessageParameter = "user id";
-        String exceptionMessage = "You don't have access with action for current user";
-
-        String token = jwtTokenProvider.resolveToken(req);
-        String username = jwtTokenProvider.getUsername(token);
-        UserDTO userDTO = new UserDTO(service.findByLogin(username));
-
-        if (userDTO.getId() != actionUserId && userDTO.getRoles().stream()
-            .noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
-            throw new ControllerException(
-                new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
-            );
-        }
     }
 }

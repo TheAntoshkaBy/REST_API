@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.CertificateController;
+import com.epam.esm.controller.support.CertificateSupporter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -19,32 +20,32 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.stereotype.Component;
 
 @Data
 @NoArgsConstructor
+@Component
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@PropertySource("classpath:validationMessages.properties")
 public class CertificateDTO {
 
-    @Null
+    @Null(message = CertificateSupporter.ERROR_ID)
     private Long id;
 
     @NotNull
-    @Size(min = 2, max = 70, message = "Name must be between 2 and 70 characters")
+    @Size(min = 2, max = 70, message = CertificateSupporter.ERROR_NAME)
     private String name;
 
-    @NotNull
-    @Size(min = 3, max = 170, message = "Description must be between 3 and 170 characters")
+    @NotNull(message = CertificateSupporter.ERROR_NULL_DESCRIPTION)
+    @Size(min = 3, max = 170, message = CertificateSupporter.ERROR_DESCRIPTION)
     private String description;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = CertificateSupporter.ERROR_NULL_PRICE)
+    @PositiveOrZero(message = CertificateSupporter.ERROR_PRICE)
     private BigDecimal price;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = CertificateSupporter.ERROR_NULL_DURATION_DAYS)
+    @PositiveOrZero(message = CertificateSupporter.ERROR_DURATION_DAYS)
     private Integer durationDays;
 
     @JsonIgnore
@@ -52,15 +53,15 @@ public class CertificateDTO {
 
     @Column(name = "date_of_creation")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
-    @Null
+    @Null(message = CertificateSupporter.ERROR_DATE_OF_CREATION)
     private Date creationDate;
 
-    @Column(name = "date_of_creation")
+    @Column(name = "date_of_modification")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
-    @Null
+    @Null(message = CertificateSupporter.ERROR_DATE_OF_MODIFICATION)
     private Date modification;
 
-    @Null
+    @Null(message = CertificateSupporter.ERROR_TAGS_LIST)
     private List<Tag> tags;
 
     public CertificateDTO(CertificatePOJO certificate) {

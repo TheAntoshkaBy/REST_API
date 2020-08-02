@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.UserController;
+import com.epam.esm.controller.support.UserSupporter;
 import com.epam.esm.entity.Role;
 import com.epam.esm.pojo.UserPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,36 +25,31 @@ import org.springframework.hateoas.EntityModel;
 public class RegistrationUserDTO {
 
     @ToString.Exclude
-    @Null
+    @Null(message = UserSupporter.USER_ID)
     private Long id;
 
-    @NotNull
-    @Size(min = 2, max = 70, message
-        = "Name must be between 2 and 70 characters")
+    @NotNull(message = UserSupporter.ERROR_NAME_NOT_NULL)
+    @Size(min = 2, max = 70, message = UserSupporter.ERROR_NAME)
     private String name;
 
-    @NotNull
-    @Size(min = 3, max = 170, message
-        = "Surname must be between 3 and 170 characters")
+    @NotNull(message = UserSupporter.ERROR_SURNAME_NOT_NULL)
+    @Size(min = 3, max = 170, message = UserSupporter.ERROR_SURNAME)
     private String surname;
 
-    @NotNull
-    @Size(min = 5, max = 30, message
-        = "Login must be between 5 and 30 characters")
+    @NotNull(message = UserSupporter.ERROR_LOGIN_NOT_NULL)
+    @Size(min = 5, max = 30, message = UserSupporter.ERROR_LOGIN)
     private String login;
 
-    @NotNull
-    @Size(min = 4, max = 30, message
-        = "Password must be between 4 and 30 characters")
+    @NotNull(message = UserSupporter.ERROR_PASSWORD_NOT_NULL)
+    @Size(min = 4, max = 30, message = UserSupporter.ERROR_PASSWORD)
     private String password;
 
-    @Email(message = "Email should be valid")
-    @NotNull
+    @Email(message = UserSupporter.ERROR_EMAIL)
+    @NotNull(message = UserSupporter.ERROR_EMAIL_NOT_NULL)
     private String email;
 
-    @Null
+    @Null(message = UserSupporter.ERROR_ROLES)
     private List<Role> roles;
-
 
     @JsonIgnore
     private EntityModel<RegistrationUserDTO> model;

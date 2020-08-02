@@ -14,7 +14,8 @@ import org.springframework.hateoas.EntityModel;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CertificateList {
+public class
+CertificateList {
 
     private CollectionModel<EntityModel<CertificateDTO>> certificates;
 

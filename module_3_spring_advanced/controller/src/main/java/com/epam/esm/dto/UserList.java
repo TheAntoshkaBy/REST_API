@@ -4,7 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.UserController;
-import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.UserSupporter;
 import com.epam.esm.pojo.UserPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -68,7 +68,7 @@ public class UserList {
         }
 
         private CollectionModel<EntityModel<UserDTO>> buildModelWithPagination() {
-            this.userDTO = ControllerSupporter.userPojoListToUserDtoList(this.usersPOJO);
+            this.userDTO = UserSupporter.userPojoListToUserDtoList(this.usersPOJO);
 
             this.users = CollectionModel.of(
                 userDTO

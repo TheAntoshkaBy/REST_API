@@ -1,6 +1,8 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.CertificateSupporter;
 import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.TagSupporter;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.TagDTO;
@@ -43,13 +45,14 @@ public class CertificateController {
 
     @PostMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addCertificate(
+    public ResponseEntity<EntityModel<CertificateDTO>> addCertificate(
         @RequestBody @Valid CertificateDTO certificateDTO) {
-        service.create(ControllerSupporter
+        service.create(CertificateSupporter
             .certificateDtoToCertificatePOJO(certificateDTO));
+
         return new ResponseEntity<>(new CertificateDTO(
             service.create(
-                ControllerSupporter
+                CertificateSupporter
                     .certificateDtoToCertificatePOJO(certificateDTO))
         ).getModel(), HttpStatus.CREATED);
     }
@@ -70,14 +73,14 @@ public class CertificateController {
         if (tags != null) {
             tagsPojo = tags
                 .stream()
-                .map(ControllerSupporter::tagDtoToTagPOJO)
+                .map(TagSupporter::tagDtoToTagPOJO)
                 .collect(Collectors.toList());
         }
 
         Map<List<CertificatePOJO>, Integer> certificatesMap = service
             .findAll(params, tagsPojo, page, size);
 
-        CertificateList certificateList = ControllerSupporter
+        CertificateList certificateList = CertificateSupporter
             .formationCertificateList(
                 certificatesMap,
                 page,
@@ -108,7 +111,7 @@ public class CertificateController {
     public ResponseEntity<EntityModel<CertificateDTO>> updateCertificate
         (@RequestBody @Valid CertificateDTO certificate, @PathVariable int id) {
         service.update(id,
-            ControllerSupporter.certificateDtoToCertificatePOJO(certificate));
+            CertificateSupporter.certificateDtoToCertificatePOJO(certificate));
 
         return new ResponseEntity<>(
             new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
@@ -128,7 +131,7 @@ public class CertificateController {
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
         @PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
-        service.addTag(id, ControllerSupporter.tagDtoToTagPOJO(tag));
+        service.addTag(id, TagSupporter.tagDtoToTagPOJO(tag));
 
         return new ResponseEntity<>(
             new CertificateDTO(service.find(id)).getModel(),

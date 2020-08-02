@@ -5,6 +5,7 @@ import com.epam.esm.dto.OrderList;
 import com.epam.esm.service.OrderService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class OrderController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findAll(
+    public ResponseEntity<OrderList> findAll(
         @RequestParam(
             value = PAGE_NAME_PARAMETER,
             defaultValue = PAGE_DEFAULT_PARAMETER,
@@ -47,47 +48,33 @@ public class OrderController {
             new OrderList.OrderListBuilder(service.findAll(page, size))
                 .page(page)
                 .size(size)
-                .resultCount(service.getOrdersCount()),
+                .resultCount(service.getOrdersCount())
+                .build(),
             HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteOrder(
-        @PathVariable Long id,
-        @RequestParam(
-            value = PAGE_NAME_PARAMETER,
-            defaultValue = PAGE_DEFAULT_PARAMETER,
-            required = false)
-            int page,
-        @RequestParam(
-            value = PAGE_SIZE_NAME_PARAMETER,
-            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
-            required = false)
-            int size) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         service.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> findOrderById(@PathVariable long id) {
-        int startPage = 1;
-        int startSize = 5;
+    public ResponseEntity<EntityModel<CertificateOrderDTO>> findOrderById(@PathVariable long id) {
 
         return new ResponseEntity<>(
-            new CertificateOrderDTO(service.find(id)).getModel(startPage, startSize),
+            new CertificateOrderDTO(service.find(id)).getModel(),
             HttpStatus.OK);
     }
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addCertificates(
+    public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
         @PathVariable long id, @RequestParam List<Long> certificatesId) {
-        int startPage = 1;
-        int startSize = 5;
 
         return new ResponseEntity<>(
             new CertificateOrderDTO(service.addCertificates(id, certificatesId))
-                .getModel(startPage, startSize),
+                .getModel(),
             HttpStatus.OK);
     }
 }

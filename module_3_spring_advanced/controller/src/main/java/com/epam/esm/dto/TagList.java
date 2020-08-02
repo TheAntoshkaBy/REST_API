@@ -4,7 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.TagController;
-import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.TagSupporter;
 import com.epam.esm.pojo.TagPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -71,7 +71,7 @@ public class TagList {
         }
 
         private CollectionModel<EntityModel<TagDTO>> buildModelWithPagination() {
-            this.tagsDTO = ControllerSupporter.tagPojoListToTagDtoList(this.tagsPOJO);
+            this.tagsDTO = TagSupporter.tagPojoListToTagDtoList(this.tagsPOJO);
 
             this.tags = CollectionModel.of(
                 this.tagsDTO

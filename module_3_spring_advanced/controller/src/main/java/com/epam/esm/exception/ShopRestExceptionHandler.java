@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +36,12 @@ public class ShopRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(value = HttpStatus.FAILED_DEPENDENCY)
     public List<InvalidControllerOutputMessage> ShopControllerHandler(ControllerException e) {
         return e.getMessages();
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public String ShopControllerHandler(BadCredentialsException e) {
+        return e.getMessage();
     }
 
     @Override
