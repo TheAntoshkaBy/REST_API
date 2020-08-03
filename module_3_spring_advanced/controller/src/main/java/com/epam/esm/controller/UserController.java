@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.controller.support.OrderSupporter;
 import com.epam.esm.controller.support.UserSupporter;
 import com.epam.esm.dto.CertificateOrderDTO;
@@ -32,14 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-    private final static String PAGE_NAME_PARAMETER = "page";
-    private final static String PAGE_SIZE_NAME_PARAMETER = "size";
-    private final static String PAGE_DEFAULT_PARAMETER = "1";
-    private final static String PAGE_SIZE_DEFAULT_PARAMETER = "5";
-    private final UserService service;
-    private final OrderService orderService;
-    private final TagService tagService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private UserService service;
+    private OrderService orderService;
+    private TagService tagService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public UserController(
@@ -71,10 +68,10 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserList> findAll(
-        @RequestParam(value = PAGE_NAME_PARAMETER,
-            defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-        @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
+        @RequestParam(value = ControllerSupporter.PAGE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING) int page,
+        @RequestParam(value = ControllerSupporter.SIZE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING) int size) {
         return new ResponseEntity<>(
             new UserList.UserListBuilder(service.findAll(page, size))
                 .resultCount(service.getUsersCount())
@@ -100,10 +97,10 @@ public class UserController {
 
     @GetMapping(path = "/{id}/orders", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderList> findOrders(@PathVariable long id,
-        @RequestParam(value = PAGE_NAME_PARAMETER,
-            defaultValue = PAGE_DEFAULT_PARAMETER) int page,
-        @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER) int size) {
+        @RequestParam(value = ControllerSupporter.PAGE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING) int page,
+        @RequestParam(value = ControllerSupporter.SIZE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING) int size) {
 
         return new ResponseEntity<>(
             new OrderList.OrderListBuilder(orderService.findAllByOwner(id, page, size))

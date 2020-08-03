@@ -15,9 +15,7 @@ import java.util.Map;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository
 public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> implements
     CertificateRepository {

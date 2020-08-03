@@ -12,13 +12,15 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class ShopUserService implements UserService {
 
-    private final UserRepository repository;
-    private final RoleRepository roleRepository;
-    private final UserValidator userValidator;
+    private UserRepository repository;
+    private RoleRepository roleRepository;
+    private UserValidator userValidator;
 
     @Autowired
     public ShopUserService(UserRepository repository, UserValidator userValidator,

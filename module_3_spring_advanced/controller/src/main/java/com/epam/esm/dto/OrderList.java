@@ -28,7 +28,7 @@ public class OrderList {
         private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
         private final static String CURRENT_PAGE_MODEL_PARAM = "current";
         private List<CertificateOrderDTO> ordersDTO;
-        private final List<CertificateOrderPOJO> ordersPOJO;
+        private List<CertificateOrderPOJO> ordersPOJO;
         private int ordersCount = 0;
         private int page = 1;
         private int size = 5;

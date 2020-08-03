@@ -18,15 +18,6 @@ import org.springframework.hateoas.EntityModel;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TagList {
 
-    @JsonIgnore
-    private final static String NEXT_PAGE_MODEL_PARAM = "next";
-
-    @JsonIgnore
-    private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
-
-    @JsonIgnore
-    private final static String CURRENT_PAGE_MODEL_PARAM = "current";
-
     private CollectionModel<EntityModel<TagDTO>> tags;
 
     private TagList() {
@@ -37,7 +28,7 @@ public class TagList {
         private final static String NEXT_PAGE_MODEL_PARAM = "next";
         private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
         private final static String CURRENT_PAGE_MODEL_PARAM = "current";
-        private final List<TagPOJO> tagsPOJO;
+        private List<TagPOJO> tagsPOJO;
         private List<TagDTO> tagsDTO;
         private int tagsCount = 0;
         private int page = 1;

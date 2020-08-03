@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class ShopOrderService implements OrderService {
 
-    private final OrderRepository repository;
-    private final CertificateRepository certificateRepository;
+    private OrderRepository repository;
+    private CertificateRepository certificateRepository;
 
     @Autowired
     public ShopOrderService(OrderRepository repository,

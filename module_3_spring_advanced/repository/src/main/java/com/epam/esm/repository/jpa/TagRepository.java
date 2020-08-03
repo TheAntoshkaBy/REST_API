@@ -17,5 +17,5 @@ public interface TagRepository {
 
     int getTagCount();
 
-    Long findMostWidelyUsedTag();
+    Tag findMostWidelyUsedTag();
 }

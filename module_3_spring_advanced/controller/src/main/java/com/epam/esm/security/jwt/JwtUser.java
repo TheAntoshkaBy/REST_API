@@ -11,13 +11,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Setter
 public class JwtUser implements UserDetails {
 
-    private final Long id;
-    private final String login;
-    private final String name;
-    private final String surname;
-    private final String password;
-    private final String email;
-    private final Collection<? extends GrantedAuthority> authorities;
+    private Long id;
+    private String login;
+    private String name;
+    private String surname;
+    private String password;
+    private String email;
+    private Collection<? extends GrantedAuthority> authorities;
 
     public JwtUser(
         Long id,

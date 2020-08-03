@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TagValidator {
 
-    private final TagRepository tagRepository;
+    private TagRepository tagRepository;
     private List<InvalidDataMessage> invalidDataMessageList;
 
     @Autowired

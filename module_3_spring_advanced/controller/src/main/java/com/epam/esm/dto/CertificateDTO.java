@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 @Data
 @NoArgsConstructor
-@Component
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateDTO {
 

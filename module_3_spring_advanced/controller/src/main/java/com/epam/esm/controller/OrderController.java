@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
 import com.epam.esm.service.OrderService;
@@ -20,11 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/orders")
 public class OrderController {
-
-    private static final String PAGE_NAME_PARAMETER = "page";
-    private static final String PAGE_SIZE_NAME_PARAMETER = "size";
-    private static final String PAGE_DEFAULT_PARAMETER = "1";
-    private static final String PAGE_SIZE_DEFAULT_PARAMETER = "5";
     private final OrderService service;
 
     @Autowired
@@ -35,13 +31,13 @@ public class OrderController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderList> findAll(
         @RequestParam(
-            value = PAGE_NAME_PARAMETER,
-            defaultValue = PAGE_DEFAULT_PARAMETER,
+            value = ControllerSupporter.PAGE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING,
             required = false)
             int page,
         @RequestParam(
-            value = PAGE_SIZE_NAME_PARAMETER,
-            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+            value = ControllerSupporter.SIZE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING,
             required = false)
             int size) {
         return new ResponseEntity<>(

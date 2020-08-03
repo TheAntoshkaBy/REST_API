@@ -34,8 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("certificates")
 public class CertificateController {
 
-    private final static String PAGE_NAME_PARAMETER = "page";
-    private final static String PAGE_SIZE_NAME_PARAMETER = "size";
     private CertificateService service;
 
     @Autowired
@@ -63,11 +61,11 @@ public class CertificateController {
         @RequestParam Map<String, String> params,
         @RequestBody(required = false) List<TagDTO> tags) {
         int page = ControllerSupporter
-            .getValidPaginationParam(params.get(PAGE_NAME_PARAMETER),
-                PAGE_NAME_PARAMETER);
+            .getValidPaginationParam(params.get(ControllerSupporter.PAGE_PARAM_NAME),
+                ControllerSupporter.PAGE_PARAM_NAME);
         int size = ControllerSupporter
-            .getValidPaginationParam(params.get(PAGE_SIZE_NAME_PARAMETER),
-                PAGE_SIZE_NAME_PARAMETER);
+            .getValidPaginationParam(params.get(ControllerSupporter.SIZE_PARAM_NAME),
+                ControllerSupporter.SIZE_PARAM_NAME);
 
         List<TagPOJO> tagsPojo = null;
         if (tags != null) {

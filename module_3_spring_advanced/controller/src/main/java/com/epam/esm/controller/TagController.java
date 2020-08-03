@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.controller.support.ControllerSupporter;
 import com.epam.esm.controller.support.TagSupporter;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.TagList;
@@ -22,12 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/tags")
 public class TagController {
-
-    private final static String PAGE_NAME_PARAMETER = "page";
-    private final static String PAGE_SIZE_NAME_PARAMETER = "size";
-    private final static String PAGE_DEFAULT_PARAMETER = "1";
-    private final static String PAGE_SIZE_DEFAULT_PARAMETER = "5";
-    private final TagService service;
+    private TagService service;
 
     @Autowired
     public TagController(TagService service) {
@@ -49,11 +45,11 @@ public class TagController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagList> findAll(
-        @RequestParam(value = PAGE_NAME_PARAMETER,
-            defaultValue = PAGE_DEFAULT_PARAMETER,
+        @RequestParam(value = ControllerSupporter.PAGE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING,
             required = false) int page,
-        @RequestParam(value = PAGE_SIZE_NAME_PARAMETER,
-            defaultValue = PAGE_SIZE_DEFAULT_PARAMETER,
+        @RequestParam(value = ControllerSupporter.SIZE_PARAM_NAME,
+            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING,
             required = false) int size) {
 
         return new ResponseEntity<>(

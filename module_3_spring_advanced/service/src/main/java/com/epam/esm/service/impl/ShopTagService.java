@@ -8,11 +8,13 @@ import com.epam.esm.service.validator.TagValidator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class ShopTagService implements TagService {
 
-    private final TagRepositoryJPA tagRepository;
+    private TagRepositoryJPA tagRepository;
     private TagValidator tagValidator;
 
     @Autowired
@@ -35,7 +37,7 @@ public class ShopTagService implements TagService {
 
     @Override
     public TagPOJO findMostWidelyUsedTag() {
-        return new TagPOJO(tagRepository.findById(tagRepository.findMostWidelyUsedTag()));
+        return new TagPOJO(tagRepository.findMostWidelyUsedTag());
     }
 
     @Override

@@ -16,12 +16,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-@Transactional
 public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRepository {
 
     @Override
     public void delete(long id) {
-
         int col = entityManager.createQuery(SQLRequests.DELETE_USER_BY_ID)
             .setParameter(1, id).executeUpdate();
         if (col == 0) {
@@ -32,12 +30,12 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
 
     @Override
     public User findById(long id) {
-
         User user = entityManager.find(User.class, id);
         if (user == null) {
             throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.USER,
                 ErrorTextMessageConstants.NOT_FOUND_USER));
         }
+
         return user;
     }
 
@@ -59,6 +57,7 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
         } catch (NoResultException e) {
             return null;
         }
+
         return user;
     }
 
@@ -71,6 +70,7 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
         } catch (NoResultException e) {
             return null;
         }
+
         return user;
     }
 
@@ -78,6 +78,7 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
     public int getUsersCount() {
         Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_USER)
             .getSingleResult();
+
         return count.intValue();
     }
 
@@ -87,6 +88,7 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
         roles.add(role);
         user.setRoles(roles);
         entityManager.persist(user);
+
         return user;
     }
 }

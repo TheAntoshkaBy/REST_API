@@ -15,7 +15,6 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository
 public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> implements
     OrderRepository {
