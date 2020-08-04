@@ -33,7 +33,6 @@ public interface CertificateRepository {
     @Deprecated
     List<Certificate> findAllByIdThreshold(long id, int page, int size);
 
-    @Deprecated
     List<Certificate> findAllByNamePart(String namePart);
 
     List<Certificate> findAllByTags(String Query, int offset, int limit);

@@ -2,10 +2,6 @@ package com.epam.esm.service;
 
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.repository.jpa.CertificateRepository;
-import com.epam.esm.repository.jpa.TagRepository;
-import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.service.validator.TagValidator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +18,7 @@ public interface CertificateInternalService {
     int getAllCertificateCount();
 
     /**
-     * This method finds all certificates from database using DAO
+     * This method finds all certificates from database
      *
      * @param request Certificate request data
      * @param tags    Certificate tags
@@ -48,7 +44,7 @@ public interface CertificateInternalService {
     int findByAllCertificatesByIdThresholdCount(long id);
 
     /**
-     * This method finds all certificates from database and sorted them using DAO
+     * This method finds all certificates from database and sorted them
      *
      * @param page pagination offset
      * @param size pagination limit
@@ -57,7 +53,7 @@ public interface CertificateInternalService {
     List<CertificatePOJO> findAllCertificatesByDate(int page, int size);
 
     /**
-     * This method finds concrete Certificate which contains id more than transmitted id using DAO
+     * This method finds concrete Certificate which contains id more than transmitted id
      *
      * @param id   Certificate Id
      * @param page pagination offset
@@ -67,7 +63,7 @@ public interface CertificateInternalService {
     List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size);
 
     /**
-     * This method finds all certificates which contain string in tag name from database using DAO
+     * This method finds all certificates which contain string in tag name from database
      *
      * @param tag  Certificate tag
      * @param page pagination offset
@@ -76,19 +72,9 @@ public interface CertificateInternalService {
     List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size);
 
     /**
-     * This method finds all certificates which contain string in name from database using DAO
+     * This method finds all certificates which contain string in name from database
      *
      * @param text Certificate name part
      **/
     List<CertificatePOJO> findByAllCertificatesByNamePart(String text);
-
-
-    void setCertificateServiceRequestParameterHandler
-        (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
-
-    void setCertificateRepository(CertificateRepository certificateRepository);
-
-    void setTagRepository(TagRepository tagRepository);
-
-    void setTagValidator(TagValidator tagValidator);
 }

@@ -13,9 +13,9 @@ public class UserPojoConverter implements PojoConverter<UserPOJO, User> {
     @Override
     public List<UserPOJO> convert(List<User> users) {
         return users
-                    .stream()
-                    .map(UserPOJO::new)
-                    .collect(Collectors.toList());
+            .stream()
+            .map(UserPOJO::new)
+            .collect(Collectors.toList());
     }
 
     @Override

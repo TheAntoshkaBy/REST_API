@@ -11,7 +11,6 @@ import javax.persistence.NamedStoredProcedureQueries;
 import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.Table;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity(name = "tag")
 @Table(name = "tag")
@@ -22,7 +21,6 @@ import lombok.EqualsAndHashCode;
             procedureName = "greater_tag_func"
         )
 })
-@EqualsAndHashCode
 @Data
 public class Tag implements Serializable {
 

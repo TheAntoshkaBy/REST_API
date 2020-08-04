@@ -20,7 +20,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,12 +45,10 @@ public class UserController {
     private DtoConverter<UserDTO, UserPOJO> converter;
 
     @Autowired
-    public UserController(DtoConverter orderConverter,
-        UserService service,
-        OrderService orderService,
-        TagService tagService,
-        JwtTokenProvider jwtTokenProvider,
-        DtoConverter<UserDTO, UserPOJO> converter) {
+    public UserController(DtoConverter orderConverter, UserService service,
+                          OrderService orderService, TagService tagService,
+                          JwtTokenProvider jwtTokenProvider,
+                          DtoConverter<UserDTO, UserPOJO> converter) {
         this.orderConverter = orderConverter;
         this.service = service;
         this.orderService = orderService;
@@ -62,9 +59,9 @@ public class UserController {
 
     @PatchMapping(path = "{id}/orders", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addOrder(
-        @PathVariable long id,
-        @Valid @RequestBody CertificateOrderDTO order,
-        HttpServletRequest request) {
+                                                @PathVariable long id,
+                                                @Valid @RequestBody CertificateOrderDTO order,
+                                                                    HttpServletRequest request) {
         ControllerUtils.checkUserRulesById(request, id);
 
         return new ResponseEntity<>(new CertificateOrderDTO(
@@ -121,10 +118,8 @@ public class UserController {
     }
 
     @DeleteMapping(path = "/{userId}/orders/{id}")
-    public ResponseEntity<Void> deleteOrder(
-        @PathVariable Long id,
-        @PathVariable Long userId,
-        HttpServletRequest request) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id, @PathVariable Long userId,
+                                            HttpServletRequest request) {
         ControllerUtils.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         ControllerUtils.checkUserRulesById(request, userId);
 
@@ -135,10 +130,10 @@ public class UserController {
 
     @PatchMapping(path = "{userId}/orders/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
-        @PathVariable long userId,
-        @PathVariable long id,
-        @RequestParam List<Long> certificatesId,
-        HttpServletRequest request) {
+                                                            @PathVariable long userId,
+                                                            @PathVariable long id,
+                                                            @RequestParam List<Long> certificatesId,
+                                                                       HttpServletRequest request) {
         ControllerUtils.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         ControllerUtils.checkUserRulesById(request, userId);
 

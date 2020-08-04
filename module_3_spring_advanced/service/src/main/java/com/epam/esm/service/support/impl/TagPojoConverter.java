@@ -13,9 +13,9 @@ public class TagPojoConverter implements PojoConverter<TagPOJO, Tag> {
     @Override
     public List<TagPOJO> convert(List<Tag> tags) {
         return tags
-                    .stream()
-                    .map(TagPOJO::new)
-                    .collect(Collectors.toList());
+            .stream()
+            .map(TagPOJO::new)
+            .collect(Collectors.toList());
     }
 
     @Override

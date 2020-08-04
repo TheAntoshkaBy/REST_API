@@ -1,7 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.service.validator.TagValidator;
 import java.util.List;
 
 /**
@@ -10,14 +9,14 @@ import java.util.List;
 public interface TagService {
 
     /**
-     * This method finds all tags from database using DAO
+     * This method finds all tags from database
      **/
     List<TagPOJO> findAll(int offset, int limit);
 
     int getTagCount();
 
     /**
-     * This method finds concrete Tag By Id using DAO
+     * This method finds concrete Tag By Id
      *
      * @param id Tag Id
      * @return Tag
@@ -28,7 +27,6 @@ public interface TagService {
 
     /**
      * This method delete tag by transmitted tag id to certificate with transmitted certificate id
-     * using DAO
      *
      * @param id certificate id which will be edit
      **/
@@ -40,6 +38,4 @@ public interface TagService {
      * @param tag Tag object
      **/
     TagPOJO create(TagPOJO tag);
-
-    void setTagValidator(TagValidator tagValidator);
 }

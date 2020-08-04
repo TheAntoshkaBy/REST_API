@@ -10,7 +10,6 @@ import com.epam.esm.repository.jpa.RoleRepository;
 import com.epam.esm.repository.jpa.ShopJPARepository;
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class RoleRepositoryJPA extends ShopJPARepository<Role> implements RoleRepository {

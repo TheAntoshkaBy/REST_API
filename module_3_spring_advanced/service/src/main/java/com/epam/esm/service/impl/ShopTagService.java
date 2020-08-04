@@ -20,9 +20,10 @@ public class ShopTagService implements TagService {
     private PojoConverter<TagPOJO, Tag> converter;
 
     @Autowired
-    public ShopTagService(TagRepositoryJPA tagRepository,
-        PojoConverter<TagPOJO, Tag> converter) {
+    public ShopTagService(TagRepositoryJPA tagRepository, TagValidator tagValidator,
+                          PojoConverter<TagPOJO, Tag> converter) {
         this.tagRepository = tagRepository;
+        this.tagValidator = tagValidator;
         this.converter = converter;
     }
 
@@ -58,11 +59,5 @@ public class ShopTagService implements TagService {
     @Override
     public int getTagCount() {
         return tagRepository.getTagCount();
-    }
-
-    @Override
-    @Autowired
-    public void setTagValidator(TagValidator tagValidator) {
-        this.tagValidator = tagValidator;
     }
 }

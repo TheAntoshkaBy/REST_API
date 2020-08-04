@@ -12,10 +12,10 @@ public class OrderPojoConverter implements PojoConverter<CertificateOrderPOJO, C
 
     @Override
     public List<CertificateOrderPOJO> convert(List<CertificateOrder> orders) {
-            return orders
-                        .stream()
-                        .map(CertificateOrderPOJO::new)
-                        .collect(Collectors.toList());
+        return orders
+            .stream()
+            .map(CertificateOrderPOJO::new)
+            .collect(Collectors.toList());
     }
 
     @Override

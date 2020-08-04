@@ -49,7 +49,7 @@ public class User {
     private List<Role> roles;
 
     public User(String name, String surname, String login, String password, List<Role> roles,
-        String email) {
+                String email) {
         this.name = name;
         this.surname = surname;
         this.login = login;
@@ -59,7 +59,7 @@ public class User {
     }
 
     public User(long id, String name, String surname, String login, String password,
-        List<Role> roles, String email) {
+                List<Role> roles, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;

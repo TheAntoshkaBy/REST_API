@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/orders")
 public class OrderController {
-    private final OrderService service;
+    private OrderService service;
     private DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
 
     @Autowired
-    public OrderController(OrderService service,
-        DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter) {
+    public OrderController(OrderService service, DtoConverter<CertificateOrderDTO,
+                           CertificateOrderPOJO> orderConverter) {
         this.service = service;
         this.orderConverter = orderConverter;
     }
@@ -71,7 +71,8 @@ public class OrderController {
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
-        @PathVariable long id, @RequestParam List<Long> certificatesId) {
+                                                        @PathVariable long id,
+                                                        @RequestParam List<Long> certificatesId) {
 
         return new ResponseEntity<>(
             new CertificateOrderDTO(service.addCertificates(id, certificatesId))

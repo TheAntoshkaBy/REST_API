@@ -14,12 +14,15 @@ public interface CertificateService {
     List<CertificatePOJO> findAll(Map<String, String> params, List<TagPOJO> tags,
                                   int page, int size);
 
+    /**
+     * This method find count of certificates.
+     **/
     int getCertificatesCount(Map<String, String> request, List<TagPOJO> tags);
 
     List<CertificatePOJO> findAll(int page, int size);
 
     /**
-     * This method finds concrete Certificate By Id using DAO
+     * This method finds concrete Certificate By Id
      *
      * @param id Certificate Id
      * @return Certificate
@@ -27,14 +30,14 @@ public interface CertificateService {
     CertificatePOJO find(long id);
 
     /**
-     * This method delete concrete Certificate by transmitted id using DAO
+     * This method delete concrete Certificate by transmitted id
      *
      * @param id certificate id which will be delete
      **/
     void delete(long id);
 
     /**
-     * This method update concrete Certificate by transmitted id using DAO
+     * This method update concrete Certificate by transmitted id
      *
      * @param id          certificate id which will be edit
      * @param certificate edit data
@@ -57,7 +60,7 @@ public interface CertificateService {
     CertificatePOJO create(CertificatePOJO certificate);
 
     /**
-     * This method add new tag by transmitted data to certificate with transmitted id using DAO
+     * This method add new tag by transmitted data to certificate with transmitted id
      *
      * @param id  certificate id which will be edit
      * @param tag edit data
@@ -66,7 +69,6 @@ public interface CertificateService {
 
     /**
      * This method add tag by transmitted tag id to certificate with transmitted certificate id
-     * using DAO
      *
      * @param idCertificate certificate id which will be edit
      * @param idTag         tag id which we will be add to certificate

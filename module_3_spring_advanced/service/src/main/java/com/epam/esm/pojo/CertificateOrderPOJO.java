@@ -29,15 +29,13 @@ public class CertificateOrderPOJO {
         this.cost = certificateOrder.getCost();
 
         if (certificateOrder.getOwner() != null) {
-            this.owner = new UserPOJO(
-                certificateOrder.getOwner().getId(),
-                certificateOrder.getOwner().getName(),
-                certificateOrder.getOwner().getSurname(),
-                certificateOrder.getOwner().getLogin(),
-                certificateOrder.getOwner().getPassword(),
-                certificateOrder.getOwner().getRoles(),
-                certificateOrder.getOwner().getEmail()
-            );
+            this.owner = new UserPOJO(certificateOrder.getOwner().getId(),
+                                      certificateOrder.getOwner().getName(),
+                                      certificateOrder.getOwner().getSurname(),
+                                      certificateOrder.getOwner().getLogin(),
+                                      certificateOrder.getOwner().getPassword(),
+                                      certificateOrder.getOwner().getRoles(),
+                                      certificateOrder.getOwner().getEmail());
         } else {
             this.owner = null;
         }

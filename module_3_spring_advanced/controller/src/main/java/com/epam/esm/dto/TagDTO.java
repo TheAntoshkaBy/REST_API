@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import org.springframework.hateoas.EntityModel;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TagDTO {
 
@@ -34,6 +36,11 @@ public class TagDTO {
     public TagDTO(TagPOJO tag) {
         this.name = tag.getName();
         this.id = tag.getId();
+    }
+
+    public TagDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public EntityModel<TagDTO> getModel() {

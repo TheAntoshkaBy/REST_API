@@ -13,7 +13,6 @@ import com.epam.esm.repository.jpa.ShopJPARepository;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> implements
@@ -74,15 +73,16 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     public CertificateOrder create(CertificateOrder certificateOrder, User user) {
         certificateOrder.setOwner(user);
         entityManager.persist(certificateOrder);
+
         return certificateOrder;
     }
 
     @Override
     public CertificateOrder addCertificates(CertificateOrder certificateOrder,
-        List<Certificate> certificates,
-        BigDecimal cost) {
+                                            List<Certificate> certificates, BigDecimal cost) {
         certificateOrder.setCertificates(certificates);
         certificateOrder.setCost(cost);
+
         return certificateOrder;
     }
 
@@ -90,6 +90,7 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     public int getOrdersCount() {
         Long count = (Long) entityManager.createQuery(SQLRequests.FIND_COUNT_OF_ORDER)
             .getSingleResult();
+
         return count.intValue();
     }
 
@@ -99,6 +100,7 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
             .createQuery(SQLRequests.FIND_COUNT_OF_ORDER_BY_OWNER)
             .setParameter(1, id)
             .getSingleResult();
+
         return count.intValue();
     }
 }

@@ -32,7 +32,7 @@ public class UserPOJO {
     }
 
     public UserPOJO(String name, String surname, String login, String password, List<Role> roles,
-        String email) {
+                    String email) {
         this.name = name;
         this.surname = surname;
         this.login = login;
@@ -41,14 +41,8 @@ public class UserPOJO {
         this.email = email;
     }
 
-    public UserPOJO(
-        long id,
-        String name,
-        String surname,
-        String login,
-        String password,
-        List<Role> roles,
-        String email) {
+    public UserPOJO(long id, String name, String surname, String login, String password,
+                    List<Role> roles, String email) {
         this.id = id;
         this.name = name;
         this.surname = surname;

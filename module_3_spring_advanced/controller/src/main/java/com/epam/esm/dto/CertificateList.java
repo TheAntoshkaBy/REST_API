@@ -27,7 +27,7 @@ CertificateList {
 
     public static class CertificateListBuilder {
 
-        private final List<CertificateDTO> certificatesDTO;
+        private List<CertificateDTO> certificatesDTO;
         private DtoConverter<CertificateDTO, CertificatePOJO> converter;
         private int certificatesCount = 0;
         private int page = ControllerParamNames.DEFAULT_PAGE;

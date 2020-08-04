@@ -2,7 +2,6 @@ package com.epam.esm.controller.support.impl;
 
 import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.CertificateOrderDTO;
-import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -13,9 +13,9 @@ public class TagConverter implements DtoConverter<TagDTO, TagPOJO> {
     @Override
     public List<TagDTO> convert(List<TagPOJO> tags) {
         return tags
-                    .stream()
-                    .map(TagDTO::new)
-                    .collect(Collectors.toList());
+            .stream()
+            .map(TagDTO::new)
+            .collect(Collectors.toList());
     }
 
     @Override

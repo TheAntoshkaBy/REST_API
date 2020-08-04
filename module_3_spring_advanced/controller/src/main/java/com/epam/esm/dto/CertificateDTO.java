@@ -36,7 +36,7 @@ public class CertificateDTO {
     private String name;
 
     @NotNull(message = "{validation.certificate.description.null}")
-    @Size(min = 3, max = 170, message ="{validation.certificate.description}")
+    @Size(min = 3, max = 170, message = "{validation.certificate.description}")
     private String description;
 
     @NotNull(message = "{validation.certificate.price.not.null}")
@@ -80,16 +80,14 @@ public class CertificateDTO {
         String methodTypeDELETE = "DELETE";
         String methodTypePUT = "PUT";
 
-        model =
-            EntityModel.of(
-                this,
-                linkTo(methodOn(CertificateController.class).findById(id)).withSelfRel(),
-                linkTo(methodOn(CertificateController.class).findById(id))
-                    .withRel(updateRelName)
-                    .withType(methodTypePUT),
-                linkTo(methodOn(CertificateController.class).findById(id))
-                    .withRel(deleteRelName)
-                    .withType(methodTypeDELETE));
+        model = EntityModel.of(this,
+            linkTo(methodOn(CertificateController.class).findById(id)).withSelfRel(),
+            linkTo(methodOn(CertificateController.class).findById(id))
+                .withRel(updateRelName)
+                .withType(methodTypePUT),
+            linkTo(methodOn(CertificateController.class).findById(id))
+                .withRel(deleteRelName)
+                .withType(methodTypeDELETE));
         return model;
     }
 }

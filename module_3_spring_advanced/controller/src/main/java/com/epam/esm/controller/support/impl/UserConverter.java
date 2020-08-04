@@ -20,14 +20,7 @@ public class UserConverter implements DtoConverter<UserDTO, UserPOJO> {
 
     @Override
     public UserPOJO convert(UserDTO user) {
-        return new UserPOJO(
-            user.getId(),
-            user.getName(),
-            user.getSurname(),
-            user.getLogin(),
-            user.getPassword(),
-            user.getRoles(),
-            user.getEmail()
-        );
+        return new UserPOJO(user.getId(), user.getName(), user.getSurname(), user.getLogin(),
+                            user.getPassword(), user.getRoles(), user.getEmail());
     }
 }

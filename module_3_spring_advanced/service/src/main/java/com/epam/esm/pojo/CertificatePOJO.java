@@ -24,13 +24,8 @@ public class CertificatePOJO {
     private Date creationDate;
     private Date modification;
 
-    public CertificatePOJO(Long id,
-        String name,
-        String description,
-        BigDecimal price,
-        Date creationDate,
-        Date modification,
-        Integer durationDays) {
+    public CertificatePOJO(Long id, String name, String description, BigDecimal price,
+                           Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -41,7 +36,7 @@ public class CertificatePOJO {
     }
 
     public CertificatePOJO(String name, String description, BigDecimal price,
-        Integer durationDays) {
+                           Integer durationDays) {
         this.name = name;
         this.description = description;
         this.price = price;

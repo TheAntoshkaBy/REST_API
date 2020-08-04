@@ -8,13 +8,11 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.ShopJPARepository;
 import com.epam.esm.repository.jpa.TagRepository;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.StoredProcedureQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepository {
@@ -39,6 +37,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         } catch (NoResultException e) {
             return null;
         }
+
         return tag;
     }
 
@@ -50,6 +49,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
             throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.TAG,
                 ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
+
         return tag;
     }
 
@@ -62,6 +62,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         Object[] o = (Object[]) findByName.getSingleResult();
         BigInteger id = (BigInteger) o[0];
         Tag tag = new Tag(id.longValue(),(String) o[1]);
+
         return tag;
     }
 

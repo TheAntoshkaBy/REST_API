@@ -37,34 +37,21 @@ public class ShopCertificateService implements CertificateInternalService, Certi
     private PojoConverter<TagPOJO, Tag> tagConverter;
 
     @Autowired
-    public ShopCertificateService(CertificatePojoConverter converter,
-        PojoConverter<TagPOJO, Tag> tagConverter) {
+    public ShopCertificateService(TagValidator tagValidator,
+                                  CertificateRepository certificateRepository,
+                                  TagRepository tagRepository, CertificatePojoConverter converter,
+                                  PojoConverter<TagPOJO, Tag> tagConverter) {
+        this.tagValidator = tagValidator;
+        this.certificateRepository = certificateRepository;
+        this.tagRepository = tagRepository;
         this.converter = converter;
         this.tagConverter = tagConverter;
     }
 
     @Autowired
-    @Override
-    public void setCertificateRepository(CertificateRepository certificateRepository) {
-        this.certificateRepository = certificateRepository;
-    }
-
-    @Autowired
-    @Override
-    public void setTagRepository(TagRepository tagRepository) {
-        this.tagRepository = tagRepository;
-    }
-
-    @Autowired
-    @Override
-    public void setCertificateServiceRequestParameterHandler
-        (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
+    public void setCertificateServiceRequestParameterHandler(
+        CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler) {
         this.certificateServiceRequestParameterHandler = certificateServiceRequestParameterHandler;
-    }
-
-    @Autowired
-    public void setTagValidator(TagValidator tagValidator) {
-        this.tagValidator = tagValidator;
     }
 
     /**

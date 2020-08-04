@@ -65,9 +65,9 @@ public class UserList {
             this.userDTO = converter.convert(this.usersPOJO);
 
             this.users = CollectionModel.of(
-                userDTO
+                this.userDTO
                     .stream()
-                    .map(UserDTO::getModel)
+                    .map(user -> user.getModel(page,size))
                     .collect(Collectors.toList())
             );
 

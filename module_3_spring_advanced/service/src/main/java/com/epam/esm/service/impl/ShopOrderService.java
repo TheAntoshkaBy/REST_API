@@ -28,8 +28,8 @@ public class ShopOrderService implements OrderService {
 
     @Autowired
     public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository,
-                                    PojoConverter<CertificateOrderPOJO, CertificateOrder> converter,
-                                    PojoConverter<UserPOJO, User> userConverter) {
+                            PojoConverter<CertificateOrderPOJO, CertificateOrder> converter,
+                            PojoConverter<UserPOJO, User> userConverter) {
         this.repository = repository;
         this.certificateRepository = certificateRepository;
         this.converter = converter;

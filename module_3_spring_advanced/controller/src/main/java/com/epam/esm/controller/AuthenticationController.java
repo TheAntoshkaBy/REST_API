@@ -27,16 +27,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserService userService;
+    private AuthenticationManager authenticationManager;
+    private JwtTokenProvider jwtTokenProvider;
+    private UserService userService;
     private DtoConverter<RegistrationUserDTO, UserPOJO> converter;
-
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager,
-        JwtTokenProvider jwtTokenProvider, UserService userService,
-        DtoConverter<RegistrationUserDTO, UserPOJO> converter) {
+                                    JwtTokenProvider jwtTokenProvider, UserService userService,
+                                    DtoConverter<RegistrationUserDTO, UserPOJO> converter) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;

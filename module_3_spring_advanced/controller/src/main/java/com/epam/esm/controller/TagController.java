@@ -28,8 +28,7 @@ public class TagController {
     private DtoConverter<TagDTO, TagPOJO> converter;
 
     @Autowired
-    public TagController(TagService service,
-        DtoConverter<TagDTO, TagPOJO> converter) {
+    public TagController(TagService service, DtoConverter<TagDTO, TagPOJO> converter) {
         this.service = service;
         this.converter = converter;
     }

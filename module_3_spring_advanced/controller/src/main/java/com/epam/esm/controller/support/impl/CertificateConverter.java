@@ -22,20 +22,13 @@ public class CertificateConverter implements DtoConverter<CertificateDTO, Certif
 
     @Override
     public CertificatePOJO convert(CertificateDTO certificate) {
-        return new CertificatePOJO(
-            certificate.getName(),
-            certificate.getDescription(),
-            certificate.getPrice(),
-            certificate.getDurationDays()
-        );
+        return new CertificatePOJO(certificate.getName(), certificate.getDescription(),
+                                   certificate.getPrice(), certificate.getDurationDays());
     }
 
-    public CertificateList formationCertificateList(
-        List<CertificatePOJO> certificatesPOJO,
-        int certificatesCount,
-        int page,
-        int size,
-        Map<String, String> params) {
+    public CertificateList formationCertificateList(List<CertificatePOJO> certificatesPOJO,
+                                                    int certificatesCount, int page, int size,
+                                                    Map<String, String> params) {
         List<CertificatePOJO> certificates = certificatesPOJO;
         int resultCount = certificatesCount;
         List<CertificateDTO> certificatesDTO = convert(certificates);

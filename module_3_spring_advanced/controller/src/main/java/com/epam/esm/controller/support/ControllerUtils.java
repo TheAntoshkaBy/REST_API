@@ -23,8 +23,8 @@ public class ControllerUtils {
 
     @Autowired
     public ControllerUtils(JwtTokenProvider jwtTokenProvider, UserService service,
-        OrderService orderService,
-        DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter) {
+                           OrderService orderService,
+                           DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter) {
         ControllerUtils.jwtTokenProvider = jwtTokenProvider;
         ControllerUtils.service = service;
         ControllerUtils.orderService = orderService;
@@ -55,8 +55,8 @@ public class ControllerUtils {
 
     public static boolean isThisOrderBelowCurrentUser(long userId, long orderId) {
         List<CertificateOrderDTO> orders =
-            orderConverter
-                .convert(orderService.findAllByOwner(userId));
+            orderConverter.convert(orderService.findAllByOwner(userId));
+
         return orders.stream()
             .anyMatch(certificateOrderDTO -> certificateOrderDTO.getId() == orderId);
     }

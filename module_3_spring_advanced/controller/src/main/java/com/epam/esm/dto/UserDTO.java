@@ -41,6 +41,7 @@ public class UserDTO {
 
     @NotNull(message = "{validation.user.password.not.null}")
     @Size(min = 4, max = 30, message =  "{validation.user.password}")
+    @JsonIgnore
     private String password;
 
     @Email(message = "{validation.user.email}")

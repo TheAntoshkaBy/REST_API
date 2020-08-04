@@ -1,12 +1,13 @@
 package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Tag;
-import java.util.Objects;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
 public class TagPOJO {
 
     private Long id;
@@ -20,10 +21,5 @@ public class TagPOJO {
     public TagPOJO(Long id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name);
     }
 }

@@ -77,7 +77,7 @@ public class Certificate implements Serializable {
     private List<Tag> tags = new ArrayList<>();
 
     public Certificate(Long id, String name, String description, BigDecimal price,
-        Date creationDate, Date modification, Integer durationDays) {
+                       Date creationDate, Date modification, Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -88,7 +88,7 @@ public class Certificate implements Serializable {
     }
 
     public Certificate(String name, String description, BigDecimal price,
-        Integer durationDays) {
+                       Integer durationDays) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -96,7 +96,7 @@ public class Certificate implements Serializable {
     }
 
     public Certificate(Long id, String name, String description, BigDecimal price,
-        Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
+                       Date creationDate, Date modification, Integer durationDays, List<Tag> tags) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -107,7 +107,7 @@ public class Certificate implements Serializable {
     }
 
     public Certificate(Long id, String name, String description, BigDecimal price,
-        Integer durationDays) {
+                       Integer durationDays) {
         this.id = id;
         this.name = name;
         this.description = description;

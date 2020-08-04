@@ -7,12 +7,12 @@ import java.util.List;
 public interface OrderService {
 
     /**
-     * This method finds all orders from database using DAO
+     * This method finds all orders from database
      **/
     List<CertificateOrderPOJO> findAll(int page, int size);
 
     /**
-     * This method finds concrete Order By Id using DAO
+     * This method finds concrete Order By Id
      *
      * @param id Tag Id
      * @return Tag
@@ -34,15 +34,28 @@ public interface OrderService {
     CertificateOrderPOJO create(CertificateOrderPOJO order, UserPOJO userPOJO);
 
     /**
-     * This method finds all orders from database using DAO which belong concrete user
+     * This method finds all orders from database which belong concrete user
      **/
     List<CertificateOrderPOJO> findAllByOwner(long id, int offset, int limit);
 
+    /**
+     * This method finds all orders from database which belong concrete user without pagination
+     **/
     List<CertificateOrderPOJO> findAllByOwner(long id);
 
+
+    /**
+     * This method finds count all orders from database without pagination
+     **/
     int ordersCountByOwner(long id);
 
+    /**
+     * This method add certificates to order
+     **/
     CertificateOrderPOJO addCertificates(long OrderId, List<Long> certificatesId);
 
+    /**
+     * This method finds count all orders from database without pagination
+     **/
     int getOrdersCount();
 }
