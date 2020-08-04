@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.OrderController;
-import com.epam.esm.controller.support.OrderSupporter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -25,30 +24,30 @@ import org.springframework.hateoas.EntityModel;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateOrderDTO {
 
-    @Null(message = OrderSupporter.ERROR_ID)
+    @Null(message = "{validation.order.id}")
     private Long id;
 
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
-    @Null(message = OrderSupporter.ERROR_END_TIME)
+    @Null(message = "{validation.order.end.time}")
     private Date endTime;
 
-    @Null(message = OrderSupporter.ERROR_COST)
+    @Null(message = "{validation.order.cost}")
     private BigDecimal cost;
 
-    @Size(min = 3, max = 170, message = OrderSupporter.ERROR_DESCRIPTION)
+    @Size(min = 3, max = 170, message = "{validation.order.description}")
     private String description;
 
-    @Null(message = OrderSupporter.ERROR_CREATED_TIME)
+    @Null(message = "{validation.order.created.time}")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date createdTime;
 
-    @NotNull(message = OrderSupporter.ERROR_OWNER)
+    @NotNull(message = "{validation.order.owner}")
     private UserDTO owner;
 
     @JsonIgnore
     private EntityModel<CertificateOrderDTO> model;
 
-    @Null(message = OrderSupporter.ERROR_CERTIFICATES)
+    @Null(message = "{validation.order.certificates}")
     private List<Certificate> certificates;
 
     public CertificateOrderDTO(CertificateOrderPOJO certificateOrderPOJO) {

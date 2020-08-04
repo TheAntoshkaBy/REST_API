@@ -1,13 +1,17 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
-import com.epam.esm.controller.support.OrderSupporter;
-import com.epam.esm.controller.support.UserSupporter;
+import com.epam.esm.controller.support.ControllerParamNames;
+import com.epam.esm.controller.support.ControllerUtils;
+import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
+import com.epam.esm.dto.OrderList.OrderListBuilder;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.UserList;
+import com.epam.esm.dto.UserList.UserListBuilder;
+import com.epam.esm.pojo.CertificateOrderPOJO;
+import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.TagService;
@@ -16,6 +20,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,17 +42,22 @@ public class UserController {
     private OrderService orderService;
     private TagService tagService;
     private JwtTokenProvider jwtTokenProvider;
+    private DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
+    private DtoConverter<UserDTO, UserPOJO> converter;
 
     @Autowired
-    public UserController(
+    public UserController(DtoConverter orderConverter,
         UserService service,
         OrderService orderService,
         TagService tagService,
-        JwtTokenProvider jwtTokenProvider) {
+        JwtTokenProvider jwtTokenProvider,
+        DtoConverter<UserDTO, UserPOJO> converter) {
+        this.orderConverter = orderConverter;
         this.service = service;
         this.orderService = orderService;
         this.tagService = tagService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.converter = converter;
     }
 
     @PatchMapping(path = "{id}/orders", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -55,25 +65,25 @@ public class UserController {
         @PathVariable long id,
         @Valid @RequestBody CertificateOrderDTO order,
         HttpServletRequest request) {
-        UserSupporter.checkUserRulesById(request, id);
+        ControllerUtils.checkUserRulesById(request, id);
 
         return new ResponseEntity<>(new CertificateOrderDTO(
             orderService.create(
-                OrderSupporter.orderDtoToOrderPojo(order),
-                UserSupporter
-                    .userDtoToUserPojo(new UserDTO(service.find(id)))))
+                orderConverter.convert(order),
+                converter
+                    .convert(new UserDTO(service.find(id)))))
             .getModel(),
             HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserList> findAll(
-        @RequestParam(value = ControllerSupporter.PAGE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING) int page,
-        @RequestParam(value = ControllerSupporter.SIZE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING) int size) {
+        @RequestParam(value = ControllerParamNames.PAGE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING) int page,
+        @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING) int size) {
         return new ResponseEntity<>(
-            new UserList.UserListBuilder(service.findAll(page, size))
+            new UserListBuilder(service.findAll(page, size), converter)
                 .resultCount(service.getUsersCount())
                 .page(page).size(size)
                 .build(), HttpStatus.OK);
@@ -97,13 +107,13 @@ public class UserController {
 
     @GetMapping(path = "/{id}/orders", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderList> findOrders(@PathVariable long id,
-        @RequestParam(value = ControllerSupporter.PAGE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING) int page,
-        @RequestParam(value = ControllerSupporter.SIZE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING) int size) {
+        @RequestParam(value = ControllerParamNames.PAGE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING) int page,
+        @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING) int size) {
 
         return new ResponseEntity<>(
-            new OrderList.OrderListBuilder(orderService.findAllByOwner(id, page, size))
+            new OrderListBuilder(orderService.findAllByOwner(id, page, size), orderConverter)
                 .resultCount(orderService.ordersCountByOwner(id))
                 .page(page)
                 .size(size)
@@ -115,8 +125,8 @@ public class UserController {
         @PathVariable Long id,
         @PathVariable Long userId,
         HttpServletRequest request) {
-        UserSupporter.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
-        UserSupporter.checkUserRulesById(request, userId);
+        ControllerUtils.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
+        ControllerUtils.checkUserRulesById(request, userId);
 
         orderService.delete(id);
 
@@ -129,8 +139,8 @@ public class UserController {
         @PathVariable long id,
         @RequestParam List<Long> certificatesId,
         HttpServletRequest request) {
-        UserSupporter.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
-        UserSupporter.checkUserRulesById(request, userId);
+        ControllerUtils.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
+        ControllerUtils.checkUserRulesById(request, userId);
 
         return new ResponseEntity<>(new CertificateOrderDTO(
             orderService

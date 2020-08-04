@@ -1,6 +1,6 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.UserSupporter;
+import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.AuthenticationRequestDto;
 import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
@@ -30,14 +30,17 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
+    private DtoConverter<RegistrationUserDTO, UserPOJO> converter;
+
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager,
-        JwtTokenProvider jwtTokenProvider,
-        UserService userService) {
+        JwtTokenProvider jwtTokenProvider, UserService userService,
+        DtoConverter<RegistrationUserDTO, UserPOJO> converter) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
+        this.converter = converter;
     }
 
     @PostMapping(path = "/login")
@@ -73,7 +76,7 @@ public class AuthenticationController {
 
         try {
             UserPOJO userPOJO = userService
-                .create(UserSupporter.userRegistrationDtoToUserPojo(userDTO));
+                .create(converter.convert(userDTO));
             return new ResponseEntity<>(new RegistrationUserDTO(userPOJO).getModel(),
                 HttpStatus.CREATED);
         } catch (AuthenticationException e) {

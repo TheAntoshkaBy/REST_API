@@ -7,15 +7,10 @@ import java.util.Map;
 
 public interface CertificateFilterRequestParameter {
 
-    List<CertificatePOJO> filterOutOurCertificates(
-        Map<String, String> request,
-        List<TagPOJO> tags,
-        int page,
-        int size);
+    List<CertificatePOJO> filterOutOurCertificates( Map<String, String> request, List<TagPOJO> tags,
+                                                    int page, int size);
 
-    int getCountFoundPOJO(
-        Map<String, String> request,
-        List<TagPOJO> tags);
+    int getCountFoundPOJO( Map<String, String> request, List<TagPOJO> tags);
 
     String getType();
 }

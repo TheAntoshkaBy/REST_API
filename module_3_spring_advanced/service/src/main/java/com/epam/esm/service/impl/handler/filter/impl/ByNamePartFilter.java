@@ -5,7 +5,7 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.CertificateInternalService;
 import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
 import java.util.List;
 import java.util.Map;
@@ -16,19 +16,17 @@ import org.springframework.stereotype.Component;
 public class ByNamePartFilter implements CertificateFilterRequestParameter {
 
     private static final String FILTER_TYPE = "name part";
-    private CertificateService certificateService;
+    private CertificateInternalService certificateInternalService;
 
     @Autowired
-    public void setCertificateService(CertificateService certificateService) {
-        this.certificateService = certificateService;
+    public void setCertificateInternalService(
+        CertificateInternalService certificateInternalService) {
+        this.certificateInternalService = certificateInternalService;
     }
 
     @Override
-    public List<CertificatePOJO> filterOutOurCertificates(
-        Map<String, String> request,
-        List<TagPOJO> tags,
-        int page,
-        int size) {
+    public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request,
+                                                          List<TagPOJO> tags, int page, int size) {
         String text = request.get("searching name");
         if (text == null) {
             throw new ServiceException(
@@ -36,12 +34,12 @@ public class ByNamePartFilter implements CertificateFilterRequestParameter {
             );
         }
 
-        return certificateService.findByAllCertificatesByNamePart(text);
+        return certificateInternalService.findByAllCertificatesByNamePart(text);
     }
 
     @Override
     public int getCountFoundPOJO(Map<String, String> request, List<TagPOJO> tags) {
-        return certificateService.getCertificateCount();
+        return certificateInternalService.getAllCertificateCount();
     }
 
     @Override

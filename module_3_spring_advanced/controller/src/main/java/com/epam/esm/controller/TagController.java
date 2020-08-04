@@ -1,9 +1,10 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
-import com.epam.esm.controller.support.TagSupporter;
+import com.epam.esm.controller.support.ControllerParamNames;
+import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.TagList;
+import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.TagService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tags")
 public class TagController {
     private TagService service;
+    private DtoConverter<TagDTO, TagPOJO> converter;
 
     @Autowired
-    public TagController(TagService service) {
+    public TagController(TagService service,
+        DtoConverter<TagDTO, TagPOJO> converter) {
         this.service = service;
+        this.converter = converter;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<TagDTO>> addTag(@RequestBody @Valid TagDTO tag) {
 
         return new ResponseEntity<>(new TagDTO(
-            service.create(TagSupporter.tagDtoToTagPOJO(tag))
+            service.create(converter.convert(tag))
         ).getModel(), HttpStatus.CREATED);
     }
 
@@ -45,15 +49,15 @@ public class TagController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<TagList> findAll(
-        @RequestParam(value = ControllerSupporter.PAGE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING,
+        @RequestParam(value = ControllerParamNames.PAGE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING,
             required = false) int page,
-        @RequestParam(value = ControllerSupporter.SIZE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING,
+        @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING,
             required = false) int size) {
 
         return new ResponseEntity<>(
-            new TagList.TagListBuilder(service.findAll(page, size))
+            new TagList.TagListBuilder(service.findAll(page, size), converter)
                 .resultCount(service.getTagCount())
                 .page(page).size(size)
                 .build(), HttpStatus.OK);

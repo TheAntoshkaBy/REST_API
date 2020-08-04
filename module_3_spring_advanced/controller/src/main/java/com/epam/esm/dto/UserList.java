@@ -4,9 +4,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.UserController;
-import com.epam.esm.controller.support.UserSupporter;
+import com.epam.esm.controller.support.ControllerParamNames;
+import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.pojo.UserPOJO;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,18 +25,18 @@ public class UserList {
 
     public static class UserListBuilder {
 
-        private final static String NEXT_PAGE_MODEL_PARAM = "next";
-        private final static String PREVIOUS_PAGE_MODEL_PARAM = "previous";
-        private final static String CURRENT_PAGE_MODEL_PARAM = "current";
         private List<UserPOJO> usersPOJO;
         private List<UserDTO> userDTO;
+        private DtoConverter<UserDTO, UserPOJO> converter;
         private int userCount = 0;
-        private int page = 1;
-        private int size = 5;
+        private int page = ControllerParamNames.DEFAULT_PAGE;
+        private int size = ControllerParamNames.DEFAULT_SIZE;
         private CollectionModel<EntityModel<UserDTO>> users;
 
-        public UserListBuilder(List<UserPOJO> users) {
+        public UserListBuilder(List<UserPOJO> users,
+            DtoConverter<UserDTO, UserPOJO> converter) {
             this.usersPOJO = users;
+            this.converter = converter;
         }
 
         public UserListBuilder page(int page) {
@@ -62,7 +62,7 @@ public class UserList {
         }
 
         private CollectionModel<EntityModel<UserDTO>> buildModelWithPagination() {
-            this.userDTO = UserSupporter.userPojoListToUserDtoList(this.usersPOJO);
+            this.userDTO = converter.convert(this.usersPOJO);
 
             this.users = CollectionModel.of(
                 userDTO
@@ -74,16 +74,17 @@ public class UserList {
             if (userCount > page * size) {
                 int nextPage = page + 1;
                 this.users.add(linkTo(methodOn(UserController.class)
-                    .findAll(nextPage, size)).withRel(NEXT_PAGE_MODEL_PARAM));
+                    .findAll(nextPage, size)).withRel(ControllerParamNames.NEXT_PAGE_MODEL_PARAM));
             }
 
             this.users.add(linkTo(methodOn(UserController.class)
-                .findAll(page, size)).withRel(CURRENT_PAGE_MODEL_PARAM));
+                .findAll(page, size)).withRel(ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
 
             if (page != 1) {
                 int prevPage = page - 1;
                 this.users.add(linkTo(methodOn(UserController.class)
-                    .findAll(prevPage, size)).withRel(PREVIOUS_PAGE_MODEL_PARAM));
+                    .findAll(prevPage, size)).withRel(
+                        ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
             return this.users;

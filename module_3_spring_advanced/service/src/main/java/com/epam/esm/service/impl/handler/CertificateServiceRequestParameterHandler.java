@@ -5,7 +5,7 @@ import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.InvalidDataMessage;
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.service.CertificateService;
+import com.epam.esm.service.CertificateInternalService;
 import com.epam.esm.service.impl.handler.and.ComplexFilter;
 import com.epam.esm.service.impl.handler.filter.CertificateFilterRequestParameter;
 import com.epam.esm.service.impl.handler.sort.CertificateSortBy;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CertificateServiceRequestParameterHandler {
 
-    private CertificateService certificateService;
+    private CertificateInternalService certificateInternalService;
 
     @Autowired
     private List<CertificateFilterRequestParameter> certificateFilterRequestParameterList;
@@ -28,46 +28,63 @@ public class CertificateServiceRequestParameterHandler {
     @Autowired
     private List<ComplexFilter> filters;
 
-    public Map<List<CertificatePOJO>, Integer> find(
+    public List<CertificatePOJO> find(
         Map<String, String> request, List<TagPOJO> tags, int page, int size) {
         return filter(request, tags, page, size);
     }
 
-    private Map<List<CertificatePOJO>, Integer> filter(
-        Map<String, String> request, List<TagPOJO> tags, int page, int size) {
-        List<CertificatePOJO> resultList;
-        int resultCount = 0;
-        Map<List<CertificatePOJO>, Integer> result = new HashMap<>();
+    private CertificateFilterRequestParameter findFilter(Map<String, String> request) {
+        CertificateFilterRequestParameter resultFilter;
         try {
-            if (request.get("filter") == null) {
-                resultList = sort(request, page, size);
-                resultCount = certificateService.getCertificateCount();
-            } else {
-                CertificateFilterRequestParameter resultFilter =
-                    certificateFilterRequestParameterList
-                        .stream()
-                        .filter(certificateFilter -> certificateFilter
-                            .getType()
-                            .equals(request.get("filter")))
-                        .findFirst()
-                        .get();
-                resultList = resultFilter.filterOutOurCertificates(request, tags, page, size);
-                resultCount = resultFilter.getCountFoundPOJO(request, tags);
-            }
+            resultFilter =
+                certificateFilterRequestParameterList
+                    .stream()
+                    .filter(certificateFilter -> certificateFilter
+                        .getType()
+                        .equals(request.get("filter")))
+                    .findFirst()
+                    .get();
         } catch (NoSuchElementException e) {
             throw new ServiceException(
                 new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
             );
         }
-        result.put(resultList, resultCount);
-        return result;
+        return resultFilter;
+    }
+
+    private List<CertificatePOJO> filter(Map<String, String> request, List<TagPOJO> tags,
+                                         int page, int size) {
+        List<CertificatePOJO> resultList;
+        CertificateFilterRequestParameter resultFilter;
+
+        if (request.get("filter") == null) {
+            resultList = sort(request, page, size);
+        } else {
+            resultFilter = findFilter(request);
+            resultList = resultFilter.filterOutOurCertificates(request, tags, page, size);
+        }
+        return resultList;
+    }
+
+    public int findAllCount(
+        Map<String, String> request, List<TagPOJO> tags) {
+        int resultCount;
+        CertificateFilterRequestParameter resultFilter;
+
+        if (request.get("filter") == null) {
+            resultCount = certificateInternalService.getAllCertificateCount();
+        } else {
+            resultFilter = findFilter(request);
+            resultCount = resultFilter.getCountFoundPOJO(request, tags);
+        }
+        return resultCount;
     }
 
     private List<CertificatePOJO> sort(Map<String, String> request, int page, int size) {
         List<CertificatePOJO> result;
         try {
             if (request.get("sort") == null) {
-                result = certificateService.findAll(page, size);
+                result = certificateInternalService.findAll(page, size);
             } else {
                 result = certificateSortRequestParameterList.stream()
                     .filter(certificateFilter -> certificateFilter
@@ -94,7 +111,8 @@ public class CertificateServiceRequestParameterHandler {
                     returnedParams.put(complexFilter.getType(), complexFilter.setType(param));
                 } catch (RuntimeException e) {
                     throw new ServiceException(
-                        new InvalidDataMessage(complexFilter.getType(), "Invalid parameter data!")
+                        new InvalidDataMessage(complexFilter.getType(),
+                            "Invalid parameter data!")
                     );
                 }
 
@@ -181,7 +199,8 @@ public class CertificateServiceRequestParameterHandler {
     }
 
     @Autowired
-    public void setCertificateService(CertificateService certificateService) {
-        this.certificateService = certificateService;
+    public void setCertificateInternalService(
+        CertificateInternalService certificateInternalService) {
+        this.certificateInternalService = certificateInternalService;
     }
 }

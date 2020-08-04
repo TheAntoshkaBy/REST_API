@@ -40,7 +40,8 @@ public class CertificatePOJO {
         this.modification = modification;
     }
 
-    public CertificatePOJO(String name, String description, BigDecimal price, Integer durationDays) {
+    public CertificatePOJO(String name, String description, BigDecimal price,
+        Integer durationDays) {
         this.name = name;
         this.description = description;
         this.price = price;

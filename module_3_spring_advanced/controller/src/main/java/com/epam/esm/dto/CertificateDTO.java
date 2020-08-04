@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.CertificateController;
-import com.epam.esm.controller.support.CertificateSupporter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,33 +17,34 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.stereotype.Component;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CertificateDTO {
 
-    @Null(message = CertificateSupporter.ERROR_ID)
+    @Null(message = "{validation.id}")
     private Long id;
 
-    @NotNull
-    @Size(min = 2, max = 70, message = CertificateSupporter.ERROR_NAME)
+    @NotNull(message = "{validation.name.not.null}")
+    @Size(min = 2, max = 70, message = "{validation.name}")
     private String name;
 
-    @NotNull(message = CertificateSupporter.ERROR_NULL_DESCRIPTION)
-    @Size(min = 3, max = 170, message = CertificateSupporter.ERROR_DESCRIPTION)
+    @NotNull(message = "{validation.certificate.description.null}")
+    @Size(min = 3, max = 170, message ="{validation.certificate.description}")
     private String description;
 
-    @NotNull(message = CertificateSupporter.ERROR_NULL_PRICE)
-    @PositiveOrZero(message = CertificateSupporter.ERROR_PRICE)
+    @NotNull(message = "{validation.certificate.price.not.null}")
+    @PositiveOrZero(message = "{validation.certificate.price}")
     private BigDecimal price;
 
-    @NotNull(message = CertificateSupporter.ERROR_NULL_DURATION_DAYS)
-    @PositiveOrZero(message = CertificateSupporter.ERROR_DURATION_DAYS)
+    @NotNull(message = "{validation.certificate.duration.days.not.null}")
+    @PositiveOrZero(message = "{validation.certificate.duration.days}")
     private Integer durationDays;
 
     @JsonIgnore
@@ -52,15 +52,15 @@ public class CertificateDTO {
 
     @Column(name = "date_of_creation")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
-    @Null(message = CertificateSupporter.ERROR_DATE_OF_CREATION)
+    @Null(message = "{validation.certificate.date.creation}")
     private Date creationDate;
 
     @Column(name = "date_of_modification")
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
-    @Null(message = CertificateSupporter.ERROR_DATE_OF_MODIFICATION)
+    @Null(message = "{validation.certificate.date.modification}")
     private Date modification;
 
-    @Null(message = CertificateSupporter.ERROR_TAGS_LIST)
+    @Null(message = "{validation.certificate.tags}")
     private List<Tag> tags;
 
     public CertificateDTO(CertificatePOJO certificate) {

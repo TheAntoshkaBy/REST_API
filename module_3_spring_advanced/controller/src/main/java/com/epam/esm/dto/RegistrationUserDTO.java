@@ -4,7 +4,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.UserController;
-import com.epam.esm.controller.support.UserSupporter;
 import com.epam.esm.entity.Role;
 import com.epam.esm.pojo.UserPOJO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,30 +24,30 @@ import org.springframework.hateoas.EntityModel;
 public class RegistrationUserDTO {
 
     @ToString.Exclude
-    @Null(message = UserSupporter.USER_ID)
+    @Null(message = "{validation.user.id}")
     private Long id;
 
-    @NotNull(message = UserSupporter.ERROR_NAME_NOT_NULL)
-    @Size(min = 2, max = 70, message = UserSupporter.ERROR_NAME)
+    @NotNull(message = "{validation.user.name}")
+    @Size(min = 2, max = 70, message = "{validation.user.name.not.null}")
     private String name;
 
-    @NotNull(message = UserSupporter.ERROR_SURNAME_NOT_NULL)
-    @Size(min = 3, max = 170, message = UserSupporter.ERROR_SURNAME)
+    @NotNull(message = "{validation.user.surname}")
+    @Size(min = 3, max = 170, message = "{validation.user.surname}")
     private String surname;
 
-    @NotNull(message = UserSupporter.ERROR_LOGIN_NOT_NULL)
-    @Size(min = 5, max = 30, message = UserSupporter.ERROR_LOGIN)
+    @NotNull(message = "{validation.user.login}")
+    @Size(min = 5, max = 30, message = "{validation.user.login.not.null}")
     private String login;
 
-    @NotNull(message = UserSupporter.ERROR_PASSWORD_NOT_NULL)
-    @Size(min = 4, max = 30, message = UserSupporter.ERROR_PASSWORD)
+    @NotNull(message = "{validation.user.password.not.null}")
+    @Size(min = 4, max = 30, message = "{validation.user.password}")
     private String password;
 
-    @Email(message = UserSupporter.ERROR_EMAIL)
-    @NotNull(message = UserSupporter.ERROR_EMAIL_NOT_NULL)
+    @Email(message = "{validation.user.email}")
+    @NotNull(message = "{validation.user.email.not.null}")
     private String email;
 
-    @Null(message = UserSupporter.ERROR_ROLES)
+    @Null(message = "{validation.user.roles.null}")
     private List<Role> roles;
 
     @JsonIgnore

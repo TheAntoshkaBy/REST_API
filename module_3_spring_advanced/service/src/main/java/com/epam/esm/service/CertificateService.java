@@ -2,63 +2,21 @@ package com.epam.esm.service;
 
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
-import com.epam.esm.repository.jpa.CertificateRepository;
-import com.epam.esm.repository.jpa.TagRepository;
-import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
-import com.epam.esm.service.validator.TagValidator;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Anton Vedenichev (https://github.com/TheAntoshkaBy)
- */
 public interface CertificateService {
 
     /**
      * This method delegates management to one of find methods.
      **/
-    Map<List<CertificatePOJO>, Integer> findAll(Map<String, String> params, List<TagPOJO> tags,
-        int page, int size);
+    List<CertificatePOJO> findAll(Map<String, String> params, List<TagPOJO> tags,
+                                  int page, int size);
 
-    int getCertificateCount();
+    int getCertificatesCount(Map<String, String> request, List<TagPOJO> tags);
 
     List<CertificatePOJO> findAll(int page, int size);
-
-    /**
-     * This method finds all certificates from database using DAO
-     **/
-    List<CertificatePOJO> findAllComplex(Map<String, String> request, List<TagPOJO> tags, int page,
-        int size);
-
-    int getCountComplex(Map<String, String> request, List<TagPOJO> tags);
-
-    int findByAllCertificatesByIdThresholdCount(long id);
-
-    /**
-     * This method finds all certificates from database and sorted them using DAO
-     *
-     * @return Certificates list
-     **/
-    List<CertificatePOJO> findAllCertificatesByDate(int page, int size);
-
-    /**
-     * This method finds concrete Certificate which contains id more than transmitted id using DAO
-     *
-     * @param id Certificate Id
-     * @return Certificate List
-     **/
-    List<CertificatePOJO> findAllCertificatesByIdThreshold(long id, int page, int size);
-
-    /**
-     * This method finds all certificates which contain string in tag name from database using DAO
-     **/
-    List<CertificatePOJO> findAllCertificatesByTag(TagPOJO tag, int page, int size);
-
-    /**
-     * This method finds all certificates which contain string in name from database using DAO
-     **/
-    List<CertificatePOJO> findByAllCertificatesByNamePart(String text);
 
     /**
      * This method finds concrete Certificate By Id using DAO
@@ -120,13 +78,4 @@ public interface CertificateService {
      **/
     void deleteTag(long idCertificate, long idTag);
 
-    void setCertificateServiceRequestParameterHandler
-        (CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler);
-
-    void setCertificateRepository(CertificateRepository certificateRepository);
-
-    void setTagRepository(TagRepository tagRepository);
-
-    void setTagValidator(TagValidator tagValidator);
 }
-

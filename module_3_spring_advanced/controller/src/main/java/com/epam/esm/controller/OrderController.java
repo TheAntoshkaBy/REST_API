@@ -1,8 +1,10 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.controller.support.ControllerSupporter;
+import com.epam.esm.controller.support.ControllerParamNames;
+import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
+import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.service.OrderService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +24,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/orders")
 public class OrderController {
     private final OrderService service;
+    private DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
 
     @Autowired
-    public OrderController(OrderService service) {
+    public OrderController(OrderService service,
+        DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter) {
         this.service = service;
+        this.orderConverter = orderConverter;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderList> findAll(
         @RequestParam(
-            value = ControllerSupporter.PAGE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_PAGE_STRING,
+            value = ControllerParamNames.PAGE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING,
             required = false)
             int page,
         @RequestParam(
-            value = ControllerSupporter.SIZE_PARAM_NAME,
-            defaultValue = ControllerSupporter.DEFAULT_SIZE_STRING,
+            value = ControllerParamNames.SIZE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING,
             required = false)
             int size) {
         return new ResponseEntity<>(
-            new OrderList.OrderListBuilder(service.findAll(page, size))
+            new OrderList.OrderListBuilder(service.findAll(page, size), orderConverter)
                 .page(page)
                 .size(size)
                 .resultCount(service.getOrdersCount())
