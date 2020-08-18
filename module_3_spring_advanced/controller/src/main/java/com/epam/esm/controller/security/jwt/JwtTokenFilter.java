@@ -1,4 +1,4 @@
-package com.epam.esm.security.jwt;
+package com.epam.esm.controller.security.jwt;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
@@ -12,7 +12,7 @@ import org.springframework.web.filter.GenericFilterBean;
 
 public class JwtTokenFilter extends GenericFilterBean {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -20,7 +20,7 @@ public class JwtTokenFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
-        throws IOException, ServletException {
+        throws IOException, ServletException{
         String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
         if (token != null && jwtTokenProvider.validateToken(token)) {
             Authentication auth = jwtTokenProvider.getAuthentication(token);
@@ -29,5 +29,5 @@ public class JwtTokenFilter extends GenericFilterBean {
             }
         }
         filterChain.doFilter(req, res);
-    }
+     }
 }

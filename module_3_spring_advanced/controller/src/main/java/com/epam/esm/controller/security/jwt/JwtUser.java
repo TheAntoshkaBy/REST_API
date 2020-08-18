@@ -1,4 +1,4 @@
-package com.epam.esm.security.jwt;
+package com.epam.esm.controller.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
-public class JwtUser implements UserDetails {
+public   class JwtUser implements UserDetails {
 
     private Long id;
     private String login;

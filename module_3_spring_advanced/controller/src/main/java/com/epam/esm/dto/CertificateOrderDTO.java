@@ -41,7 +41,7 @@ public class CertificateOrderDTO {
     @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
     private Date createdTime;
 
-    @NotNull(message = "{validation.order.owner}")
+    @Null(message = "{validation.order.owner}")
     private UserDTO owner;
 
     @JsonIgnore

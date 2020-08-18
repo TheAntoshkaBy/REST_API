@@ -1,5 +1,8 @@
 package com.epam.esm.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.controller.support.ControllerParamNames;
 import com.epam.esm.controller.support.ControllerUtils;
 import com.epam.esm.controller.support.DtoConverter;
@@ -40,7 +43,7 @@ public class CertificateController {
 
     private CertificateService service;
     private CertificateConverter converter;
-    private DtoConverter<TagDTO, TagPOJO> tagConverter;
+    private final DtoConverter<TagDTO, TagPOJO> tagConverter;
 
     @Autowired
     public CertificateController(DtoConverter<TagDTO, TagPOJO> tagConverter) {
@@ -63,10 +66,12 @@ public class CertificateController {
         consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> addCertificate(
                                                 @RequestBody @Valid CertificateDTO certificateDTO) {
-        service.create(converter.convert(certificateDTO));
+        CertificateDTO newCertificate =
+            new CertificateDTO(service.create(converter.convert(certificateDTO)));
 
-        return new ResponseEntity<>(new CertificateDTO(
-            service.create(converter.convert(certificateDTO))).getModel(), HttpStatus.CREATED);
+        return ResponseEntity.created(linkTo(methodOn(CertificateController.class)
+            .findById(newCertificate.getId()))
+            .toUri()).body(newCertificate.getModel());
     }
 
     @GetMapping(
@@ -92,22 +97,22 @@ public class CertificateController {
             .findAll(params, tagsPojo, page, size);
         int certificatesCount = service.getCertificatesCount(params, tagsPojo);
 
-        CertificateList certificateList = converter.formationCertificateList(
-            certificates,
-            certificatesCount,
-            page,
-            size,
-            params
-        );
+        CertificateList certificateList = new CertificateList
+            .CertificateListBuilder(certificates, converter)
+            .page(page)
+            .size(size)
+            .parameters(params)
+            .resultCount(certificatesCount)
+            .build();
 
         return new ResponseEntity<>(certificateList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> findById(@PathVariable long id) {
+        CertificateDTO searchedCertificate = new CertificateDTO(service.find(id));
 
-        return new ResponseEntity<>(
-            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(searchedCertificate.getModel(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -123,9 +128,9 @@ public class CertificateController {
                                                     @RequestBody @Valid CertificateDTO certificate,
                                                     @PathVariable int id) {
         service.update(id, converter.convert(certificate));
+        CertificateDTO updatedCertificate = new CertificateDTO(service.find(id));
 
-        return new ResponseEntity<>(
-            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(updatedCertificate.getModel(), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/{id}",
@@ -134,8 +139,9 @@ public class CertificateController {
                                                                     @RequestParam BigDecimal price,
                                                                     @PathVariable long id) {
         service.updatePrice(id, price);
+        CertificateDTO updatedCertificate = new CertificateDTO(service.find(id));
 
-        return new ResponseEntity<>(new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(updatedCertificate.getModel(), HttpStatus.OK);
     }
 
     @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -143,10 +149,9 @@ public class CertificateController {
     public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
         @PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
         service.addTag(id, tagConverter.convert(tag));
+        CertificateDTO editCertificate = new CertificateDTO(service.find(id));
 
-        return new ResponseEntity<>(
-            new CertificateDTO(service.find(id)).getModel(),
-            HttpStatus.CREATED);
+        return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.CREATED);
     }
 
     @PostMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -154,13 +159,14 @@ public class CertificateController {
                                                                     @PathVariable Integer id,
                                                                     @PathVariable Integer idTag) {
         service.addTag(id, idTag);
+        CertificateDTO editCertificate = new CertificateDTO(service.find(id));
 
-        return new ResponseEntity<>(
-            new CertificateDTO(service.find(id)).getModel(), HttpStatus.OK);
+        return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteTagToCertificate(Integer id, @PathVariable Integer idTag) {
+    public ResponseEntity<Void> deleteTagToCertificate(@PathVariable Integer id,
+                                                       @PathVariable Integer idTag) {
         service.deleteTag(id, idTag);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

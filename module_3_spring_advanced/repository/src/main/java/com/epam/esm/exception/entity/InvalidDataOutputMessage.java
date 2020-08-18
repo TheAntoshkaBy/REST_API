@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class InvalidDataOutputMessage {
 
-    private String entity;
+    private String field;
     private String message;
 
-    public InvalidDataOutputMessage(String entity, String message) {
+    public InvalidDataOutputMessage(String field, String message) {
         this.message = message;
-        this.entity = entity;
+        this.field = field;
     }
 }

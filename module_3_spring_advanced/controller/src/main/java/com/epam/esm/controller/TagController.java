@@ -1,11 +1,15 @@
 package com.epam.esm.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.epam.esm.controller.support.ControllerParamNames;
 import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.TagList;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.TagService;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -24,8 +28,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/tags")
 public class TagController {
-    private TagService service;
-    private DtoConverter<TagDTO, TagPOJO> converter;
+
+    private final TagService service;
+    private final DtoConverter<TagDTO, TagPOJO> converter;
 
     @Autowired
     public TagController(TagService service, DtoConverter<TagDTO, TagPOJO> converter) {
@@ -35,10 +40,11 @@ public class TagController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<TagDTO>> addTag(@RequestBody @Valid TagDTO tag) {
+        TagDTO resultTag = new TagDTO(service.create(converter.convert(tag)));
 
-        return new ResponseEntity<>(new TagDTO(
-            service.create(converter.convert(tag))
-        ).getModel(), HttpStatus.CREATED);
+        return ResponseEntity.created(linkTo(methodOn(TagController.class)
+            .findTag(resultTag.getId()))
+            .toUri()).body(resultTag.getModel());
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,11 +61,22 @@ public class TagController {
             defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING,
             required = false) int size) {
 
+        List<TagPOJO> tagPOJOList = service.findAll(page, size);
+        int tagsCount = service.getTagCount();
+
         return new ResponseEntity<>(
-            new TagList.TagListBuilder(service.findAll(page, size), converter)
-                .resultCount(service.getTagCount())
+            new TagList.TagListBuilder(tagPOJOList, converter)
+                .resultCount(tagsCount)
                 .page(page).size(size)
                 .build(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/tags/popular",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TagDTO> findMostWidelyUsedTagByMostActiveUser() {
+        TagDTO mostWidelyUserTag = new TagDTO(service.findMostWidelyUsedTag());
+
+        return new ResponseEntity<>(mostWidelyUserTag, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")

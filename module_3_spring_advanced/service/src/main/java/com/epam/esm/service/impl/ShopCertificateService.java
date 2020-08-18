@@ -30,11 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopCertificateService implements CertificateInternalService, CertificateService {
 
     private CertificateServiceRequestParameterHandler certificateServiceRequestParameterHandler;
-    private TagValidator tagValidator;
-    private CertificateRepository certificateRepository;
-    private TagRepository tagRepository;
-    private PojoConverter<CertificatePOJO, Certificate> converter;
-    private PojoConverter<TagPOJO, Tag> tagConverter;
+    private final TagValidator tagValidator;
+    private final CertificateRepository certificateRepository;
+    private final TagRepository tagRepository;
+    private final PojoConverter<CertificatePOJO, Certificate> converter;
+    private final PojoConverter<TagPOJO, Tag> tagConverter;
 
     @Autowired
     public ShopCertificateService(TagValidator tagValidator,

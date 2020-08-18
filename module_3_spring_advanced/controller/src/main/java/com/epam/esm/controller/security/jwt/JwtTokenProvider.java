@@ -1,4 +1,4 @@
-package com.epam.esm.security.jwt;
+package com.epam.esm.controller.security.jwt;
 
 import com.epam.esm.entity.Role;
 import io.jsonwebtoken.Claims;
@@ -67,7 +67,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "",
-            userDetails.getAuthorities());
+                                                       userDetails.getAuthorities());
     }
 
     public String getUsername(String token) {
@@ -85,7 +85,7 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token){
         String invalidToken = "JWT token is expired or invalid";
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);

@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 @RequestMapping("/orders")
 public class OrderController {
-    private OrderService service;
-    private DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
+    private final OrderService service;
+    private final DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
 
     @Autowired
     public OrderController(OrderService service, DtoConverter<CertificateOrderDTO,
@@ -63,20 +63,18 @@ public class OrderController {
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateOrderDTO>> findOrderById(@PathVariable long id) {
+        CertificateOrderDTO searchedOrder = new CertificateOrderDTO(service.find(id));
 
-        return new ResponseEntity<>(
-            new CertificateOrderDTO(service.find(id)).getModel(),
-            HttpStatus.OK);
+        return new ResponseEntity<>(searchedOrder.getModel(), HttpStatus.OK);
     }
 
     @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
                                                         @PathVariable long id,
                                                         @RequestParam List<Long> certificatesId) {
+        CertificateOrderDTO editCertificate =
+            new CertificateOrderDTO(service.addCertificates(id, certificatesId));
 
-        return new ResponseEntity<>(
-            new CertificateOrderDTO(service.addCertificates(id, certificatesId))
-                .getModel(),
-            HttpStatus.OK);
+        return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.OK);
     }
 }

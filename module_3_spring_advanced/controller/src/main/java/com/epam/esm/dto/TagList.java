@@ -25,13 +25,11 @@ public class TagList {
 
     public static class TagListBuilder {
 
-        private List<TagPOJO> tagsPOJO;
-        private List<TagDTO> tagsDTO;
-        private DtoConverter<TagDTO, TagPOJO> converter;
+        private final List<TagPOJO> tagsPOJO;
+        private final DtoConverter<TagDTO, TagPOJO> converter;
         private int tagsCount = 0;
         private int page = ControllerParamNames.DEFAULT_PAGE;
         private int size = ControllerParamNames.DEFAULT_SIZE;
-        private CollectionModel<EntityModel<TagDTO>> tags;
 
         public TagListBuilder(List<TagPOJO> tags,
             DtoConverter<TagDTO, TagPOJO> converter) {
@@ -62,10 +60,10 @@ public class TagList {
         }
 
         private CollectionModel<EntityModel<TagDTO>> buildModelWithPagination() {
-            this.tagsDTO = converter.convert(this.tagsPOJO);
+            List<TagDTO> tagsDTO = converter.convert(this.tagsPOJO);
 
-            this.tags = CollectionModel.of(
-                this.tagsDTO
+            CollectionModel<EntityModel<TagDTO>> tags = CollectionModel.of(
+                tagsDTO
                     .stream()
                     .map(TagDTO::getModel)
                     .collect(Collectors.toList())
@@ -73,23 +71,31 @@ public class TagList {
 
             if (this.tagsCount > page * size) {
                 int nextPage = page + 1;
-                this.tags.add(linkTo(methodOn(TagController.class)
+                tags.add(linkTo(methodOn(TagController.class)
                     .findAll(nextPage, size)).withRel(
                     ControllerParamNames.NEXT_PAGE_MODEL_PARAM));
             }
 
-            this.tags.add(linkTo(methodOn(TagController.class)
+            tags.add(linkTo(methodOn(TagController.class)
                 .findAll(page, size)).withRel(
                     ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
 
             if (page != 1) {
                 int prevPage = page - 1;
-                this.tags.add(linkTo(methodOn(TagController.class)
+                tags.add(linkTo(methodOn(TagController.class)
                     .findAll(prevPage, size)).withRel(
                     ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
-            return this.tags;
+            int lastPage = tagsCount/size;
+            if(lastPage%size != 0){
+                lastPage+=1;
+            }
+            tags.add(linkTo(methodOn(TagController.class)
+                .findAll(lastPage,size))
+                .withRel(ControllerParamNames.LAST_PAGE_MODEL_PARAM));
+
+            return tags;
         }
     }
 }

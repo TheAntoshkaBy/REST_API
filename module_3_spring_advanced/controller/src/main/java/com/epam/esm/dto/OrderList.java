@@ -25,13 +25,11 @@ public class OrderList {
 
     public static class OrderListBuilder {
 
-        private List<CertificateOrderDTO> ordersDTO;
-        private List<CertificateOrderPOJO> ordersPOJO;
-        private DtoConverter<CertificateOrderDTO,CertificateOrderPOJO> converter;
+        private final List<CertificateOrderPOJO> ordersPOJO;
+        private final DtoConverter<CertificateOrderDTO,CertificateOrderPOJO> converter;
         private int ordersCount = 0;
         private int page = ControllerParamNames.DEFAULT_PAGE;
         private int size = ControllerParamNames.DEFAULT_SIZE;
-        private CollectionModel<EntityModel<CertificateOrderDTO>> orders;
 
         public OrderListBuilder(List<CertificateOrderPOJO> orders,
             DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> converter) {
@@ -63,9 +61,9 @@ public class OrderList {
         }
 
         private CollectionModel<EntityModel<CertificateOrderDTO>> buildModelWithPagination() {
-            this.ordersDTO = converter.convert(this.ordersPOJO);
+            List<CertificateOrderDTO> ordersDTO = converter.convert(this.ordersPOJO);
 
-            this.orders = CollectionModel.of(
+            CollectionModel<EntityModel<CertificateOrderDTO>> orders = CollectionModel.of(
                 ordersDTO
                     .stream()
                     .map(CertificateOrderDTO::getModel)
@@ -74,23 +72,31 @@ public class OrderList {
 
             if (ordersCount > page * size) {
                 int nextPage = page + 1;
-                this.orders.add(linkTo(methodOn(OrderController.class)
+                orders.add(linkTo(methodOn(OrderController.class)
                     .findAll(nextPage, size)).withRel(
                         ControllerParamNames.NEXT_PAGE_MODEL_PARAM));
             }
 
-            this.orders.add(linkTo(methodOn(OrderController.class)
+            orders.add(linkTo(methodOn(OrderController.class)
                 .findAll(page, size)).withRel(
                     ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
 
             if (page != 1) {
                 int prevPage = page - 1;
-                this.orders.add(linkTo(methodOn(OrderController.class)
+                orders.add(linkTo(methodOn(OrderController.class)
                     .findAll(prevPage, size)).withRel(
                     ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
-            return this.orders;
+            int lastPage = ordersCount/size;
+            if(lastPage%size != 0){
+                lastPage+=1;
+            }
+            orders.add(linkTo(methodOn(OrderController.class)
+                .findAll(lastPage,size))
+                .withRel(ControllerParamNames.LAST_PAGE_MODEL_PARAM));
+
+            return orders;
         }
     }
 }

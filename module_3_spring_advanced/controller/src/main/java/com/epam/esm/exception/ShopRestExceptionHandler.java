@@ -2,6 +2,7 @@ package com.epam.esm.exception;
 
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.pojo.InvalidDataMessage;
+import com.epam.esm.controller.security.jwt.JwtAuthenticationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +28,13 @@ public class ShopRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(RepositoryException.class)
-    @ResponseStatus(value = HttpStatus.FAILED_DEPENDENCY)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public List<InvalidDataOutputMessage> ShopRepositoryHandler(RepositoryException e) {
         return e.getMessages();
     }
 
     @ExceptionHandler(ControllerException.class)
-    @ResponseStatus(value = HttpStatus.FAILED_DEPENDENCY)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public List<InvalidControllerOutputMessage> ShopControllerHandler(ControllerException e) {
         return e.getMessages();
     }
@@ -41,6 +42,12 @@ public class ShopRestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public String ShopControllerHandler(BadCredentialsException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(JwtAuthenticationException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public String ShopControllerHandler(JwtAuthenticationException e) {
         return e.getMessage();
     }
 

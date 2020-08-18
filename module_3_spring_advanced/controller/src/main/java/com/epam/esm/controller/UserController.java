@@ -1,22 +1,28 @@
 package com.epam.esm.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import com.epam.esm.controller.support.ControllerParamNames;
 import com.epam.esm.controller.support.ControllerUtils;
 import com.epam.esm.controller.support.DtoConverter;
+import com.epam.esm.dto.AuthenticationRequestDto;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
 import com.epam.esm.dto.OrderList.OrderListBuilder;
-import com.epam.esm.dto.TagDTO;
+import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.UserList;
 import com.epam.esm.dto.UserList.UserListBuilder;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.pojo.UserPOJO;
-import com.epam.esm.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +30,15 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,24 +48,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-    private UserService service;
-    private OrderService orderService;
-    private TagService tagService;
-    private JwtTokenProvider jwtTokenProvider;
-    private DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
-    private DtoConverter<UserDTO, UserPOJO> converter;
+    private final UserService service;
+    private final OrderService orderService;
+    private final DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter;
+    private final DtoConverter<UserDTO, UserPOJO> converter;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final DtoConverter<RegistrationUserDTO, UserPOJO> registrationConverter;
 
     @Autowired
-    public UserController(DtoConverter orderConverter, UserService service,
-                          OrderService orderService, TagService tagService,
+    public UserController(DtoConverter<CertificateOrderDTO, CertificateOrderPOJO> orderConverter,
+                          UserService service,
+                          OrderService orderService, DtoConverter<UserDTO, UserPOJO> converter,
+                          AuthenticationManager authenticationManager,
                           JwtTokenProvider jwtTokenProvider,
-                          DtoConverter<UserDTO, UserPOJO> converter) {
+                          DtoConverter<RegistrationUserDTO, UserPOJO> registrationConverter) {
         this.orderConverter = orderConverter;
         this.service = service;
         this.orderService = orderService;
-        this.tagService = tagService;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.converter = converter;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.registrationConverter = registrationConverter;
     }
 
     @PatchMapping(path = "{id}/orders", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -63,14 +78,17 @@ public class UserController {
                                                 @Valid @RequestBody CertificateOrderDTO order,
                                                                     HttpServletRequest request) {
         ControllerUtils.checkUserRulesById(request, id);
+        UserDTO createdUserDTO = new UserDTO(service.find(id));
+        UserPOJO createdUserPOJO = converter.convert(createdUserDTO);
 
-        return new ResponseEntity<>(new CertificateOrderDTO(
-            orderService.create(
-                orderConverter.convert(order),
-                converter
-                    .convert(new UserDTO(service.find(id)))))
-            .getModel(),
-            HttpStatus.CREATED);
+        CertificateOrderPOJO createdOrder = orderConverter.convert(order);
+        CertificateOrderDTO resultOrder = new CertificateOrderDTO(
+            orderService.create(createdOrder,
+                createdUserPOJO));
+
+        return ResponseEntity.created(linkTo(methodOn(OrderController.class)
+            .findOrderById(resultOrder.getOwner().getId()))
+            .toUri()).body(resultOrder.getModel());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,27 +97,26 @@ public class UserController {
             defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING) int page,
         @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
             defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING) int size) {
+        List<UserPOJO> users = service.findAll(page, size);
+        int usersCount = service.getUsersCount();
+
         return new ResponseEntity<>(
-            new UserListBuilder(service.findAll(page, size), converter)
-                .resultCount(service.getUsersCount())
+            new UserListBuilder(users, converter)
+                .resultCount(usersCount)
                 .page(page).size(size)
                 .build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<UserDTO>> findUserById(@PathVariable long id) {
+    public ResponseEntity<EntityModel<UserDTO>> findUserById(@PathVariable long id,
+                                                                HttpServletRequest request) {
         int startPage = 1;
         int startSize = 5;
 
-        return new ResponseEntity<>(new UserDTO(service.find(id)).getModel(startPage, startSize),
-            HttpStatus.OK);
-    }
+        ControllerUtils.checkUserRulesById(request, id);
+        UserDTO searchedUser = new UserDTO(service.find(id));
 
-    @GetMapping(path = "/orders/tags",
-        params = "search by",
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<TagDTO> findMostWidelyUsedTagByMostActiveUser() {
-        return new ResponseEntity<>(new TagDTO(tagService.findMostWidelyUsedTag()), HttpStatus.OK);
+        return new ResponseEntity<>(searchedUser.getModel(startPage, startSize), HttpStatus.OK);
     }
 
     @GetMapping(path = "/{id}/orders", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -107,11 +124,15 @@ public class UserController {
         @RequestParam(value = ControllerParamNames.PAGE_PARAM_NAME,
             defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING) int page,
         @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
-            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING) int size) {
+            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING) int size,
+                                                                     HttpServletRequest request) {
+        ControllerUtils.checkUserRulesById(request, id);
+        List<CertificateOrderPOJO> ordersByUser = orderService.findAllByOwner(id, page, size);
+        int ordersCount = orderService.ordersCountByOwner(id);
 
         return new ResponseEntity<>(
-            new OrderListBuilder(orderService.findAllByOwner(id, page, size), orderConverter)
-                .resultCount(orderService.ordersCountByOwner(id))
+            new OrderListBuilder(ordersByUser, orderConverter)
+                .resultCount(ordersCount)
                 .page(page)
                 .size(size)
                 .build(), HttpStatus.OK);
@@ -137,11 +158,54 @@ public class UserController {
         ControllerUtils.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         ControllerUtils.checkUserRulesById(request, userId);
 
-        return new ResponseEntity<>(new CertificateOrderDTO(
-            orderService
-                .addCertificates(id, certificatesId)
-        )
-            .getModel(), HttpStatus.OK);
+
+        CertificateOrderDTO certificateOrderDTO =
+            new CertificateOrderDTO(orderService.addCertificates(id, certificatesId));
+        return new ResponseEntity<>(certificateOrderDTO.getModel(), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<Map<Object, Object>> login(
+        @RequestBody AuthenticationRequestDto requestDto) {
+        String invalid = "Invalid username or password";
+        String parameterUsername = "username";
+        String parameterToken = "token";
+
+        try {
+            String username = requestDto.getLogin();
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, requestDto.getPassword())
+            );
+            UserDTO user = new UserDTO(service.findByLogin(username));
+
+            String token = jwtTokenProvider.createToken(username, user.getRoles());
+
+            Map<Object, Object> response = new HashMap<>();
+            response.put(parameterUsername, username);
+            response.put(parameterToken, token);
+
+            return ResponseEntity.ok(response);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException(invalid);
+        }
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+                 produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EntityModel<UserDTO>> registration(
+        @Valid @RequestBody RegistrationUserDTO userDTO, HttpServletRequest request) {
+        String invalid = "Invalid username or password";
+
+        try {
+            UserPOJO userPOJO = service
+                .create(registrationConverter.convert(userDTO));
+            UserDTO createdUser = new UserDTO(userPOJO);
+            return ResponseEntity.created(linkTo(methodOn(UserController.class)
+                                 .findUserById(createdUser.getId(),request))
+                                 .toUri()).body(createdUser.getModel());
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException(invalid);
+        }
     }
 
     @DeleteMapping(path = "/{id}")
@@ -150,5 +214,29 @@ public class UserController {
         service.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    public ResponseEntity<EntityModel<UserDTO>> findUserById(long id) {
+        int startPage = 1;
+        int startSize = 5;
+
+        UserDTO searchedUserDTO = new UserDTO(service.find(id));
+        return new ResponseEntity<>(searchedUserDTO.getModel(startPage, startSize), HttpStatus.OK);
+    }
+
+    public ResponseEntity<OrderList> findOrders(@PathVariable long id,
+        @RequestParam(value = ControllerParamNames.PAGE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_PAGE_STRING) int page,
+        @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
+            defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING) int size) {
+        List<CertificateOrderPOJO> ordersByUser = orderService.findAllByOwner(id, page, size);
+        int ordersCount = orderService.ordersCountByOwner(id);
+
+        return new ResponseEntity<>(
+            new OrderListBuilder(ordersByUser, orderConverter)
+                .resultCount(ordersCount)
+                .page(page)
+                .size(size)
+                .build(), HttpStatus.OK);
     }
 }

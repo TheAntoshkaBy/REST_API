@@ -25,13 +25,11 @@ public class UserList {
 
     public static class UserListBuilder {
 
-        private List<UserPOJO> usersPOJO;
-        private List<UserDTO> userDTO;
-        private DtoConverter<UserDTO, UserPOJO> converter;
+        private final List<UserPOJO> usersPOJO;
+        private final DtoConverter<UserDTO, UserPOJO> converter;
         private int userCount = 0;
         private int page = ControllerParamNames.DEFAULT_PAGE;
         private int size = ControllerParamNames.DEFAULT_SIZE;
-        private CollectionModel<EntityModel<UserDTO>> users;
 
         public UserListBuilder(List<UserPOJO> users,
             DtoConverter<UserDTO, UserPOJO> converter) {
@@ -62,32 +60,40 @@ public class UserList {
         }
 
         private CollectionModel<EntityModel<UserDTO>> buildModelWithPagination() {
-            this.userDTO = converter.convert(this.usersPOJO);
+            List<UserDTO> userDTO = converter.convert(this.usersPOJO);
 
-            this.users = CollectionModel.of(
-                this.userDTO
+            CollectionModel<EntityModel<UserDTO>> users = CollectionModel.of(
+                userDTO
                     .stream()
-                    .map(user -> user.getModel(page,size))
+                    .map(user -> user.getModel(page, size))
                     .collect(Collectors.toList())
             );
 
             if (userCount > page * size) {
                 int nextPage = page + 1;
-                this.users.add(linkTo(methodOn(UserController.class)
+                users.add(linkTo(methodOn(UserController.class)
                     .findAll(nextPage, size)).withRel(ControllerParamNames.NEXT_PAGE_MODEL_PARAM));
             }
 
-            this.users.add(linkTo(methodOn(UserController.class)
+            users.add(linkTo(methodOn(UserController.class)
                 .findAll(page, size)).withRel(ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
 
             if (page != 1) {
                 int prevPage = page - 1;
-                this.users.add(linkTo(methodOn(UserController.class)
+                users.add(linkTo(methodOn(UserController.class)
                     .findAll(prevPage, size)).withRel(
                         ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
-            return this.users;
+            int lastPage = userCount/size;
+            if(lastPage%size != 0){
+                lastPage+=1;
+            }
+            users.add(linkTo(methodOn(UserController.class)
+                             .findAll(lastPage,size))
+                             .withRel(ControllerParamNames.LAST_PAGE_MODEL_PARAM));
+
+            return users;
         }
     }
 }

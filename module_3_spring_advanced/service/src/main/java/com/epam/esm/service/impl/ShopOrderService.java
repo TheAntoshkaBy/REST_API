@@ -21,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ShopOrderService implements OrderService {
 
-    private OrderRepository repository;
-    private CertificateRepository certificateRepository;
-    private PojoConverter<CertificateOrderPOJO, CertificateOrder> converter;
-    private PojoConverter<UserPOJO, User> userConverter;
+    private final OrderRepository repository;
+    private final CertificateRepository certificateRepository;
+    private final PojoConverter<CertificateOrderPOJO, CertificateOrder> converter;
+    private final PojoConverter<UserPOJO, User> userConverter;
 
     @Autowired
     public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository,

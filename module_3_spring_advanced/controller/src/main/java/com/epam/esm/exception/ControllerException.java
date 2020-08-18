@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ControllerException extends RuntimeException {
 
-    private final static String MESSAGE = "Repository exception";
+    private final static String MESSAGE = "Controller exception";
     private List<InvalidControllerOutputMessage> messages;
     private InvalidControllerOutputMessage message;
 

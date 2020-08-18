@@ -25,20 +25,4 @@ public class CertificateConverter implements DtoConverter<CertificateDTO, Certif
         return new CertificatePOJO(certificate.getName(), certificate.getDescription(),
                                    certificate.getPrice(), certificate.getDurationDays());
     }
-
-    public CertificateList formationCertificateList(List<CertificatePOJO> certificatesPOJO,
-                                                    int certificatesCount, int page, int size,
-                                                    Map<String, String> params) {
-        List<CertificatePOJO> certificates = certificatesPOJO;
-        int resultCount = certificatesCount;
-        List<CertificateDTO> certificatesDTO = convert(certificates);
-
-        return new CertificateList
-            .CertificateListBuilder(certificatesDTO, this)
-            .page(page)
-            .size(size)
-            .parameters(params)
-            .resultCount(resultCount)
-            .build();
-    }
 }

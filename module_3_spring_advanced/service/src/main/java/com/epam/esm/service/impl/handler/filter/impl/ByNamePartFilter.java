@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ByNamePartFilter implements CertificateFilterRequestParameter {
 
-    private static final String FILTER_TYPE = "name part";
+    private static final String FILTER_TYPE = "namePart";
     private CertificateInternalService certificateInternalService;
 
     @Autowired
@@ -27,7 +27,7 @@ public class ByNamePartFilter implements CertificateFilterRequestParameter {
     @Override
     public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request,
                                                           List<TagPOJO> tags, int page, int size) {
-        String text = request.get("searching name");
+        String text = request.get("searchingName");
         if (text == null) {
             throw new ServiceException(
                 new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)

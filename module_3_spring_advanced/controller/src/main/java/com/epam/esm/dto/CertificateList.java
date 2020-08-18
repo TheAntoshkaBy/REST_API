@@ -27,18 +27,17 @@ CertificateList {
 
     public static class CertificateListBuilder {
 
-        private List<CertificateDTO> certificatesDTO;
-        private DtoConverter<CertificateDTO, CertificatePOJO> converter;
+        private final List<CertificatePOJO> certificatesPOJO;
+        private final DtoConverter<CertificateDTO, CertificatePOJO> converter;
         private int certificatesCount = 0;
         private int page = ControllerParamNames.DEFAULT_PAGE;
         private int size = ControllerParamNames.DEFAULT_SIZE;
         private Map<String, String> params;
-        private CollectionModel<EntityModel<CertificateDTO>> certificates;
         private List<TagDTO> tags;
 
-        public CertificateListBuilder(List<CertificateDTO> certificates,
+        public CertificateListBuilder(List<CertificatePOJO> certificates,
             DtoConverter<CertificateDTO, CertificatePOJO> converter) {
-            this.certificatesDTO = certificates;
+            this.certificatesPOJO = certificates;
             this.converter = converter;
         }
 
@@ -76,7 +75,9 @@ CertificateList {
         }
 
         private CollectionModel<EntityModel<CertificateDTO>> buildModelWithPagination() {
-            this.certificates = CollectionModel.of(
+            List<CertificateDTO> certificatesDTO = converter.convert(this.certificatesPOJO);
+
+            CollectionModel<EntityModel<CertificateDTO>> certificates = CollectionModel.of(
                 certificatesDTO
                     .stream()
                     .map(CertificateDTO::getModel)
@@ -87,24 +88,34 @@ CertificateList {
                 if (certificatesCount > page * size) {
                     int nextPage = page + 1;
                     params.put("page", String.valueOf(nextPage));
-                    this.certificates.add(linkTo(methodOn(CertificateController.class)
+                    certificates.add(linkTo(methodOn(CertificateController.class)
                         .find(params, this.tags)).withRel(
                         ControllerParamNames.NEXT_PAGE_MODEL_PARAM));
                 }
 
-                this.certificates.add(linkTo(methodOn(CertificateController.class)
+                params.put("page", String.valueOf(page));
+                certificates.add(linkTo(methodOn(CertificateController.class)
                     .find(params, this.tags)).withRel(
                         ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
 
                 if (page != 1) {
                     int prevPage = page - 1;
                     params.put("page", String.valueOf(prevPage));
-                    this.certificates.add(linkTo(methodOn(CertificateController.class)
+                    certificates.add(linkTo(methodOn(CertificateController.class)
                         .find(params, this.tags)).withRel(
                         ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
                 }
+
+                int lastPage = certificatesCount/size;
+                if(lastPage%size != 0){
+                    lastPage+=1;
+                }
+                params.put("page", String.valueOf(lastPage));
+                certificates.add(linkTo(methodOn(CertificateController.class)
+                    .find(params, this.tags)).withRel(
+                    ControllerParamNames.LAST_PAGE_MODEL_PARAM));
             }
-            return this.certificates;
+            return certificates;
         }
     }
 }

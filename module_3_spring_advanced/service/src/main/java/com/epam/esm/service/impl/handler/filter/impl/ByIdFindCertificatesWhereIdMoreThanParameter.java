@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class ByIdFindCertificatesWhereIdMoreThanParameter implements
     CertificateFilterRequestParameter {
 
-    private static final String FILTER_TYPE = "greater than";
+    private static final String FILTER_TYPE = "greaterThan";
     private CertificateInternalService certificateInternalService;
 
     @Autowired
@@ -26,14 +26,14 @@ public class ByIdFindCertificatesWhereIdMoreThanParameter implements
     public List<CertificatePOJO> filterOutOurCertificates(Map<String, String> request,
                                                           List<TagPOJO> tags, int page, int size) {
         return certificateInternalService.findAllCertificatesByIdThreshold(
-            Long.parseLong(request.get("founded id")), --page, size
+            Long.parseLong(request.get("foundedId")), --page, size
         );
     }
 
     @Override
     public int getCountFoundPOJO(Map<String, String> request, List<TagPOJO> tags) {
         return certificateInternalService.findByAllCertificatesByIdThresholdCount(
-            Long.parseLong(request.get("founded id"))
+            Long.parseLong(request.get("foundedId"))
         );
     }
 

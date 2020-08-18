@@ -1,4 +1,4 @@
-package com.epam.esm.security.jwt;
+package com.epam.esm.controller.security.jwt;
 
 import org.springframework.security.core.AuthenticationException;
 

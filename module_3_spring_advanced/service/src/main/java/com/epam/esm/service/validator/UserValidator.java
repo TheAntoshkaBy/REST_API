@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserValidator {
 
-    private UserRepository repository;
+    private final UserRepository repository;
 
     @Autowired
     public UserValidator(UserRepository repository) {

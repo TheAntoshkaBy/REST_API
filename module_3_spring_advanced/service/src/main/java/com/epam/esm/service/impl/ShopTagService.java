@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ShopTagService implements TagService {
 
-    private TagRepositoryJPA tagRepository;
-    private TagValidator tagValidator;
-    private PojoConverter<TagPOJO, Tag> converter;
+    private final TagRepositoryJPA tagRepository;
+    private final TagValidator tagValidator;
+    private final PojoConverter<TagPOJO, Tag> converter;
 
     @Autowired
     public ShopTagService(TagRepositoryJPA tagRepository, TagValidator tagValidator,

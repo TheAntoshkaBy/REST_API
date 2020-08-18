@@ -18,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ShopUserService implements UserService {
 
-    private UserRepository repository;
-    private RoleRepository roleRepository;
-    private UserValidator userValidator;
-    private PojoConverter<UserPOJO, User> converter;
+    private final UserRepository repository;
+    private final RoleRepository roleRepository;
+    private final UserValidator userValidator;
+    private final PojoConverter<UserPOJO, User> converter;
 
     @Autowired
     public ShopUserService(UserRepository repository, UserValidator userValidator,

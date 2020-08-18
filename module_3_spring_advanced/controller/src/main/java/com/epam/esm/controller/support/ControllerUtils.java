@@ -5,7 +5,7 @@ import com.epam.esm.dto.UserDTO;
 import com.epam.esm.exception.ControllerException;
 import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.CertificateOrderPOJO;
-import com.epam.esm.security.jwt.JwtTokenProvider;
+import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import java.util.List;
@@ -32,19 +32,18 @@ public class ControllerUtils {
     }
 
     public static void checkIsCurrentUserHaveRulesForEditThisOrder(long userId, long orderId) {
-        String exceptionMessageParameter = "user id";
         String exceptionMessage = "You don't have access with action for current order";
 
         if (!isThisOrderBelowCurrentUser(userId, orderId)) {
             throw new ControllerException(
-                new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
+                new InvalidControllerOutputMessage(exceptionMessage)
             );
         }
     }
 
     public static int getValidPaginationParam(String page, String paramName) {
         int defaultReturn = ControllerParamNames.PAGE_PARAM_NAME.equals(paramName) ?
-            ControllerParamNames.DEFAULT_SIZE : ControllerParamNames.DEFAULT_PAGE;
+            ControllerParamNames.DEFAULT_PAGE : ControllerParamNames.DEFAULT_SIZE;
         try {
             int paramInteger = Integer.parseInt(page);
             return paramInteger > 0 ? paramInteger : defaultReturn;
@@ -62,7 +61,6 @@ public class ControllerUtils {
     }
 
     public static void checkUserRulesById(HttpServletRequest req, long actionUserId) {
-        String exceptionMessageParameter = "user id";
         String exceptionMessage = "You don't have access with action for current user";
 
         String token = jwtTokenProvider.resolveToken(req);
@@ -72,7 +70,7 @@ public class ControllerUtils {
         if (userDTO.getId() != actionUserId && userDTO.getRoles().stream()
             .noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             throw new ControllerException(
-                new InvalidControllerOutputMessage(exceptionMessageParameter, exceptionMessage)
+                new InvalidControllerOutputMessage(exceptionMessage)
             );
         }
     }
