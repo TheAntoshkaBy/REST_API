@@ -8,6 +8,8 @@ public class ErrorTextMessageConstants {
         + "field is exist, Tag name must be unique ";
     public static final String USER_LOGIN_FIELD_IS_EXIST = "This user "
         + "login is exist, User login must be unique ";
+    public static final String USER_EMAIL_FIELD_IS_EXIST = "This user "
+        + "email is exist, User email must be unique ";
     public static final String PRICE_FIELD = "The price field must not be negative";
     public static final String MODIFICATION_DATE_FIELD = "This operation "
         + "wait null modification date";

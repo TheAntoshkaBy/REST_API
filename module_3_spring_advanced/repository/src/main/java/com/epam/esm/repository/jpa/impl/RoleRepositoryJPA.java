@@ -25,27 +25,18 @@ public class RoleRepositoryJPA extends ShopJPARepository<Role> implements RoleRe
     @Override
     public void delete(long id) {
         throw new NotSupportedOperationException(
-            new InvalidDataOutputMessage(
-                EntityNameConstant.ROLE,
-                ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION)
-        );
+            new InvalidDataOutputMessage(ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION));
     }
 
     @Override
     public Role findById(long id) {
         throw new NotSupportedOperationException(
-            new InvalidDataOutputMessage(
-                EntityNameConstant.ROLE,
-                ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION)
-        );
+            new InvalidDataOutputMessage(ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION));
     }
 
     @Override
     public List<Role> findAll(int offset, int limit) {
         throw new NotSupportedOperationException(
-            new InvalidDataOutputMessage(
-                EntityNameConstant.ROLE,
-                ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION)
-        );
+            new InvalidDataOutputMessage(ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION));
     }
 }

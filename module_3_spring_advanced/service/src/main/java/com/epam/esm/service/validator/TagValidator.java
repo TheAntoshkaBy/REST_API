@@ -30,11 +30,9 @@ public class TagValidator {
     }
 
     private void checkNameUnique(String name) {
-        String field = "Name";
-
-        if (tagRepository.findByName(name) != null) {
-            invalidDataMessageList.add(new InvalidDataMessage(field,
-                ErrorTextMessageConstants.TAG_NAME_FIELD_IS_EXIST));
+      if (tagRepository.findByName(name) != null) {
+            invalidDataMessageList.add(
+                new InvalidDataMessage(ErrorTextMessageConstants.TAG_NAME_FIELD_IS_EXIST));
         }
     }
 }

@@ -24,8 +24,8 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
         int col = entityManager.createQuery(SQLRequests.DELETE_ORDER_BY_ID)
             .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.ORDER,
-                ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
     }
 
@@ -34,8 +34,8 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
 
         CertificateOrder order = entityManager.find(CertificateOrder.class, id);
         if (order == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.ORDER,
-                ErrorTextMessageConstants.NOT_FOUND_ORDER));
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
         return order;
     }

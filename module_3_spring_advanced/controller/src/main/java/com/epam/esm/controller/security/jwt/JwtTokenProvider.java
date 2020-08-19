@@ -75,8 +75,8 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest req) {
-        String headerName = "auth";
-        String prefixHeader = "token_";
+        String headerName = "Authorization";
+        String prefixHeader = "Bearer_";
 
         String token = req.getHeader(headerName);
         if (token != null && token.startsWith(prefixHeader)) {

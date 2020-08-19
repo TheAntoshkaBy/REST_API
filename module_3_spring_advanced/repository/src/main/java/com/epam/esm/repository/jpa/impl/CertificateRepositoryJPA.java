@@ -27,19 +27,16 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
         if (col == 0) {
             throw new RepositoryException(
-                new InvalidDataOutputMessage(EntityNameConstant.CERTIFICATE,
-                    ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
     @Override
     public Certificate findById(long id) {
-        String wrongEntityName = "Certificate";
-
         Certificate certificate = entityManager.find(Certificate.class, id);
         if (certificate == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage(wrongEntityName,
-                                           ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+            throw new RepositoryException(new
+                InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
         return certificate;
@@ -150,8 +147,13 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
 
     @Override
     public void updatePrice(long id, BigDecimal price) {
-        Certificate buffCert = entityManager.find(Certificate.class, id);
-        buffCert.setPrice(price);
+        try {
+            Certificate buffCert = entityManager.find(Certificate.class, id);
+            buffCert.setPrice(price);
+        }catch (NullPointerException e){
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -164,9 +166,18 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
     }
 
     public void addTag(long idCertificate, long idTag) {
-        Certificate buffCertificate = entityManager.find(Certificate.class, idCertificate);
-        Tag buffTag = entityManager.find(Tag.class, idTag);
-        buffCertificate.getTags().add(buffTag);
+        try {
+            Certificate buffCertificate = entityManager.find(Certificate.class, idCertificate);
+            Tag buffTag = entityManager.find(Tag.class, idTag);
+            buffCertificate.getTags().add(buffTag);
+        }catch (NullPointerException e){
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+        }
+    }
+
+    public void addTag(Certificate certificate, Tag tag) {
+        certificate.getTags().add(tag);
     }
 
     public void deleteTag(long idCertificate, Tag buffTag) {

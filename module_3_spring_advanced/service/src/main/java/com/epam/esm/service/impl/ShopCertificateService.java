@@ -164,7 +164,10 @@ public class ShopCertificateService implements CertificateInternalService, Certi
 
     @Override
     public void addTag(long idCertificate, long idTag) {
-        certificateRepository.addTag(idCertificate, idTag);
+        Tag tag = tagRepository.findById(idTag);
+        Certificate certificate = certificateRepository.findById(idCertificate);
+
+        certificateRepository.addTag(certificate,tag);
     }
 
     @Override
@@ -172,8 +175,8 @@ public class ShopCertificateService implements CertificateInternalService, Certi
         Certificate buffCertificate = certificateRepository.findById(idCertificate);
 
         if (buffCertificate == null) {
-            throw new ServiceException(new InvalidDataMessage(EntityNameConstant.CERTIFICATE,
-                ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+            throw new ServiceException(
+                new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
         Optional<Tag> buffTag = buffCertificate
@@ -183,8 +186,8 @@ public class ShopCertificateService implements CertificateInternalService, Certi
         if (buffTag.isPresent()) {
             certificateRepository.deleteTag(idCertificate, buffTag.get());
         } else {
-            throw new ServiceException(new InvalidDataMessage(EntityNameConstant.CERTIFICATE,
-                ErrorTextMessageConstants.NOT_FOUND_TAG));
+            throw new ServiceException(
+                new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
     }
 

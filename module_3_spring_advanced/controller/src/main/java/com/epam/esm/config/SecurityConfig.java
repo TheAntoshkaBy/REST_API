@@ -2,16 +2,21 @@ package com.epam.esm.config;
 
 import com.epam.esm.controller.security.jwt.JwtConfigurer;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;
+import com.epam.esm.exception.AuthenticationExceptionHandler;
 import com.epam.esm.exception.RestAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -25,10 +30,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String TAG_ENDPOINT = "/tags/**";
     private static final String ROLE_ADMIN = "ADMIN";
     private final JwtTokenProvider jwtTokenProvider;
+    private RestAccessDeniedHandler accessDeniedHandler;
+    private AuthenticationExceptionHandler authenticationEntryPoint;
+
 
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
+    }
+
+    @Autowired
+    public void setAccessDeniedHandler(RestAccessDeniedHandler accessDeniedHandler) {
+        this.accessDeniedHandler = accessDeniedHandler;
+    }
+
+    @Autowired
+    public void setAuthenticationEntryPoint(
+        AuthenticationExceptionHandler authenticationEntryPoint) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Bean
@@ -61,19 +80,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers(HttpMethod.GET, CERTIFICATE_ENDPOINT).permitAll()
             .anyRequest().authenticated()
             .and()
-            .apply(new JwtConfigurer(jwtTokenProvider))
-            .and()
             .exceptionHandling()
-            .accessDeniedHandler(accessDeniedHandler())
+            .accessDeniedHandler(accessDeniedHandler)
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .and()
+            .apply(new JwtConfigurer(jwtTokenProvider))
             .and().csrf().disable();
-    }
-
-    /**
-     * @return Custom {@link AccessDeniedHandler} to send suitable response to REST clients in the
-     * event of an attempt to access resources to which the user has insufficient privileges.
-     */
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new RestAccessDeniedHandler();
     }
 }

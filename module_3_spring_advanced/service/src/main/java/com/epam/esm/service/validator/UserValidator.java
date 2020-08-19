@@ -21,20 +21,16 @@ public class UserValidator {
     }
 
     private void checkLoginUnique(String login, List<InvalidDataMessage> invalidDataMessageList) {
-        String field = "login";
-
         if (repository.findByLogin(login) != null) {
-            invalidDataMessageList.add(new InvalidDataMessage(field,
-                ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
+            invalidDataMessageList.add(
+                new InvalidDataMessage(ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
         }
     }
 
     private void checkEmailUnique(String email, List<InvalidDataMessage> invalidDataMessageList) {
-        String field = "email";
-
         if (repository.findByEmail(email) != null) {
-            invalidDataMessageList.add(new InvalidDataMessage(field,
-                ErrorTextMessageConstants.USER_LOGIN_FIELD_IS_EXIST));
+            invalidDataMessageList.add(
+                new InvalidDataMessage(ErrorTextMessageConstants.USER_EMAIL_FIELD_IS_EXIST));
         }
     }
 

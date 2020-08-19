@@ -45,5 +45,7 @@ public interface CertificateRepository {
 
     void addTag(long idCertificate, long idTag);
 
+    void addTag(Certificate certificate, Tag tag);
+
     void deleteTag(long idCertificate, Tag tag);
 }

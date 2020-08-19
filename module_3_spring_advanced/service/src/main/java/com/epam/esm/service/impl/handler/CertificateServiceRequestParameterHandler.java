@@ -111,8 +111,7 @@ public class CertificateServiceRequestParameterHandler {
                     returnedParams.put(complexFilter.getType(), complexFilter.setType(param));
                 } catch (RuntimeException e) {
                     throw new ServiceException(
-                        new InvalidDataMessage(complexFilter.getType(),
-                            "Invalid parameter data!")
+                        new InvalidDataMessage("Invalid parameter data!")
                     );
                 }
 

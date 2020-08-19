@@ -7,6 +7,7 @@ import com.epam.esm.controller.security.jwt.JwtTokenProvider;
 import com.epam.esm.controller.support.ControllerParamNames;
 import com.epam.esm.controller.support.ControllerUtils;
 import com.epam.esm.controller.support.DtoConverter;
+import com.epam.esm.dto.AddedCertificatesListDTO;
 import com.epam.esm.dto.AuthenticationRequestDto;
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.OrderList;
@@ -15,10 +16,11 @@ import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.UserList;
 import com.epam.esm.dto.UserList.UserListBuilder;
+import com.epam.esm.exception.ControllerException;
+import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.pojo.UserPOJO;
 import com.epam.esm.service.OrderService;
-import com.epam.esm.service.TagService;
 import com.epam.esm.service.UserService;
 import java.util.HashMap;
 import java.util.List;
@@ -72,23 +74,20 @@ public class UserController {
         this.registrationConverter = registrationConverter;
     }
 
-    @PatchMapping(path = "{id}/orders", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "{id}/orders")
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addOrder(
-                                                @PathVariable long id,
-                                                @Valid @RequestBody CertificateOrderDTO order,
-                                                                    HttpServletRequest request) {
+                                                @PathVariable long id, HttpServletRequest request) {
         ControllerUtils.checkUserRulesById(request, id);
         UserDTO createdUserDTO = new UserDTO(service.find(id));
         UserPOJO createdUserPOJO = converter.convert(createdUserDTO);
 
-        CertificateOrderPOJO createdOrder = orderConverter.convert(order);
         CertificateOrderDTO resultOrder = new CertificateOrderDTO(
-            orderService.create(createdOrder,
+            orderService.create(new CertificateOrderPOJO(),
                 createdUserPOJO));
 
         return ResponseEntity.created(linkTo(methodOn(OrderController.class)
-            .findOrderById(resultOrder.getOwner().getId()))
-            .toUri()).body(resultOrder.getModel());
+            .findOrderById(resultOrder.getId()))
+            .toUri()).body(null); //fixme
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,18 +148,21 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping(path = "{userId}/orders/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "{userId}/orders/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+                  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
                                                             @PathVariable long userId,
                                                             @PathVariable long id,
-                                                            @RequestParam List<Long> certificatesId,
-                                                                       HttpServletRequest request) {
+                                                            @RequestBody AddedCertificatesListDTO
+                                                                certificatesId,
+                                                            HttpServletRequest request) {
         ControllerUtils.checkIsCurrentUserHaveRulesForEditThisOrder(userId, id);
         ControllerUtils.checkUserRulesById(request, userId);
 
 
         CertificateOrderDTO certificateOrderDTO =
-            new CertificateOrderDTO(orderService.addCertificates(id, certificatesId));
+            new CertificateOrderDTO(orderService.addCertificates(id, certificatesId
+                                                                          .getAddedCertificates()));
         return new ResponseEntity<>(certificateOrderDTO.getModel(), HttpStatus.OK);
     }
 
@@ -186,7 +188,7 @@ public class UserController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException(invalid);
+            throw new ControllerException(new InvalidControllerOutputMessage(invalid));
         }
     }
 

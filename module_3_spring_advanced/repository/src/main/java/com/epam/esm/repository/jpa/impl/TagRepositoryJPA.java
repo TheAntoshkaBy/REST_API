@@ -22,8 +22,8 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         int col = entityManager.createQuery(SQLRequests.DELETE_TAG_BY_ID)
             .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.TAG,
-                ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
 
@@ -46,8 +46,8 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         Tag tag = entityManager.find(Tag.class, id);
 
         if (tag == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.TAG,
-                ErrorTextMessageConstants.NOT_FOUND_TAG));
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
 
         return tag;

@@ -7,6 +7,7 @@ import com.epam.esm.dto.OrderList;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.service.OrderService;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
@@ -66,15 +67,5 @@ public class OrderController {
         CertificateOrderDTO searchedOrder = new CertificateOrderDTO(service.find(id));
 
         return new ResponseEntity<>(searchedOrder.getModel(), HttpStatus.OK);
-    }
-
-    @PatchMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateOrderDTO>> addCertificates(
-                                                        @PathVariable long id,
-                                                        @RequestParam List<Long> certificatesId) {
-        CertificateOrderDTO editCertificate =
-            new CertificateOrderDTO(service.addCertificates(id, certificatesId));
-
-        return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.OK);
     }
 }

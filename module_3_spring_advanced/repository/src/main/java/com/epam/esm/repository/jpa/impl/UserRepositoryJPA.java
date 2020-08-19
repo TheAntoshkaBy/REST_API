@@ -22,8 +22,8 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
         int col = entityManager.createQuery(SQLRequests.DELETE_USER_BY_ID)
             .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.USER,
-                ErrorTextMessageConstants.NOT_FOUND_USER));
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_USER));
         }
     }
 
@@ -31,8 +31,8 @@ public class UserRepositoryJPA extends ShopJPARepository<User> implements UserRe
     public User findById(long id) {
         User user = entityManager.find(User.class, id);
         if (user == null) {
-            throw new RepositoryException(new InvalidDataOutputMessage(EntityNameConstant.USER,
-                ErrorTextMessageConstants.NOT_FOUND_USER));
+            throw new RepositoryException(
+                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_USER));
         }
 
         return user;

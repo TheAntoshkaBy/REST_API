@@ -16,6 +16,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,12 +40,12 @@ public class TagController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<TagDTO>> addTag(@RequestBody @Valid TagDTO tag) {
+    public ResponseEntity<BodyBuilder> addTag(@RequestBody @Valid TagDTO tag) {
         TagDTO resultTag = new TagDTO(service.create(converter.convert(tag)));
 
         return ResponseEntity.created(linkTo(methodOn(TagController.class)
             .findTag(resultTag.getId()))
-            .toUri()).body(resultTag.getModel());
+            .toUri()).body(null); // FIXME: 18.08.20
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,6 +84,6 @@ public class TagController {
     public ResponseEntity<Void> deleteTag(@PathVariable Integer id) {
         service.delete(id);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

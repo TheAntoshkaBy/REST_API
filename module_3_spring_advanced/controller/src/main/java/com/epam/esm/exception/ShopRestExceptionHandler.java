@@ -39,18 +39,6 @@ public class ShopRestExceptionHandler extends ResponseEntityExceptionHandler {
         return e.getMessages();
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public String ShopControllerHandler(BadCredentialsException e) {
-        return e.getMessage();
-    }
-
-    @ExceptionHandler(JwtAuthenticationException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public String ShopControllerHandler(JwtAuthenticationException e) {
-        return e.getMessage();
-    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
         MethodArgumentNotValidException ex,

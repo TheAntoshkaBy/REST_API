@@ -64,14 +64,14 @@ public class CertificateController {
 
     @PostMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EntityModel<CertificateDTO>> addCertificate(
+    public ResponseEntity<?> addCertificate(
                                                 @RequestBody @Valid CertificateDTO certificateDTO) {
         CertificateDTO newCertificate =
             new CertificateDTO(service.create(converter.convert(certificateDTO)));
 
         return ResponseEntity.created(linkTo(methodOn(CertificateController.class)
             .findById(newCertificate.getId()))
-            .toUri()).body(newCertificate.getModel());
+            .toUri()).body(null);
     }
 
     @GetMapping(
@@ -144,17 +144,17 @@ public class CertificateController {
         return new ResponseEntity<>(updatedCertificate.getModel(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PatchMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
         @PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
         service.addTag(id, tagConverter.convert(tag));
         CertificateDTO editCertificate = new CertificateDTO(service.find(id));
 
-        return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.CREATED);
+        return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.OK);
     }
 
-    @PostMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
                                                                     @PathVariable Integer id,
                                                                     @PathVariable Integer idTag) {
