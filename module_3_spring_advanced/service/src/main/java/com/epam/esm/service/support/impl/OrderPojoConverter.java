@@ -20,7 +20,7 @@ public class OrderPojoConverter implements PojoConverter<CertificateOrderPOJO, C
 
     @Override
     public CertificateOrder convert(CertificateOrderPOJO order) {
-        return new CertificateOrder(order.getEndDate(), order.getCost(), order.getDescription(),
+        return new CertificateOrder(order.getCost(), order.getDescription(),
                                     order.getCreatedDate()
         );
     }

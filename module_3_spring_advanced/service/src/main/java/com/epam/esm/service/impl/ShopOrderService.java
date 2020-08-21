@@ -9,6 +9,9 @@ import com.epam.esm.repository.jpa.CertificateRepository;
 import com.epam.esm.repository.jpa.OrderRepository;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.support.PojoConverter;
+import com.epam.esm.service.validator.CertificateValidator;
+import com.epam.esm.service.validator.OrderValidator;
+import com.epam.esm.service.validator.UserValidator;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -25,15 +28,23 @@ public class ShopOrderService implements OrderService {
     private final CertificateRepository certificateRepository;
     private final PojoConverter<CertificateOrderPOJO, CertificateOrder> converter;
     private final PojoConverter<UserPOJO, User> userConverter;
+    private final OrderValidator validator;
+    private final UserValidator userValidator;
+    private final CertificateValidator certificateValidator;
 
     @Autowired
     public ShopOrderService(OrderRepository repository, CertificateRepository certificateRepository,
-                            PojoConverter<CertificateOrderPOJO, CertificateOrder> converter,
-                            PojoConverter<UserPOJO, User> userConverter) {
+        PojoConverter<CertificateOrderPOJO, CertificateOrder> converter,
+        PojoConverter<UserPOJO, User> userConverter,
+        OrderValidator validator, UserValidator userValidator,
+        CertificateValidator certificateValidator) {
         this.repository = repository;
         this.certificateRepository = certificateRepository;
         this.converter = converter;
         this.userConverter = userConverter;
+        this.validator = validator;
+        this.userValidator = userValidator;
+        this.certificateValidator = certificateValidator;
     }
 
     @Override
@@ -45,11 +56,13 @@ public class ShopOrderService implements OrderService {
 
     @Override
     public CertificateOrderPOJO find(long id) {
+        validator.checkId(id);
         return new CertificateOrderPOJO(repository.findById(id));
     }
 
     @Override
     public void delete(long id) {
+        validator.checkId(id);
         repository.delete(id);
     }
 
@@ -65,23 +78,26 @@ public class ShopOrderService implements OrderService {
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id, int page, int size) {
         page = PojoConverter.convertPaginationPageToDbOffsetParameter(page, size);
-
+        userValidator.checkId(id);
         return converter.convert(repository.findAllByOwner(id, --page, size));
     }
 
     @Override
     public List<CertificateOrderPOJO> findAllByOwner(long id) {
+        userValidator.checkId(id);
         return converter.convert(repository.findAllByOwner(id));
     }
 
     @Override
     public int ordersCountByOwner(long id) {
+        userValidator.checkId(id);
         return repository.getOrdersCountByOwner(id);
     }
 
     @Override
     public CertificateOrderPOJO addCertificates(long orderId, List<Long> certificatesId) {
         CertificateOrder certificateOrder = repository.findById(orderId);
+        certificatesId.forEach(certificateValidator::checkId);
         List<Certificate> certificates = certificatesId
             .stream()
             .map(certificateRepository::findById)

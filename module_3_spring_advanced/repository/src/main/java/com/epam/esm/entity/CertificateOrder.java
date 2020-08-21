@@ -30,9 +30,6 @@ public class CertificateOrder {
     @Column(name = "order_id")
     private Long id;
 
-    @Column(name = "end_time")
-    private Date endTime;
-
     @Column(name = "create_time")
     private Date createTime;
 
@@ -57,8 +54,7 @@ public class CertificateOrder {
     )
     private List<Certificate> certificates;
 
-    public CertificateOrder(Date endTime, BigDecimal cost, String description, Date createTime) {
-        this.endTime = endTime;
+    public CertificateOrder(BigDecimal cost, String description, Date createTime) {
         this.cost = cost;
         this.description = description;
         this.createTime = createTime;

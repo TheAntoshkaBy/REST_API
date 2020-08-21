@@ -4,12 +4,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.OrderController;
+import com.epam.esm.controller.support.impl.CertificateConverter;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.validation.constraints.NotNull;
@@ -26,10 +28,6 @@ public class CertificateOrderDTO {
 
     @Null(message = "{validation.order.id}")
     private Long id;
-
-    @JsonFormat(pattern = "YYYY-MM-dd HH:mm")
-    @Null(message = "{validation.order.end.time}")
-    private Date endTime;
 
     @Null(message = "{validation.order.cost}")
     private BigDecimal cost;
@@ -48,14 +46,22 @@ public class CertificateOrderDTO {
     private EntityModel<CertificateOrderDTO> model;
 
     @Null(message = "{validation.order.certificates}")
-    private List<Certificate> certificates;
+    private List<EntityModel<CertificateDTO>> certificates;
+
 
     public CertificateOrderDTO(CertificateOrderPOJO certificateOrderPOJO) {
+        CertificateConverter certificateConverter = new CertificateConverter();
+        certificates = new ArrayList<>();
         this.id = certificateOrderPOJO.getId();
         this.cost = certificateOrderPOJO.getCost();
         this.owner = new UserDTO(certificateOrderPOJO.getOwner());
-        this.endTime = certificateOrderPOJO.getEndDate();
-        this.certificates = certificateOrderPOJO.getCertificates();
+        if(certificateOrderPOJO.getCertificates() != null){
+            certificateConverter
+                .convert(certificateOrderPOJO.getCertificates())
+                .forEach(certificateDTO -> {
+                    certificates.add(certificateDTO.getModel());
+                });
+        }
         this.description = certificateOrderPOJO.getDescription();
         this.createdTime = certificateOrderPOJO.getCreatedDate();
     }
@@ -63,11 +69,14 @@ public class CertificateOrderDTO {
     public EntityModel<CertificateOrderDTO> getModel() {
         String deleteRelName = "delete";
         String methodType = "DELETE";
+        String methodTypeGET = "GET";
 
         model =
             EntityModel.of(
                 this,
-                linkTo(methodOn(OrderController.class).findOrderById(id)).withSelfRel(),
+                linkTo(methodOn(OrderController.class).findOrderById(id))
+                    .withSelfRel()
+                    .withType(methodTypeGET),
                 linkTo(methodOn(OrderController.class).deleteOrder(id))
                     .withRel(deleteRelName)
                     .withType(methodType));

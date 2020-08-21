@@ -4,12 +4,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.CertificateController;
+import com.epam.esm.controller.support.impl.TagConverter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -61,9 +63,11 @@ public class CertificateDTO {
     private Date modification;
 
     @Null(message = "{validation.certificate.tags}")
-    private List<Tag> tags;
+    private List<EntityModel<TagDTO>> tags;
 
     public CertificateDTO(CertificatePOJO certificate) {
+        this.tags = new ArrayList<>();
+        TagConverter converter = new TagConverter();
         this.id = certificate.getId();
         this.name = certificate.getName();
         this.description = certificate.getDescription();
@@ -71,7 +75,9 @@ public class CertificateDTO {
         this.creationDate = certificate.getCreationDate();
         this.modification = certificate.getModification();
         this.durationDays = certificate.getDurationDays();
-        this.tags = certificate.getTags();
+        converter.convert(certificate.getTags()).forEach(tag -> {
+            this.tags.add(tag.getModel());
+        });
     }
 
     public EntityModel<CertificateDTO> getModel() {
@@ -79,9 +85,12 @@ public class CertificateDTO {
         String updateRelName = "update";
         String methodTypeDELETE = "DELETE";
         String methodTypePUT = "PUT";
+        String methodTypeGET = "GET";
 
         model = EntityModel.of(this,
-            linkTo(methodOn(CertificateController.class).findById(id)).withSelfRel(),
+            linkTo(methodOn(CertificateController.class).findById(id))
+                .withSelfRel()
+                .withType(methodTypeGET),
             linkTo(methodOn(CertificateController.class).findById(id))
                 .withRel(updateRelName)
                 .withType(methodTypePUT),

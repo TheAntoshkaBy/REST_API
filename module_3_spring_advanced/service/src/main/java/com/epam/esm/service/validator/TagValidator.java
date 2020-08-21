@@ -35,4 +35,11 @@ public class TagValidator {
                 new InvalidDataMessage(ErrorTextMessageConstants.TAG_NAME_FIELD_IS_EXIST));
         }
     }
+
+    public void checkId(Long id) {
+        if (id <= 0) {
+            throw new ServiceValidationException(
+                new InvalidDataMessage(ErrorTextMessageConstants.TAG_ID));
+        }
+    }
 }

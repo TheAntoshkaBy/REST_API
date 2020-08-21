@@ -16,6 +16,7 @@ import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.UserList;
 import com.epam.esm.dto.UserList.UserListBuilder;
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.exception.ControllerBadRequestException;
 import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.CertificateOrderPOJO;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -76,18 +78,19 @@ public class UserController {
 
     @PatchMapping(path = "{id}/orders")
     public ResponseEntity<EntityModel<CertificateOrderDTO>> addOrder(
-                                                @PathVariable long id, HttpServletRequest request) {
+                                                @PathVariable long id, HttpServletRequest request,
+                                                @RequestBody CertificateOrderDTO orderDTO) {
         ControllerUtils.checkUserRulesById(request, id);
         UserDTO createdUserDTO = new UserDTO(service.find(id));
         UserPOJO createdUserPOJO = converter.convert(createdUserDTO);
 
         CertificateOrderDTO resultOrder = new CertificateOrderDTO(
-            orderService.create(new CertificateOrderPOJO(),
+            orderService.create(orderConverter.convert(orderDTO),
                 createdUserPOJO));
 
         return ResponseEntity.created(linkTo(methodOn(OrderController.class)
             .findOrderById(resultOrder.getId()))
-            .toUri()).body(null); //fixme
+            .toUri()).body(resultOrder.getModel());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -168,7 +171,8 @@ public class UserController {
 
     @PostMapping(path = "/login")
     public ResponseEntity<Map<Object, Object>> login(
-        @RequestBody AuthenticationRequestDto requestDto) {
+        @RequestBody AuthenticationRequestDto requestDto, HttpServletRequest request,
+        HttpServletResponse response) {
         String invalid = "Invalid username or password";
         String parameterUsername = "username";
         String parameterToken = "token";
@@ -182,11 +186,14 @@ public class UserController {
 
             String token = jwtTokenProvider.createToken(username, user.getRoles());
 
-            Map<Object, Object> response = new HashMap<>();
-            response.put(parameterUsername, username);
-            response.put(parameterToken, token);
+            Map<Object, Object> responseMap = new HashMap<>();
+            responseMap.put(parameterUsername, username);
+            responseMap.put(parameterToken, token);
+            String path = linkTo(methodOn(UserController.class)
+                .findUserById(user.getId(),request)).toString();
+            response.setHeader("Location", path);
 
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(responseMap);
         } catch (AuthenticationException e) {
             throw new ControllerBadRequestException(new InvalidControllerOutputMessage(invalid));
         }
@@ -196,7 +203,7 @@ public class UserController {
                  produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<UserDTO>> registration(
         @Valid @RequestBody RegistrationUserDTO userDTO, HttpServletRequest request) {
-        String invalid = "Invalid username or password";
+        String invalid = "Invalid data";
 
         try {
             UserPOJO userPOJO = service
@@ -212,7 +219,6 @@ public class UserController {
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-
         service.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

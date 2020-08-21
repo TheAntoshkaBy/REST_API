@@ -4,9 +4,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.epam.esm.controller.support.ControllerParamNames;
+import com.epam.esm.controller.support.ControllerUtils;
 import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.dto.TagDTO;
 import com.epam.esm.dto.TagList;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.TagService;
 import java.util.List;
@@ -40,12 +42,12 @@ public class TagController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BodyBuilder> addTag(@RequestBody @Valid TagDTO tag) {
+    public ResponseEntity<EntityModel<TagDTO>> addTag(@RequestBody @Valid TagDTO tag) {
         TagDTO resultTag = new TagDTO(service.create(converter.convert(tag)));
 
         return ResponseEntity.created(linkTo(methodOn(TagController.class)
             .findTag(resultTag.getId()))
-            .toUri()).body(null); // FIXME: 18.08.20
+            .toUri()).body(resultTag.getModel());
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,7 +63,8 @@ public class TagController {
         @RequestParam(value = ControllerParamNames.SIZE_PARAM_NAME,
             defaultValue = ControllerParamNames.DEFAULT_SIZE_STRING,
             required = false) int size) {
-
+        ControllerUtils.checkIsPageCorrect(page);
+        ControllerUtils.checkIsSizeCorrect(size);
         List<TagPOJO> tagPOJOList = service.findAll(page, size);
         int tagsCount = service.getTagCount();
 

@@ -72,11 +72,29 @@ public class UserDTO {
 
         model = EntityModel.of(this,
             linkTo(methodOn(UserController.class)
-                .findUserById(id)).withSelfRel(),
+                .findUserById(id)).withSelfRel().withType(methodTypeGET),
             linkTo(methodOn(UserController.class)
                 .delete(id)).withRel(deleteRelName).withType(methodTypeDELETE),
             linkTo(methodOn(UserController.class)
                 .findOrders(id, page, size)).withRel(orderRelName).withType(methodTypeGET));
+        return model;
+    }
+
+    public EntityModel<UserDTO> getModel() {
+        String deleteRelName = "delete";
+        String orderRelName = "orders";
+        String methodTypeDELETE = "DELETE";
+        String methodTypeGET = "GET";
+        int defaultPage = 1;
+        int defaultSize = 5;
+
+        model = EntityModel.of(this,
+            linkTo(methodOn(UserController.class)
+                .findUserById(id)).withSelfRel().withType(methodTypeGET),
+            linkTo(methodOn(UserController.class)
+                .delete(id)).withRel(deleteRelName).withType(methodTypeDELETE),
+            linkTo(methodOn(UserController.class)
+                .findOrders(id, defaultPage, defaultSize)).withRel(orderRelName).withType(methodTypeGET));
         return model;
     }
 }

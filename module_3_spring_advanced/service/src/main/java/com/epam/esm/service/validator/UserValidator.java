@@ -44,4 +44,11 @@ public class UserValidator {
             throw new ServiceValidationException(invalidDataMessageList);
         }
     }
+
+    public void checkId(Long id) {
+        if (id <= 0) {
+            throw new ServiceValidationException(
+                new InvalidDataMessage(ErrorTextMessageConstants.TAG_ID));
+        }
+    }
 }

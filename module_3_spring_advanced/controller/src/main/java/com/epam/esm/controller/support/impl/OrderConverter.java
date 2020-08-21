@@ -21,7 +21,6 @@ public class OrderConverter implements DtoConverter<CertificateOrderDTO, Certifi
     @Override
     public CertificateOrderPOJO convert(CertificateOrderDTO order) {
         return new CertificateOrderPOJO(
-            order.getEndTime(),
             order.getDescription()
         );
     }

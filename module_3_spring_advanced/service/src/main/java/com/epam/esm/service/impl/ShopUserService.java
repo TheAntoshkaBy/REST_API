@@ -45,11 +45,13 @@ public class ShopUserService implements UserService {
 
     @Override
     public UserPOJO find(long id) {
+        userValidator.checkId(id);
         return new UserPOJO(repository.findById(id));
     }
 
     @Override
     public void delete(long id) {
+        userValidator.checkId(id);
         repository.delete(id);
     }
 

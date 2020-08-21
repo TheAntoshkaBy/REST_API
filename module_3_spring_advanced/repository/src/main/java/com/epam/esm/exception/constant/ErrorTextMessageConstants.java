@@ -7,6 +7,10 @@ public class ErrorTextMessageConstants {
     public static final String TAG_NAME_FIELD_IS_EXIST = "This tag name "
         + "field is exist, Tag name must be unique ";
     public static final String CERTIFICATE_ID = "Certificate Id must be more than 0";
+    public static final String ORDER_ID = "Order Id must be more than 0";
+    public static final String TAG_ID = "Tag Id must be more than 0";
+    public static final String USER_ID = "User Id must be more than 0";
+    public static final String CERTIFICATE_ID_MORE_THAN = "Certificate Id must be more than 0";
     public static final String USER_LOGIN_FIELD_IS_EXIST = "This user "
         + "login is exist, User login must be unique ";
     public static final String USER_EMAIL_FIELD_IS_EXIST = "This user "

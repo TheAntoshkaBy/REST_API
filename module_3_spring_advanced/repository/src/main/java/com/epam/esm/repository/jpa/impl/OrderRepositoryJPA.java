@@ -79,7 +79,11 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
     @Override
     public CertificateOrder addCertificates(CertificateOrder certificateOrder,
                                             List<Certificate> certificates, BigDecimal cost) {
-        certificateOrder.setCertificates(certificates);
+        if(certificateOrder.getCertificates() != null){
+            certificateOrder.getCertificates().addAll(certificates);
+        }else{
+            certificateOrder.setCertificates(certificates);
+        }
         certificateOrder.setCost(cost);
 
         return certificateOrder;

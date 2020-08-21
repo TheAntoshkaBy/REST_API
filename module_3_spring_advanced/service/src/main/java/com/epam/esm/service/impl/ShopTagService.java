@@ -36,6 +36,7 @@ public class ShopTagService implements TagService {
 
     @Override
     public TagPOJO find(long id) {
+        tagValidator.checkId(id);
         return new TagPOJO(tagRepository.findById(id));
     }
 
@@ -46,6 +47,7 @@ public class ShopTagService implements TagService {
 
     @Override
     public void delete(long id) {
+        tagValidator.checkId(id);
         tagRepository.delete(id);
     }
 

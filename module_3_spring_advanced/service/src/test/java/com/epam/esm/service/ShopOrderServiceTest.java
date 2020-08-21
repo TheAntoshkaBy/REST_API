@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.entity.User;
 import com.epam.esm.pojo.CertificateOrderPOJO;
@@ -18,6 +19,9 @@ import com.epam.esm.repository.jpa.impl.OrderRepositoryJPA;
 import com.epam.esm.service.impl.ShopOrderService;
 import com.epam.esm.service.support.impl.OrderPojoConverter;
 import com.epam.esm.service.support.impl.UserPojoConverter;
+import com.epam.esm.service.validator.CertificateValidator;
+import com.epam.esm.service.validator.OrderValidator;
+import com.epam.esm.service.validator.UserValidator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +37,9 @@ public class ShopOrderServiceTest {
     private ShopOrderService orderService;
     private OrderPojoConverter converter;
     private UserPojoConverter userConverter;
+    private OrderValidator validator;
+    private UserValidator userValidator;
+    private CertificateValidator certificateValidator;
 
     public static final int DEFAULT_PAGE = 1;
     public static final int DEFAULT_SIZE = 5;
@@ -45,13 +52,17 @@ public class ShopOrderServiceTest {
         repository = mock(OrderRepositoryJPA.class);
         certificateRepository = mock(CertificateRepositoryJPA.class);
         converter = mock(OrderPojoConverter.class);
+        validator  = mock(OrderValidator.class);
         userConverter = mock(UserPojoConverter.class);
+        userValidator = mock(UserValidator.class);
+        certificateValidator = mock(CertificateValidator.class);
         orderService = new ShopOrderService(repository, certificateRepository, converter,
-                                            userConverter);
+                                            userConverter, validator, userValidator,
+            certificateValidator);
 
-        order = new CertificateOrder(new Date(), BigDecimal.valueOf(321.23),
+        order = new CertificateOrder(BigDecimal.valueOf(321.23),
                            "dd", new Date());
-        CertificateOrder order2 = new CertificateOrder(new Date(), BigDecimal.valueOf(321.23),
+        CertificateOrder order2 = new CertificateOrder( BigDecimal.valueOf(321.23),
                                             "dd", new Date());
         orders = new ArrayList<>();
         orders.add(order);

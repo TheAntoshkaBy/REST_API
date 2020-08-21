@@ -19,8 +19,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String ADD_ORDER_ENDPOINT = "/users/{id}/orders";
+    private static final String ADD_USER_CHECK_LIST_ENDPOINT = "/users";
     private static final String ORDER_ENDPOINT = "/orders/**";
-    private static final String USER_ENDPOINT = "/users/**";
+    private static final String USER_ENDPOINT = "/users/{id}/**";
     private static final String USER_ENDPOINT_FOR_REGISTRATION = "/users";
     private static final String USER_ENDPOINT_FOR_LOGIN = "/users/login";
     private static final String CERTIFICATE_ENDPOINT = "/certificates/**";
@@ -63,16 +64,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers(USER_ENDPOINT_FOR_REGISTRATION, USER_ENDPOINT_FOR_LOGIN).permitAll()
+            .antMatchers(USER_ENDPOINT_FOR_LOGIN).permitAll()
             .mvcMatchers(HttpMethod.GET, CERTIFICATE_ENDPOINT).permitAll()
             .mvcMatchers(HttpMethod.POST, USER_ENDPOINT_FOR_REGISTRATION).permitAll()
             .mvcMatchers(HttpMethod.GET, USER_ENDPOINT).authenticated()
             .mvcMatchers(HttpMethod.PATCH, USER_ENDPOINT).authenticated()
-            .mvcMatchers(HttpMethod.DELETE, USER_ENDPOINT).authenticated()
+            .mvcMatchers(HttpMethod.DELETE, USER_ENDPOINT).hasRole(ROLE_ADMIN)
             .mvcMatchers(HttpMethod.GET, TAG_ENDPOINT).authenticated()
             .mvcMatchers(HttpMethod.GET, ORDER_ENDPOINT).authenticated()
             .mvcMatchers(HttpMethod.PATCH, ADD_ORDER_ENDPOINT).authenticated()
-            .antMatchers(USER_ENDPOINT).hasRole(ROLE_ADMIN)
+            .mvcMatchers(HttpMethod.GET, ADD_USER_CHECK_LIST_ENDPOINT).hasRole(ROLE_ADMIN)
             .antMatchers(TAG_ENDPOINT).hasRole(ROLE_ADMIN)
             .antMatchers(CERTIFICATE_ENDPOINT).hasRole(ROLE_ADMIN)
             .antMatchers(ORDER_ENDPOINT).hasRole(ROLE_ADMIN)

@@ -34,6 +34,13 @@ public class ControllerUtils {
 
     public static void checkIsCurrentUserHaveRulesForEditThisOrder(long userId, long orderId) {
         String exceptionMessage = "You don't have access with action for current order";
+        String exceptionBadId = "Id must be more than 0";
+
+        if(userId <= 0 || orderId <= 0){
+            throw new ControllerBadRequestException(
+                new InvalidControllerOutputMessage(exceptionBadId)
+            );
+        }
 
         if (!isThisOrderBelowCurrentUser(userId, orderId)) {
             throw new ControllerBadRequestException(
@@ -77,13 +84,37 @@ public class ControllerUtils {
 
     public static void checkUserRulesById(HttpServletRequest req, long actionUserId) {
         String exceptionMessage = "You don't have access with action for current user";
+        String exceptionBadId = "Id must be more than 0";
 
         String token = jwtTokenProvider.resolveToken(req);
         String username = jwtTokenProvider.getUsername(token);
         UserDTO userDTO = new UserDTO(service.findByLogin(username));
+        if(actionUserId <= 0){
+            throw new ControllerBadRequestException(
+                new InvalidControllerOutputMessage(exceptionBadId)
+            );
+        }
 
         if (userDTO.getId() != actionUserId && userDTO.getRoles().stream()
             .noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+            throw new ControllerBadRequestException(
+                new InvalidControllerOutputMessage(exceptionMessage)
+            );
+        }
+    }
+
+    public static void checkIsPageCorrect(int page){
+        String exceptionMessage = "Page Count must be more than 0!";
+        if(page <= 0){
+            throw new ControllerBadRequestException(
+                new InvalidControllerOutputMessage(exceptionMessage)
+            );
+        }
+    }
+
+    public static void checkIsSizeCorrect(int size){
+        String exceptionMessage = "Size Count must be more than 0!";
+        if(size <= 0){
             throw new ControllerBadRequestException(
                 new InvalidControllerOutputMessage(exceptionMessage)
             );

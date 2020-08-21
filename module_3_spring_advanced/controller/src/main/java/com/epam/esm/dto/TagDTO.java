@@ -46,11 +46,12 @@ public class TagDTO {
     public EntityModel<TagDTO> getModel() {
         String deleteRelName = "delete";
         String methodTypeDELETE = "DELETE";
+        String methodTypeGET = "GET";
 
         model = EntityModel.of(
             this,
             linkTo(methodOn(TagController.class)
-                .findTag(id)).withSelfRel(),
+                .findTag(id)).withSelfRel().withType(methodTypeGET),
             linkTo(methodOn(TagController.class)
                 .findTag(id)).withRel(deleteRelName).withType(methodTypeDELETE)
         );

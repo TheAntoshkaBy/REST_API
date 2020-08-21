@@ -2,6 +2,7 @@ package com.epam.esm.pojo;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
+import com.epam.esm.service.support.impl.CertificatePojoConverter;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -15,16 +16,16 @@ import lombok.NoArgsConstructor;
 public class CertificateOrderPOJO {
 
     private Long id;
-    private Date endDate;
     private BigDecimal cost;
     private String description;
     private Date createdDate;
 
     private UserPOJO owner;
 
-    private List<Certificate> certificates;
+    private List<CertificatePOJO> certificates;
 
     public CertificateOrderPOJO(CertificateOrder certificateOrder) {
+        CertificatePojoConverter converter = new CertificatePojoConverter();
         this.id = certificateOrder.getId();
         this.cost = certificateOrder.getCost();
 
@@ -39,14 +40,14 @@ public class CertificateOrderPOJO {
         } else {
             this.owner = null;
         }
-        this.endDate = certificateOrder.getEndTime();
-        this.certificates = certificateOrder.getCertificates();
+        if(certificateOrder.getCertificates() != null){
+            this.certificates = converter.convert(certificateOrder.getCertificates());
+        }
         this.description = certificateOrder.getDescription();
         this.createdDate = certificateOrder.getCreateTime();
     }
 
-    public CertificateOrderPOJO(Date endDate, String description) {
-        this.endDate = endDate;
+    public CertificateOrderPOJO(String description) {
         this.description = description;
     }
 }

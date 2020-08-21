@@ -65,14 +65,15 @@ public class ShopRestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(ControllerBadRequestException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public List<ApiErrorDTO> ShopControllerHandler(ControllerBadRequestException e,
         HttpServletRequest req) {
         List<ApiErrorDTO> errorList = new ArrayList<>();
 
         e.getMessages().forEach(invalidDataOutputMessage -> {
             String errorMessage = invalidDataOutputMessage.getMessage();
-            ApiErrorDTO apiError = new ApiErrorDTO(e.getStatus(), errorMessage,
+            ApiErrorDTO apiError = new ApiErrorDTO(HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                                                   errorMessage,
                 req.getRequestURI());
             errorList.add(apiError);
         });
