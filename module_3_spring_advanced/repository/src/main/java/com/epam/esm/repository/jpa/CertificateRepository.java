@@ -37,9 +37,7 @@ public interface CertificateRepository {
 
     List<Certificate> findAllByTags(String Query, int offset, int limit);
 
-    void update(Certificate certificate, long id);
-
-    void updatePrice(long id, BigDecimal price);
+    void update(Certificate updatedCertificate, Certificate newDataCertificate);
 
     List<Certificate> findByTagName(String name, int page, int size);
 

@@ -2,8 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.ServiceException;
-import com.epam.esm.exception.constant.EntityNameConstant;
+import com.epam.esm.exception.ServiceBadRequestException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.InvalidDataMessage;
@@ -15,6 +14,7 @@ import com.epam.esm.service.CertificateService;
 import com.epam.esm.service.impl.handler.CertificateServiceRequestParameterHandler;
 import com.epam.esm.service.support.PojoConverter;
 import com.epam.esm.service.support.impl.CertificatePojoConverter;
+import com.epam.esm.service.validator.CertificateValidator;
 import com.epam.esm.service.validator.TagValidator;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -35,17 +35,20 @@ public class ShopCertificateService implements CertificateInternalService, Certi
     private final TagRepository tagRepository;
     private final PojoConverter<CertificatePOJO, Certificate> converter;
     private final PojoConverter<TagPOJO, Tag> tagConverter;
+    private final CertificateValidator certificateValidator;
 
     @Autowired
     public ShopCertificateService(TagValidator tagValidator,
-                                  CertificateRepository certificateRepository,
-                                  TagRepository tagRepository, CertificatePojoConverter converter,
-                                  PojoConverter<TagPOJO, Tag> tagConverter) {
+        CertificateRepository certificateRepository,
+        TagRepository tagRepository, CertificatePojoConverter converter,
+        PojoConverter<TagPOJO, Tag> tagConverter,
+        CertificateValidator certificateValidator) {
         this.tagValidator = tagValidator;
         this.certificateRepository = certificateRepository;
         this.tagRepository = tagRepository;
         this.converter = converter;
         this.tagConverter = tagConverter;
+        this.certificateValidator = certificateValidator;
     }
 
     @Autowired
@@ -103,6 +106,7 @@ public class ShopCertificateService implements CertificateInternalService, Certi
 
     @Override
     public CertificatePOJO find(long id) {
+        certificateValidator.checkId(id);
         return new CertificatePOJO(certificateRepository.findById(id));
     }
 
@@ -137,14 +141,28 @@ public class ShopCertificateService implements CertificateInternalService, Certi
 
     @Override
     public void update(long id, CertificatePOJO certificate) {
+        certificateValidator.checkId(id);
+
         certificate.setModification(new Date());
+        Certificate updatedCertificate = certificateRepository.findById(id);
+        Certificate updateDataCertificate = converter.convert(certificate);
         certificateRepository
-            .update(converter.convert(certificate), id);
+            .update(updatedCertificate, updateDataCertificate);
     }
 
     @Override
-    public void updatePrice(long id, BigDecimal price) {
-        certificateRepository.updatePrice(id, price);
+    public void updatePath(long id, CertificatePOJO newCertificateData) {
+        Certificate certificateUpdateData = converter.convert(newCertificateData);
+        Certificate updatedCertificate = certificateRepository.findById(id);
+        if(certificateUpdateData.getPrice() != null){
+            updatedCertificate.setPrice(certificateUpdateData.getPrice());
+        }
+        if(certificateUpdateData.getName() != null){
+            updatedCertificate.setName(certificateUpdateData.getName());
+        }
+        if(certificateUpdateData.getDurationDays() != null){
+            updatedCertificate.setDurationDays(certificateUpdateData.getDurationDays());
+        }
     }
 
     @Override
@@ -175,7 +193,7 @@ public class ShopCertificateService implements CertificateInternalService, Certi
         Certificate buffCertificate = certificateRepository.findById(idCertificate);
 
         if (buffCertificate == null) {
-            throw new ServiceException(
+            throw new ServiceBadRequestException(
                 new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
@@ -186,7 +204,7 @@ public class ShopCertificateService implements CertificateInternalService, Certi
         if (buffTag.isPresent()) {
             certificateRepository.deleteTag(idCertificate, buffTag.get());
         } else {
-            throw new ServiceException(
+            throw new ServiceBadRequestException(
                 new InvalidDataMessage(ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
     }

@@ -2,7 +2,7 @@ package com.epam.esm.controller.support;
 
 import com.epam.esm.dto.CertificateOrderDTO;
 import com.epam.esm.dto.UserDTO;
-import com.epam.esm.exception.ControllerException;
+import com.epam.esm.exception.ControllerBadRequestException;
 import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.controller.security.jwt.JwtTokenProvider;
@@ -12,6 +12,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.misc.GThreadHelper;
 
 @Component
 public class ControllerUtils {
@@ -35,20 +36,34 @@ public class ControllerUtils {
         String exceptionMessage = "You don't have access with action for current order";
 
         if (!isThisOrderBelowCurrentUser(userId, orderId)) {
-            throw new ControllerException(
+            throw new ControllerBadRequestException(
                 new InvalidControllerOutputMessage(exceptionMessage)
             );
         }
     }
 
-    public static int getValidPaginationParam(String page, String paramName) {
+    public static int getValidPaginationParam(String param, String paramName) {
+        String exceptionMessageMoreThanNull = paramName + " must be more than null!";
+        String exceptionMessage = paramName + " must correct number!";
+
         int defaultReturn = ControllerParamNames.PAGE_PARAM_NAME.equals(paramName) ?
             ControllerParamNames.DEFAULT_PAGE : ControllerParamNames.DEFAULT_SIZE;
-        try {
-            int paramInteger = Integer.parseInt(page);
-            return paramInteger > 0 ? paramInteger : defaultReturn;
-        } catch (NumberFormatException e) {
+        if(param == null){
             return defaultReturn;
+        }
+        try {
+            int paramInteger = Integer.parseInt(param);
+            if(paramInteger > 0){
+                return paramInteger;
+            }else {
+                throw new ControllerBadRequestException(
+                    new InvalidControllerOutputMessage(exceptionMessageMoreThanNull)
+                );
+            }
+        } catch (NumberFormatException e) {
+            throw new ControllerBadRequestException(
+                new InvalidControllerOutputMessage(exceptionMessage)
+            );
         }
     }
 
@@ -69,7 +84,7 @@ public class ControllerUtils {
 
         if (userDTO.getId() != actionUserId && userDTO.getRoles().stream()
             .noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
-            throw new ControllerException(
+            throw new ControllerBadRequestException(
                 new InvalidControllerOutputMessage(exceptionMessage)
             );
         }

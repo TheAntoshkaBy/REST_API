@@ -82,16 +82,22 @@ public class UserList {
                 int prevPage = page - 1;
                 users.add(linkTo(methodOn(UserController.class)
                     .findAll(prevPage, size)).withRel(
-                        ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
+                    ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
-            int lastPage = userCount/size;
-            if(lastPage%size != 0){
-                lastPage+=1;
+            int lastPage;
+            if (userCount > size) {
+                lastPage = userCount / size;
+                if (lastPage % size != 0) {
+                    lastPage += 1;
+                }
+            }else {
+                lastPage = 1;
             }
+
             users.add(linkTo(methodOn(UserController.class)
-                             .findAll(lastPage,size))
-                             .withRel(ControllerParamNames.LAST_PAGE_MODEL_PARAM));
+                .findAll(lastPage, size))
+                .withRel(ControllerParamNames.LAST_PAGE_MODEL_PARAM));
 
             return users;
         }

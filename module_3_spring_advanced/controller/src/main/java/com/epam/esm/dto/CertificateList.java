@@ -106,9 +106,14 @@ CertificateList {
                         ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
                 }
 
-                int lastPage = certificatesCount/size;
-                if(lastPage%size != 0){
-                    lastPage+=1;
+                int lastPage;
+                if(certificatesCount>size){
+                   lastPage  = certificatesCount/size;
+                    if(lastPage%size != 0){
+                        lastPage+=1;
+                    }
+                }else {
+                    lastPage = 1;
                 }
                 params.put("page", String.valueOf(lastPage));
                 certificates.add(linkTo(methodOn(CertificateController.class)

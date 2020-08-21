@@ -2,21 +2,22 @@ package com.epam.esm.exception;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 
-public class ControllerException extends RuntimeException {
+public class ControllerBadRequestException extends RuntimeException {
 
     private final static String MESSAGE = "Controller exception";
     private List<InvalidControllerOutputMessage> messages;
     private InvalidControllerOutputMessage message;
 
-    public ControllerException(List<InvalidControllerOutputMessage> messages) {
+    public ControllerBadRequestException(List<InvalidControllerOutputMessage> messages) {
         this.messages = messages;
     }
 
-    public ControllerException() {
+    public ControllerBadRequestException() {
     }
 
-    public ControllerException(InvalidControllerOutputMessage message) {
+    public ControllerBadRequestException(InvalidControllerOutputMessage message) {
         this.message = message;
         messages = new ArrayList<>();
         messages.add(message);
@@ -33,5 +34,9 @@ public class ControllerException extends RuntimeException {
     @Override
     public String getMessage() {
         return MESSAGE;
+    }
+
+    public String getStatus(){
+        return HttpStatus.BAD_REQUEST.toString();
     }
 }

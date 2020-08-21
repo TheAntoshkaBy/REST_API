@@ -4,8 +4,7 @@ import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.CertificateOrder;
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.RepositoryException;
-import com.epam.esm.exception.constant.EntityNameConstant;
+import com.epam.esm.exception.RepositoryNotFoundException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.OrderRepository;
@@ -24,7 +23,7 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
         int col = entityManager.createQuery(SQLRequests.DELETE_ORDER_BY_ID)
             .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(
+            throw new RepositoryNotFoundException(
                 new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
     }
@@ -34,7 +33,7 @@ public class OrderRepositoryJPA extends ShopJPARepository<CertificateOrder> impl
 
         CertificateOrder order = entityManager.find(CertificateOrder.class, id);
         if (order == null) {
-            throw new RepositoryException(
+            throw new RepositoryNotFoundException(
                 new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_ORDER));
         }
         return order;

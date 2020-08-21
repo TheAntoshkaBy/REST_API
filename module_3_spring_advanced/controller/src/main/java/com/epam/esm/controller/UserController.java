@@ -16,7 +16,7 @@ import com.epam.esm.dto.RegistrationUserDTO;
 import com.epam.esm.dto.UserDTO;
 import com.epam.esm.dto.UserList;
 import com.epam.esm.dto.UserList.UserListBuilder;
-import com.epam.esm.exception.ControllerException;
+import com.epam.esm.exception.ControllerBadRequestException;
 import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.CertificateOrderPOJO;
 import com.epam.esm.pojo.UserPOJO;
@@ -188,7 +188,7 @@ public class UserController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new ControllerException(new InvalidControllerOutputMessage(invalid));
+            throw new ControllerBadRequestException(new InvalidControllerOutputMessage(invalid));
         }
     }
 

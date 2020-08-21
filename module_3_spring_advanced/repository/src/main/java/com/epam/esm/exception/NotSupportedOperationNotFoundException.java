@@ -3,17 +3,17 @@ package com.epam.esm.exception;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import java.util.List;
 
-public class NotSupportedOperationException extends RepositoryException {
+public class NotSupportedOperationNotFoundException extends RepositoryNotFoundException {
 
-    public NotSupportedOperationException(List<InvalidDataOutputMessage> messages) {
+    public NotSupportedOperationNotFoundException(List<InvalidDataOutputMessage> messages) {
         super(messages);
     }
 
-    public NotSupportedOperationException() {
+    public NotSupportedOperationNotFoundException() {
         super();
     }
 
-    public NotSupportedOperationException(InvalidDataOutputMessage message) {
+    public NotSupportedOperationNotFoundException(InvalidDataOutputMessage message) {
         super(message);
     }
 

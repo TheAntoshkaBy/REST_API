@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl.handler.filter.impl;
 
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.exception.ServiceBadRequestException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.InvalidDataMessage;
@@ -29,7 +29,7 @@ public class ByNamePartFilter implements CertificateFilterRequestParameter {
                                                           List<TagPOJO> tags, int page, int size) {
         String text = request.get("searchingName");
         if (text == null) {
-            throw new ServiceException(
+            throw new ServiceBadRequestException(
                 new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
             );
         }

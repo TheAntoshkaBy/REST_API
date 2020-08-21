@@ -7,6 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -35,5 +36,12 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
+    }
+
+    @Bean
+    DispatcherServlet dispatcherServlet () {
+        DispatcherServlet ds = new DispatcherServlet();
+        ds.setThrowExceptionIfNoHandlerFound(true);
+        return ds;
     }
 }

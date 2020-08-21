@@ -7,13 +7,17 @@ import com.epam.esm.controller.support.ControllerParamNames;
 import com.epam.esm.controller.support.ControllerUtils;
 import com.epam.esm.controller.support.DtoConverter;
 import com.epam.esm.controller.support.impl.CertificateConverter;
+import com.epam.esm.dto.AddedTagDTO;
 import com.epam.esm.dto.CertificateDTO;
 import com.epam.esm.dto.CertificateList;
 import com.epam.esm.dto.TagDTO;
+import com.epam.esm.entity.Certificate;
+import com.epam.esm.exception.ControllerBadRequestException;
+import com.epam.esm.exception.InvalidControllerOutputMessage;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import com.epam.esm.service.CertificateService;
-import java.math.BigDecimal;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -71,7 +75,7 @@ public class CertificateController {
 
         return ResponseEntity.created(linkTo(methodOn(CertificateController.class)
             .findById(newCertificate.getId()))
-            .toUri()).body(null);
+            .toUri()).body(newCertificate.getModel());
     }
 
     @GetMapping(
@@ -136,16 +140,16 @@ public class CertificateController {
     @PatchMapping(path = "/{id}",
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> updateCertificatePrice(
-                                                                    @RequestParam BigDecimal price,
-                                                                    @PathVariable long id) {
-        service.updatePrice(id, price);
+                                                         @RequestBody CertificateDTO certificateDTO,
+                                                         @PathVariable long id) {
+        service.updatePath(id, converter.convert(certificateDTO));
         CertificateDTO updatedCertificate = new CertificateDTO(service.find(id));
 
         return new ResponseEntity<>(updatedCertificate.getModel(), HttpStatus.OK);
     }
 
-    @PatchMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
+                 produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
         @PathVariable Integer id, @RequestBody @Valid TagDTO tag) {
         service.addTag(id, tagConverter.convert(tag));
@@ -154,21 +158,14 @@ public class CertificateController {
         return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.OK);
     }
 
-    @PatchMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(path = "{id}/tags", consumes = MediaType.APPLICATION_JSON_VALUE,
+                                      produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<CertificateDTO>> addTagToCertificate(
-                                                                    @PathVariable Integer id,
-                                                                    @PathVariable Integer idTag) {
-        service.addTag(id, idTag);
+                                                          @PathVariable Integer id,
+                                                   @Valid @RequestBody AddedTagDTO tagDTOId) {
+        service.addTag(id, tagDTOId.getAddedTag());
         CertificateDTO editCertificate = new CertificateDTO(service.find(id));
 
         return new ResponseEntity<>(editCertificate.getModel(), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "{id}/tags/{idTag}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteTagToCertificate(@PathVariable Integer id,
-                                                       @PathVariable Integer idTag) {
-        service.deleteTag(id, idTag);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

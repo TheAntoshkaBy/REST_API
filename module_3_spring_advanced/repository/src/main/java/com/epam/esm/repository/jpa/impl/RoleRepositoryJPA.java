@@ -2,8 +2,7 @@ package com.epam.esm.repository.jpa.impl;
 
 import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Role;
-import com.epam.esm.exception.NotSupportedOperationException;
-import com.epam.esm.exception.constant.EntityNameConstant;
+import com.epam.esm.exception.NotSupportedOperationNotFoundException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.RoleRepository;
@@ -24,19 +23,19 @@ public class RoleRepositoryJPA extends ShopJPARepository<Role> implements RoleRe
 
     @Override
     public void delete(long id) {
-        throw new NotSupportedOperationException(
+        throw new NotSupportedOperationNotFoundException(
             new InvalidDataOutputMessage(ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION));
     }
 
     @Override
     public Role findById(long id) {
-        throw new NotSupportedOperationException(
+        throw new NotSupportedOperationNotFoundException(
             new InvalidDataOutputMessage(ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION));
     }
 
     @Override
     public List<Role> findAll(int offset, int limit) {
-        throw new NotSupportedOperationException(
+        throw new NotSupportedOperationNotFoundException(
             new InvalidDataOutputMessage(ErrorTextMessageConstants.ROLE_NOT_SUPPORTED_OPERATION));
     }
 }

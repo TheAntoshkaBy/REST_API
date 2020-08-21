@@ -2,8 +2,7 @@ package com.epam.esm.repository.jpa.impl;
 
 import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.RepositoryException;
-import com.epam.esm.exception.constant.EntityNameConstant;
+import com.epam.esm.exception.RepositoryNotFoundException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.ShopJPARepository;
@@ -22,7 +21,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         int col = entityManager.createQuery(SQLRequests.DELETE_TAG_BY_ID)
             .setParameter(1, id).executeUpdate();
         if (col == 0) {
-            throw new RepositoryException(
+            throw new RepositoryNotFoundException(
                 new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
@@ -46,7 +45,7 @@ public class TagRepositoryJPA extends ShopJPARepository<Tag> implements TagRepos
         Tag tag = entityManager.find(Tag.class, id);
 
         if (tag == null) {
-            throw new RepositoryException(
+            throw new RepositoryNotFoundException(
                 new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_TAG));
         }
 

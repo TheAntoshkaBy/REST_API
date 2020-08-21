@@ -1,5 +1,6 @@
 package com.epam.esm.service;
 
+import com.epam.esm.entity.Certificate;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.TagPOJO;
 import java.math.BigDecimal;
@@ -48,9 +49,9 @@ public interface CertificateService {
      * This method update concrete Certificate field (price) by transmitted id and new price value
      *
      * @param id    certificate id which will be edit
-     * @param price edit data
+     * @param newCertificateData edit data
      **/
-    void updatePrice(long id, BigDecimal price);
+    void updatePath(long id, CertificatePOJO newCertificateData);
 
     /**
      * This method add new Certificate using DAO

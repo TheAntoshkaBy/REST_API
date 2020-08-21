@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import com.epam.esm.dto.ApiErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,17 +24,17 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException e) throws IOException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        String errorMessage = "Access Denied, you don't have rules for this action!";
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("status", HttpStatus.UNAUTHORIZED.value());
-        data.put("message", "Access Denied");
-        data.put("path", request.getRequestURL().toString());
+        ApiErrorDTO apiError = new ApiErrorDTO(
+            HttpStatus.FORBIDDEN.toString(),errorMessage , request.getRequestURI());
 
         OutputStream out = response.getOutputStream();
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         com.fasterxml.jackson.databind.ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(out, data);
+        mapper.writeValue(out, apiError);
+
         out.flush();
     }
 }

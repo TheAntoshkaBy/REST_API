@@ -1,6 +1,6 @@
 package com.epam.esm.service.impl.handler;
 
-import com.epam.esm.exception.ServiceException;
+import com.epam.esm.exception.ServiceBadRequestException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.pojo.CertificatePOJO;
 import com.epam.esm.pojo.InvalidDataMessage;
@@ -45,7 +45,7 @@ public class CertificateServiceRequestParameterHandler {
                     .findFirst()
                     .get();
         } catch (NoSuchElementException e) {
-            throw new ServiceException(
+            throw new ServiceBadRequestException(
                 new InvalidDataMessage(ErrorTextMessageConstants.FILTER_TYPE_NOT_EXIST)
             );
         }
@@ -95,7 +95,7 @@ public class CertificateServiceRequestParameterHandler {
                     .sortOurCertificates(request, page, size);
             }
         } catch (NoSuchElementException e) {
-            throw new ServiceException(
+            throw new ServiceBadRequestException(
                 new InvalidDataMessage(ErrorTextMessageConstants.SORT_TYPE_NOT_EXIST)
             );
         }
@@ -110,7 +110,7 @@ public class CertificateServiceRequestParameterHandler {
                 try {
                     returnedParams.put(complexFilter.getType(), complexFilter.setType(param));
                 } catch (RuntimeException e) {
-                    throw new ServiceException(
+                    throw new ServiceBadRequestException(
                         new InvalidDataMessage("Invalid parameter data!")
                     );
                 }
@@ -141,11 +141,11 @@ public class CertificateServiceRequestParameterHandler {
     public String filterAnd(Map<String, String> parameters, List<TagPOJO> tags) {
         StringBuilder result;
 
-        if (tags == null) {
+        if (tags == null || tags.size() == 0) {
             result = new StringBuilder("select c from certificate c where ");
             StringBuilder buffResult = buildQuery(parameters);
             if (buffResult.toString().isEmpty()) {
-                throw new ServiceException(new InvalidDataMessage("Equals search parameters!"));
+                throw new ServiceBadRequestException(new InvalidDataMessage("Equals search parameters!"));
             }
             result.append(buffResult);
         } else {
@@ -162,11 +162,11 @@ public class CertificateServiceRequestParameterHandler {
     public String filterAndGetCount(Map<String, String> parameters, List<TagPOJO> tags) {
         StringBuilder result;
 
-        if (tags == null) {
+        if (tags == null || tags.size() == 0) {
             result = new StringBuilder("select COUNT(c) from certificate c where ");
             StringBuilder buffResult = buildQuery(parameters);
             if (buffResult.toString().isEmpty()) {
-                throw new ServiceException(new InvalidDataMessage("Equals search parameters!"));
+                throw new ServiceBadRequestException(new InvalidDataMessage("Equals search parameters!"));
             }
             result.append(buffResult);
         } else {

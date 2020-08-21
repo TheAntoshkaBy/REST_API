@@ -88,9 +88,14 @@ public class OrderList {
                     ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
-            int lastPage = ordersCount/size;
-            if(lastPage%size != 0){
-                lastPage+=1;
+            int lastPage;
+            if(ordersCount>size) {
+                lastPage = ordersCount / size;
+                if (lastPage % size != 0) {
+                    lastPage += 1;
+                }
+            }else {
+                lastPage = 1;
             }
             orders.add(linkTo(methodOn(OrderController.class)
                 .findAll(lastPage,size))

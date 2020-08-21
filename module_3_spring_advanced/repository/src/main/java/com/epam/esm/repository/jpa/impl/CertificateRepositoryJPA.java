@@ -3,8 +3,7 @@ package com.epam.esm.repository.jpa.impl;
 import com.epam.esm.constant.SQLRequests;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.exception.RepositoryException;
-import com.epam.esm.exception.constant.EntityNameConstant;
+import com.epam.esm.exception.RepositoryNotFoundException;
 import com.epam.esm.exception.constant.ErrorTextMessageConstants;
 import com.epam.esm.exception.entity.InvalidDataOutputMessage;
 import com.epam.esm.repository.jpa.CertificateRepository;
@@ -26,7 +25,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
             .setParameter(1, id).executeUpdate();
 
         if (col == 0) {
-            throw new RepositoryException(
+            throw new RepositoryNotFoundException(
                 new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }
@@ -35,7 +34,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
     public Certificate findById(long id) {
         Certificate certificate = entityManager.find(Certificate.class, id);
         if (certificate == null) {
-            throw new RepositoryException(new
+            throw new RepositoryNotFoundException(new
                 InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
 
@@ -136,24 +135,11 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
             .getResultList();
     }
 
-    public void update(Certificate certificate, long id) {
-        Certificate buffCert = entityManager.find(Certificate.class, id);
-
-        buffCert.setName(certificate.getName());
-        buffCert.setDescription(certificate.getDescription());
-        buffCert.setDurationDays(certificate.getDurationDays());
-        buffCert.setPrice(certificate.getPrice());
-    }
-
-    @Override
-    public void updatePrice(long id, BigDecimal price) {
-        try {
-            Certificate buffCert = entityManager.find(Certificate.class, id);
-            buffCert.setPrice(price);
-        }catch (NullPointerException e){
-            throw new RepositoryException(
-                new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
-        }
+    public void update(Certificate certificate, Certificate updatedData) {
+        certificate.setName(updatedData.getName());
+        certificate.setDescription(updatedData.getDescription());
+        certificate.setDurationDays(updatedData.getDurationDays());
+        certificate.setPrice(updatedData.getPrice());
     }
 
     @SuppressWarnings("unchecked")
@@ -171,7 +157,7 @@ public class CertificateRepositoryJPA extends ShopJPARepository<Certificate> imp
             Tag buffTag = entityManager.find(Tag.class, idTag);
             buffCertificate.getTags().add(buffTag);
         }catch (NullPointerException e){
-            throw new RepositoryException(
+            throw new RepositoryNotFoundException(
                 new InvalidDataOutputMessage(ErrorTextMessageConstants.NOT_FOUND_CERTIFICATE));
         }
     }

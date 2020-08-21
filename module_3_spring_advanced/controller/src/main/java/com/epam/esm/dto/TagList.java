@@ -78,7 +78,7 @@ public class TagList {
 
             tags.add(linkTo(methodOn(TagController.class)
                 .findAll(page, size)).withRel(
-                    ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
+                ControllerParamNames.CURRENT_PAGE_MODEL_PARAM));
 
             if (page != 1) {
                 int prevPage = page - 1;
@@ -87,12 +87,19 @@ public class TagList {
                     ControllerParamNames.PREVIOUS_PAGE_MODEL_PARAM));
             }
 
-            int lastPage = tagsCount/size;
-            if(lastPage%size != 0){
-                lastPage+=1;
+            int lastPage;
+            if (tagsCount > size) {
+
+                lastPage = tagsCount / size;
+                if (lastPage % size != 0) {
+                    lastPage += 1;
+                }
+            }else {
+                lastPage = 1;
             }
+
             tags.add(linkTo(methodOn(TagController.class)
-                .findAll(lastPage,size))
+                .findAll(lastPage, size))
                 .withRel(ControllerParamNames.LAST_PAGE_MODEL_PARAM));
 
             return tags;
