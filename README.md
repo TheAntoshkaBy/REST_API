@@ -24,6 +24,6 @@ RETURN; <br>
 END <br>
 $$ LANGUAGE plpgsql; <br>
 
+<<<<<<< HEAD
 ### Test Coverage <br>
 intellij-idea native test coverage runner.
-
