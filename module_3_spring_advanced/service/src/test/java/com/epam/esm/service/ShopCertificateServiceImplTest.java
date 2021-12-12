@@ -70,8 +70,6 @@ public class ShopCertificateServiceImplTest {
 
         certificateServiceRequestParameterHandler = mock(
             CertificateServiceRequestParameterHandler.class);
-        /*service = new ShopCertificateService(tagValidator, certificateRepository, tagRepository,
-                                             converter, tagConverter, certificateValidator);*/
         service
             .setCertificateServiceRequestParameterHandler(certificateServiceRequestParameterHandler);
     }
@@ -170,15 +168,6 @@ public class ShopCertificateServiceImplTest {
         long foundedId = 1l;
         long expectedId = 12l;
         long actualId = 2l;
-
-       /* doAnswer(invocation -> {
-            Object id = invocation.getArgument((int) idCertificate);
-            Object updateCertificate = invocation.getArgument((int) foundedId);
-            assertEquals((int) expectedId, id);
-            assertEquals(expectedCertificate, updateCertificate);
-            certificates.set((int) actualId, expectedCertificate);
-            return null;
-        }).when(certificateRepository).update(any(Certificate.class), anyInt());*/
 
         List<Certificate> expectedCertificates = certificates;
         expectedCertificates.set(2, expectedCertificate);
